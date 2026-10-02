@@ -84,6 +84,7 @@ class Jellyfin:
                    "Authorization": 'MediaBrowser Client="Cinematic CI", Device="CI", DeviceId="cinematic-ci", Version="1.0"'}
         if self.token:
             headers["X-Emby-Token"] = self.token
+            headers["Authorization"] += f', Token="{self.token}"'
         request = urllib.request.Request(self.base + path, method=method, headers=headers,
                                          data=json.dumps(data).encode() if data is not None else None)
         with urllib.request.urlopen(request, timeout=120) as response:
