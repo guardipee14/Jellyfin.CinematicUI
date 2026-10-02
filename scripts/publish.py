@@ -35,6 +35,14 @@ def api(path, method="GET", payload=None, missing_ok=False):
     return gh(*args, payload=payload, missing_ok=missing_ok)
 
 
+def find_release(tag):
+    # The tag endpoint is for published releases. Listing also returns our staged drafts.
+    pages = gh("api", f"repos/{REPOSITORY}/releases?per_page=100", "--paginate", "--slurp")
+    matches = [release for page in pages for release in page if release["tag_name"] == tag]
+    require(len(matches) <= 1, "Multiple releases share the tag; resolve duplicate drafts before retrying")
+    return matches[0] if matches else None
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--tag", required=True)
@@ -57,7 +65,7 @@ def main():
     manifest = merge_manifest(previous, entry)
     write_json(folder / "manifest.json", manifest)
 
-    existing = api(f"releases/tags/{args.tag}", missing_ok=True)
+    existing = find_release(args.tag)
     if existing:
         matches = [asset for asset in existing["assets"] if asset["name"] == zip_name]
         if matches:
@@ -73,7 +81,8 @@ def main():
         (folder / "release-notes.md").write_text(notes, encoding="utf-8")
         gh("release", "create", args.tag, "--repo", REPOSITORY, "--draft", "--verify-tag", "--title", f"Cinematic UI {args.tag}",
            "--notes-file", str(folder / "release-notes.md"))
-        existing = api(f"releases/tags/{args.tag}")
+        existing = find_release(args.tag)
+        require(existing is not None, "New draft release is not visible to the publishing token")
 
     if existing["draft"]:
         gh("release", "upload", args.tag, "--repo", REPOSITORY, str(folder / zip_name), str(folder / "release-entry.json"),

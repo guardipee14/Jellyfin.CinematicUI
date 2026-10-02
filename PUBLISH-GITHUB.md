@@ -37,7 +37,7 @@ No PAT, custom updater, or separate hosting provider is required. Repositories t
 
 ## Failure and retry
 
-Failed verification publishes nothing. A failure after public release creation leaves the prior catalog manifest intact; users never receive a manifest entry pointing at a draft or missing asset. Fix the operational problem and rerun the failed workflow. The workflow can also be dispatched manually with the existing tag, and checks out that tag rather than current `main`.
+Failed verification publishes nothing. A failure after public release creation leaves the prior catalog manifest intact; users never receive a manifest entry pointing at a draft or missing asset. Fix the operational problem and rerun the failed workflow. If the publication controller itself needs a fix, land that fix on `main`, then dispatch the release workflow from `main` with the existing tag. Verification still checks out and builds the immutable tag; the corrected publication controller uses the verified artifacts and checks out the tagged source separately for its public installation test. Do not move the release tag to apply a tooling fix.
 
 Published version entries and ZIP checksums are immutable. A rerun must produce the same package. If code, metadata, or binary content changes, increment the version and create a new tag. Do not move release tags or overwrite published assets. Backfilled older versions are merged in numeric order without dropping newer versions.
 
