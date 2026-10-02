@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cinematic UI</title>
+    <style>
+        #CinematicUiConfigPage .cinematicSettingsGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1rem;margin:1.2rem 0 1.5rem}
+        #CinematicUiConfigPage .cinematicSettingsGroup{border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:1rem 1rem .45rem;background:rgba(255,255,255,.025)}
+        #CinematicUiConfigPage .cinematicSettingsGroup h3{margin:.15rem 0 .35rem;font-size:1.25rem}
+        #CinematicUiConfigPage .cinematicSettingsGroup>p{margin:.2rem 0 1rem;opacity:.72;line-height:1.4}
+        #CinematicUiConfigPage .cinematicVersion{opacity:.7;margin-top:-.5rem}
+        #CinematicUiConfigPage .fieldDescription{line-height:1.4;opacity:.72;margin-top:.3rem}
+        #CinematicUiConfigPage .cinematicNotice{border-left:4px solid #e5a00d;padding:.8rem 1rem;margin:1rem 0;background:rgba(229,160,13,.08);line-height:1.45}
+        #CinematicUiConfigPage .cinematicRepo{font-family:monospace;word-break:break-all;user-select:all}
+    </style>
+</head>
+<body>
+<div id="CinematicUiConfigPage" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-input,emby-button,emby-checkbox">
+    <div data-role="content">
+        <div class="content-primary">
+            <h2>Cinematic UI</h2>
+            <div class="cinematicVersion">v0.1.5 · Jellyfin 12.1</div>
+            <p>One plugin for the cinematic profile login, Plex-inspired global theme, navigation cleanup, and rotating library-driven Home hero.</p>
+
+            <div class="cinematicNotice">
+                <strong>Library access stays under Jellyfin Users.</strong> Navigation hiding below is cosmetic only and does not grant or revoke access to any library.
+            </div>
+
+            <form id="CinematicUiConfigForm">
+                <div class="cinematicSettingsGrid">
+                    <section class="cinematicSettingsGroup">
+                        <h3>Appearance</h3>
+                        <p>Controls the injected web layer and the global interface theme.</p>
+                        <div class="checkboxContainer checkboxContainer-withDescription"><label class="emby-checkbox-label"><input id="EnableInjection" type="checkbox" is="emby-checkbox" /><span>Enable self-contained web injection</span></label></div>
+                        <div class="checkboxContainer checkboxContainer-withDescription"><label class="emby-checkbox-label"><input id="EnableGlobalTheme" type="checkbox" is="emby-checkbox" /><span>Enable global Plex-like theme</span></label></div>
+                        <div class="inputContainer"><label class="inputLabel inputLabelUnfocused" for="AccentColor">Accent color</label><input id="AccentColor" is="emby-input" type="text" placeholder="#e5a00d" /></div>
+                    </section>
+
+                    <section class="cinematicSettingsGroup">
+                        <h3>Login</h3>
+                        <p>Profile-forward sign-in experience using your Jellyfin splash artwork.</p>
+                        <div class="checkboxContainer checkboxContainer-withDescription"><label class="emby-checkbox-label"><input id="EnableLoginExperience" type="checkbox" is="emby-checkbox" /><span>Enable cinematic login</span></label></div>
+                        <div class="checkboxContainer checkboxContainer-withDescription"><label class="emby-checkbox-label"><input id="LoginHideHeaderBranding" type="checkbox" is="emby-checkbox" /><span>Hide Jellyfin header branding on login</span></label></div>
+                        <div class="checkboxContainer checkboxContainer-withDescription"><label class="emby-checkbox-label"><input id="LoginBackgroundMotion" type="checkbox" is="emby-checkbox" /><span>Animate the login poster wall</span></label></div>
+                        <div class="inputContainer"><label class="inputLabel inputLabelUnfocused" for="ServerTitle">Login title</label><input id="ServerTitle" is="emby-input" type="text" /></div>
+                        <div class="inputContainer"><label class="inputLabel inputLabelUnfocused" for="LoginBackgroundMotionSeconds">Background movement duration (seconds)</label><input id="LoginBackgroundMotionSeconds" is="emby-input" type="number" min="15" max="300" /></div>
+                        <div class="inputContainer"><label class="inputLabel inputLabelUnfocused" for="LoginBackgroundBlurPx">Background blur (px)</label><input id="LoginBackgroundBlurPx" is="emby-input" type="number" min="0" max="12" /></div>
+                        <div class="inputContainer"><label class="inputLabel inputLabelUnfocused" for="LoginOverlayDarknessPercent">Overlay darkness (%)</label><input id="LoginOverlayDarknessPercent" is="emby-input" type="number" min="0" max="85" /></div>
+                    </section>
+
+                    <section class="cinematicSettingsGroup">
+                        <h3>Home Hero</h3>
+                        <p>Controls which titles can be featured and how the carousel behaves.</p>
+                        <div class="checkboxContainer checkboxContainer-withDescription"><label class="emby-checkbox-label"><input id="EnableHomeHero" type="checkbox" is="emby-checkbox" /><span>Enable rotating home hero</span></label></div>
+                        <div class="checkboxContainer checkboxContainer-withDescription"><label class="emby-checkbox-label"><input id="HeroUseLogos" type="checkbox" is="emby-checkbox" /><span>Use transparent title logos when available</span></label></div>
+                        <div class="checkboxContainer checkboxContainer-withDescription"><label class="emby-checkbox-label"><input id="HeroPauseOnHover" type="checkbox" is="emby-checkbox" /><span>Pause rotation while hovered or focused</span></label></div>
+                        <div class="checkboxContainer checkboxContainer-withDescription"><label class="emby-checkbox-label"><input id="HeroShowNavigationArrows" type="checkbox" is="emby-checkbox" /><span>Show Previous / Next controls</span></label></div>
+                        <div class="checkboxContainer checkboxContainer-withDescription"><label class="emby-checkbox-label"><input id="HeroShowDots" type="checkbox" is="emby-checkbox" /><span>Show carousel dots</span></label></div>
+                        <div class="checkboxContainer checkboxContainer-withDescription"><label class="emby-checkbox-label"><input id="HeroExcludePlayed" type="checkbox" is="emby-checkbox" /><span>Exclude fully played titles from the hero</span></label></div>
+                        <div class="inputContainer"><label class="inputLabel inputLabelUnfocused" for="HeroLibraryNames">Hero source libraries (comma-separated)</label><input id="HeroLibraryNames" is="emby-input" type="text" placeholder="Anime,Movies,TV Shows" /><div class="fieldDescription">If these user-visible libraries are found, the hero stays inside them and does not fall back to unrelated libraries.</div></div>
+                        <div class="inputContainer"><label class="inputLabel inputLabelUnfocused" for="HeroExcludedTitleKeywords">Exclude hero titles containing (comma-separated)</label><input id="HeroExcludedTitleKeywords" is="emby-input" type="text" placeholder="example title, another title" /><div class="fieldDescription">Optional. Matching is case-insensitive and only affects the hero carousel.</div></div>
+                        <div class="inputContainer"><label class="inputLabel inputLabelUnfocused" for="HeroRotationSeconds">Rotation seconds</label><input id="HeroRotationSeconds" is="emby-input" type="number" min="5" max="120" /></div>
+                        <div class="inputContainer"><label class="inputLabel inputLabelUnfocused" for="HeroMaxItems">Featured item count</label><input id="HeroMaxItems" is="emby-input" type="number" min="3" max="30" /></div>
+                        <div class="inputContainer"><label class="inputLabel inputLabelUnfocused" for="HeroAvoidRepeatCount">Avoid recently featured titles</label><input id="HeroAvoidRepeatCount" is="emby-input" type="number" min="0" max="30" /></div>
+                        <div class="inputContainer"><label class="inputLabel inputLabelUnfocused" for="HeroArtworkZoomPercent">Artwork zoom (%)</label><input id="HeroArtworkZoomPercent" is="emby-input" type="number" min="0" max="20" /></div>
+                        <div class="inputContainer"><label class="inputLabel inputLabelUnfocused" for="HeroOverviewLines">Overview lines</label><input id="HeroOverviewLines" is="emby-input" type="number" min="1" max="5" /></div>
+                    </section>
+
+                    <section class="cinematicSettingsGroup">
+                        <h3>Navigation & Home Rows</h3>
+                        <p>Declutters the Web interface without changing Jellyfin library permissions.</p>
+                        <div class="checkboxContainer checkboxContainer-withDescription"><label class="emby-checkbox-label"><input id="HideMyMediaRow" type="checkbox" is="emby-checkbox" /><span>Hide My Media row on Home</span></label></div>
+                        <div class="checkboxContainer checkboxContainer-withDescription"><label class="emby-checkbox-label"><input id="HideOtherVideosHomeRows" type="checkbox" is="emby-checkbox" /><span>Hide Other Videos rows on Home</span></label></div>
+                        <div class="inputContainer"><label class="inputLabel inputLabelUnfocused" for="HiddenNavigationLibraryNames">Hide libraries from Web navigation (comma-separated)</label><input id="HiddenNavigationLibraryNames" is="emby-input" type="text" placeholder="Leave blank to hide none" /><div class="fieldDescription">Cosmetic only. A profile can still access any library allowed under Dashboard → Users. Leave blank when you want all permitted libraries visible.</div></div>
+                    </section>
+
+                    <section class="cinematicSettingsGroup">
+                        <h3>Repository</h3>
+                        <p>v0.1.5 includes repository-ready release files. Once the GitHub repository is published, add this URL under Dashboard → Plugins → Repositories.</p>
+                        <div class="fieldDescription cinematicRepo">https://github.com/guardipee14/Jellyfin.CinematicUI/releases/latest/download/manifest.json</div>
+                        <p class="fieldDescription">Until that URL exists publicly, manual TrueNAS installs continue to work normally and Jellyfin may show repository metadata as Unknown.</p>
+                    </section>
+                </div>
+
+                <div><button is="emby-button" type="submit" class="raised button-submit block emby-button"><span>Save</span></button></div>
+            </form>
+        </div>
+    </div>
+
+<script>
+(function () {
+    const pluginId = 'e4c17f1b-c451-4a31-b98c-5d0ef44f9a21';
+    const page = document.querySelector('#CinematicUiConfigPage');
+    const boolIds = [
+        'EnableInjection','EnableGlobalTheme','EnableLoginExperience','LoginHideHeaderBranding','LoginBackgroundMotion',
+        'EnableHomeHero','HeroUseLogos','HeroPauseOnHover','HeroShowNavigationArrows','HeroShowDots','HeroExcludePlayed',
+        'HideMyMediaRow','HideOtherVideosHomeRows'
+    ];
+    const valueIds = [
+        'ServerTitle','AccentColor','HeroLibraryNames','HeroExcludedTitleKeywords','HiddenNavigationLibraryNames',
+        'HeroRotationSeconds','HeroMaxItems','HeroAvoidRepeatCount','HeroArtworkZoomPercent','HeroOverviewLines',
+        'LoginBackgroundMotionSeconds','LoginBackgroundBlurPx','LoginOverlayDarknessPercent'
+    ];
+
+    function load() {
+        Dashboard.showLoadingMsg();
+        ApiClient.getPluginConfiguration(pluginId).then(function (cfg) {
+            boolIds.forEach(function (id) { page.querySelector('#' + id).checked = !!cfg[id]; });
+            valueIds.forEach(function (id) { page.querySelector('#' + id).value = cfg[id] ?? ''; });
+            Dashboard.hideLoadingMsg();
+        }).catch(function () { Dashboard.hideLoadingMsg(); });
+    }
+
+    page.addEventListener('pageshow', load);
+
+    page.querySelector('#CinematicUiConfigForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        Dashboard.showLoadingMsg();
+        ApiClient.getPluginConfiguration(pluginId).then(function (cfg) {
+            boolIds.forEach(function (id) { cfg[id] = page.querySelector('#' + id).checked; });
+            cfg.ServerTitle = page.querySelector('#ServerTitle').value || "DONAVEN'S JELLYFIN";
+            cfg.AccentColor = page.querySelector('#AccentColor').value || '#e5a00d';
+            cfg.HeroLibraryNames = page.querySelector('#HeroLibraryNames').value || 'Anime,Movies,TV Shows';
+            cfg.HeroExcludedTitleKeywords = page.querySelector('#HeroExcludedTitleKeywords').value || '';
+            cfg.HiddenNavigationLibraryNames = page.querySelector('#HiddenNavigationLibraryNames').value || '';
+            cfg.HeroRotationSeconds = parseInt(page.querySelector('#HeroRotationSeconds').value || '12', 10);
+            cfg.HeroMaxItems = parseInt(page.querySelector('#HeroMaxItems').value || '12', 10);
+            cfg.HeroAvoidRepeatCount = parseInt(page.querySelector('#HeroAvoidRepeatCount').value || '6', 10);
+            cfg.HeroArtworkZoomPercent = parseInt(page.querySelector('#HeroArtworkZoomPercent').value || '8', 10);
+            cfg.HeroOverviewLines = parseInt(page.querySelector('#HeroOverviewLines').value || '3', 10);
+            cfg.LoginBackgroundMotionSeconds = parseInt(page.querySelector('#LoginBackgroundMotionSeconds').value || '65', 10);
+            cfg.LoginBackgroundBlurPx = parseInt(page.querySelector('#LoginBackgroundBlurPx').value || '3', 10);
+            cfg.LoginOverlayDarknessPercent = parseInt(page.querySelector('#LoginOverlayDarknessPercent').value || '48', 10);
+            // Legacy v0.1.4 field: disable it so upgrades do not cosmetically hide Other Videos by surprise.
+            cfg.HideOtherVideosNavigation = false;
+            return ApiClient.updatePluginConfiguration(pluginId, cfg);
+        }).then(function () {
+            Dashboard.processPluginConfigurationUpdateResult();
+        }).catch(function () {
+            Dashboard.hideLoadingMsg();
+        });
+        return false;
+    });
+})();
+</script>
+</div>
+</body>
+</html>
