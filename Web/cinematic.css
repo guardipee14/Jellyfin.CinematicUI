@@ -1,0 +1,121 @@
+:root {
+    --cinematic-accent:#e5a00d;
+    --cinematic-bg:#0d0d0f;
+    --cinematic-panel:#18181b;
+    --cinematic-panel-light:#222226;
+    --cinematic-text:#fff;
+    --cinematic-muted:rgba(255,255,255,.66);
+    --cinematic-hero-zoom:1.08;
+    --cinematic-hero-overview-lines:3;
+    --cinematic-login-blur:3px;
+    --cinematic-login-darkness:.48;
+}
+
+/* LOGIN */
+body.cinematic-login.cinematic-login-hide-header .skinHeader,body.cinematic-login.cinematic-login-hide-header .headerTop,body.cinematic-login.cinematic-login-hide-header .headerTop-withSectionTabs,body.cinematic-login.cinematic-login-hide-header .pageTitleWithLogo{display:none!important}
+body.cinematic-login #loginPage{position:fixed!important;inset:0!important;width:100%!important;height:100%!important;margin:0!important;overflow:hidden!important;background:#050505!important}
+body.cinematic-login #loginPage::after{content:"";position:fixed;inset:-14%;z-index:0;pointer-events:none;background:url('/Branding/Splashscreen?format=jpg') center/cover no-repeat;transform:scale(1.24) translate3d(-3%,-2%,0);will-change:transform,filter;filter:saturate(.96) brightness(.92)}
+body.cinematic-login.cinematic-login-motion #loginPage::after{animation:cinematicLoginScroll var(--cinematic-login-motion,65s) ease-in-out infinite alternate}
+body.cinematic-login #loginPage::before{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;backdrop-filter:blur(var(--cinematic-login-blur,3px));-webkit-backdrop-filter:blur(var(--cinematic-login-blur,3px));background:linear-gradient(180deg,rgba(0,0,0,.16),rgba(0,0,0,var(--cinematic-login-darkness,.48)) 48%,rgba(0,0,0,.84)),radial-gradient(circle at center,transparent 8%,rgba(0,0,0,.22) 60%,rgba(0,0,0,.72))}
+body.cinematic-login #loginPage>.padded-left.padded-right.padded-bottom-page{position:relative;z-index:2;min-height:100vh;box-sizing:border-box;padding:7vh 5vw 5vh!important;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0!important}
+body.cinematic-login #loginPage .visualLoginForm{width:min(100%,1100px);overflow:visible!important}
+body.cinematic-login #loginPage .visualLoginForm::before{content:attr(data-cinematic-title);display:block;margin-bottom:1.45rem;color:#fff;font-size:clamp(1.8rem,3vw,3rem);font-weight:700;letter-spacing:.08em;text-align:center;text-shadow:0 4px 20px rgba(0,0,0,.75)}
+body.cinematic-login #loginPage .visualLoginForm>h1{font-size:0!important;margin:0 0 2.15rem!important}
+body.cinematic-login #loginPage .visualLoginForm>h1::after{content:"Who's watching?";font-size:clamp(1.7rem,2.6vw,2.55rem);font-weight:400;color:#fff}
+body.cinematic-login #loginPage #divUsers{display:flex!important;flex-wrap:wrap!important;justify-content:center!important;gap:1.6rem 2.4rem;overflow:visible!important}
+body.cinematic-login #loginPage #divUsers .card{width:clamp(130px,13vw,180px)!important;background:transparent!important;transition:transform .18s ease!important;overflow:visible!important}
+body.cinematic-login #loginPage #divUsers .card:hover{transform:translateY(-6px) scale(1.055)!important}
+body.cinematic-login #loginPage #divUsers .cardImageContainer,body.cinematic-login #loginPage #divUsers .cardImage{border-radius:50%!important;overflow:hidden!important;border:3px solid rgba(255,255,255,.28);box-shadow:0 10px 30px rgba(0,0,0,.58);transition:border-color .18s ease,box-shadow .18s ease}
+body.cinematic-login #loginPage #divUsers .card:hover .cardImageContainer,body.cinematic-login #loginPage #divUsers .card:hover .cardImage{border-color:var(--cinematic-accent)!important;box-shadow:0 0 0 4px color-mix(in srgb,var(--cinematic-accent) 18%,transparent),0 14px 38px rgba(0,0,0,.72)}
+body.cinematic-login #loginPage #divUsers .cardFooter{padding-top:.85rem!important;background:transparent!important}
+body.cinematic-login #loginPage #divUsers .cardText{color:rgba(255,255,255,.88)!important;font-size:1rem;text-align:center}
+body.cinematic-login #loginPage .readOnlyContent{width:min(100%,390px)!important;margin:1.5rem auto 0!important;text-align:center}
+body.cinematic-login #loginPage .manualLoginForm{width:min(calc(100vw - 2rem),430px)!important;padding:2.2rem!important;border:1px solid rgba(255,255,255,.10);border-radius:14px;background:rgba(15,15,18,.78);box-shadow:0 22px 70px rgba(0,0,0,.58);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+body.cinematic-login #loginPage .btnManual{max-width:340px;margin-left:auto!important;margin-right:auto!important;border:1px solid rgba(255,255,255,.30)!important;border-radius:7px!important;background:rgba(18,18,20,.62)!important;color:#fff!important}
+body.cinematic-login #loginPage .btnManual:hover{border-color:rgba(255,255,255,.65)!important;background:rgba(255,255,255,.12)!important}
+body.cinematic-login #loginPage .btnQuick,body.cinematic-login #loginPage .btnForgotPassword,body.cinematic-login #loginPage .btnSelectServer{background:transparent!important;color:rgba(255,255,255,.62)!important;box-shadow:none!important}
+@keyframes cinematicLoginScroll{0%{transform:scale(1.25) translate3d(-5%,-3%,0)}25%{transform:scale(1.27) translate3d(-1%,-5%,0)}50%{transform:scale(1.26) translate3d(4%,-2%,0)}75%{transform:scale(1.28) translate3d(3%,4%,0)}100%{transform:scale(1.25) translate3d(-4%,3%,0)}}
+
+/* GLOBAL PLEX-LIKE THEME */
+body.cinematic-global .backgroundContainer,body.cinematic-global .mainAnimatedPages{background:var(--cinematic-bg)!important}
+body.cinematic-global .skinHeader{min-height:3.6rem!important;background:linear-gradient(180deg,rgba(10,10,10,.97),rgba(10,10,10,.84))!important;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 1px 0 rgba(255,255,255,.05),0 6px 24px rgba(0,0,0,.35)!important}
+body.cinematic-global .mainDrawer{background:rgba(15,15,15,.985)!important;border-right:1px solid rgba(255,255,255,.06)}
+body.cinematic-global .navMenuOption{border-radius:6px!important;margin:.15rem .45rem!important;color:rgba(255,255,255,.72)!important}
+body.cinematic-global .navMenuOption:hover{background:rgba(255,255,255,.07)!important;color:#fff!important}
+body.cinematic-global .navMenuOption-selected{background:color-mix(in srgb,var(--cinematic-accent) 14%,transparent)!important;color:var(--cinematic-accent)!important}
+body.cinematic-global .navMenuOption-selected .navMenuOptionIcon{color:var(--cinematic-accent)!important}
+body.cinematic-global .sectionTitle{color:#fff!important;font-weight:500!important;letter-spacing:-.015em}
+body.cinematic-global .sectionTitleTextButton{color:rgba(255,255,255,.72)!important}
+body.cinematic-global .sectionTitleTextButton:hover{color:var(--cinematic-accent)!important}
+body.cinematic-global .card{transition:transform .18s ease,filter .18s ease!important}
+body.cinematic-global .card:hover{transform:translateY(-4px) scale(1.035);z-index:10}
+body.cinematic-global .cardImageContainer{border-radius:7px!important;overflow:hidden!important;box-shadow:0 5px 16px rgba(0,0,0,.42)}
+body.cinematic-global .card:hover .cardImageContainer{outline:2px solid var(--cinematic-accent);outline-offset:1px;box-shadow:0 12px 30px rgba(0,0,0,.68),0 0 16px color-mix(in srgb,var(--cinematic-accent) 18%,transparent)}
+body.cinematic-global .cardFooter{background:transparent!important}
+body.cinematic-global .cardText{color:rgba(255,255,255,.91)!important}
+body.cinematic-global .cardText-secondary{color:rgba(255,255,255,.54)!important}
+body.cinematic-global .countIndicator,body.cinematic-global .playedIndicator,body.cinematic-global .itemProgressBarForeground{background:var(--cinematic-accent)!important;color:#111!important}
+body.cinematic-global .itemProgressBar{background:rgba(255,255,255,.20)!important}
+body.cinematic-global .emby-tab-button{color:rgba(255,255,255,.64)!important}
+body.cinematic-global .emby-tab-button:hover,body.cinematic-global .emby-tab-button-active{color:#fff!important}
+body.cinematic-global .button-submit,body.cinematic-global .raised.button-submit{background:var(--cinematic-accent)!important;color:#111!important;border-radius:6px!important;font-weight:700!important}
+body.cinematic-global .dialog{background:rgba(24,24,27,.97)!important;border:1px solid rgba(255,255,255,.08);border-radius:10px!important;box-shadow:0 25px 70px rgba(0,0,0,.65);backdrop-filter:blur(16px)}
+body.cinematic-global .emby-input,body.cinematic-global .emby-textarea,body.cinematic-global .emby-select{background:rgba(255,255,255,.07)!important;border:1px solid rgba(255,255,255,.13)!important;border-radius:6px!important;color:#fff!important}
+body.cinematic-global .emby-input:focus,body.cinematic-global .emby-textarea:focus,body.cinematic-global .emby-select:focus{border-color:var(--cinematic-accent)!important}
+body.cinematic-global .button-link,body.cinematic-global .textlink{color:var(--cinematic-accent)!important}
+body.cinematic-global .cardOverlayButton{background:rgba(0,0,0,.72)!important;color:#fff!important;backdrop-filter:blur(6px)}
+body.cinematic-global .cardOverlayButton:hover{background:var(--cinematic-accent)!important;color:#111!important}
+body.cinematic-global .detailRibbon{background:linear-gradient(180deg,rgba(15,15,15,.72),rgba(15,15,15,.96))!important;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+body.cinematic-global .backdropImage{filter:brightness(.66) saturate(.94)}
+body.cinematic-global .overview{color:rgba(255,255,255,.82)!important;line-height:1.55}
+body.cinematic-global ::-webkit-scrollbar{width:10px;height:10px}
+body.cinematic-global ::-webkit-scrollbar-track{background:#101010}
+body.cinematic-global ::-webkit-scrollbar-thumb{background:#383838;border-radius:999px;border:2px solid #101010}
+body.cinematic-global ::-webkit-scrollbar-thumb:hover{background:var(--cinematic-accent)}
+
+/* HOME HERO */
+#cinematicHero{position:relative;min-height:0;margin:0;overflow:hidden;border-radius:0 0 16px 16px;background:#0a0a0b;isolation:isolate;opacity:0;visibility:hidden;max-height:0;transition:opacity .4s ease}
+#cinematicHero[data-ready="1"]{opacity:1;visibility:visible;max-height:none;min-height:clamp(420px,48vw,650px);margin-bottom:2rem}
+#cinematicHero .cinematicHeroVisual{position:absolute;inset:0;z-index:-4;overflow:hidden;background:#0a0a0b}
+#cinematicHero .cinematicHeroBlur{position:absolute;inset:-6%;background:center/cover no-repeat;filter:blur(28px) saturate(1.08) brightness(.68);transform:scale(1.16);opacity:.72;transition:background-image .6s ease}
+#cinematicHero .cinematicHeroBg{position:absolute;inset:-1%;background:center 34%/cover no-repeat;transform:scale(var(--cinematic-hero-zoom,1.08));opacity:0;filter:saturate(1.03) contrast(1.025);transition:opacity .82s ease,transform 8s ease;will-change:opacity,transform}
+#cinematicHero .cinematicHeroBg.active{opacity:1;transform:scale(calc(var(--cinematic-hero-zoom,1.08) + .015))}
+#cinematicHero::before{content:"";position:absolute;inset:0;z-index:-2;background:linear-gradient(90deg,rgba(6,6,8,.98) 0%,rgba(6,6,8,.86) 28%,rgba(6,6,8,.48) 50%,rgba(6,6,8,.22) 72%,rgba(6,6,8,.34) 100%),radial-gradient(circle at 76% 42%,transparent 0%,rgba(5,5,7,.10) 52%,rgba(5,5,7,.42) 100%)}
+#cinematicHero::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(0deg,var(--cinematic-bg) 0%,rgba(13,13,15,.74) 8%,transparent 36%,rgba(0,0,0,.08) 100%)}
+#cinematicHero .cinematicHeroContent{position:absolute;left:clamp(1.5rem,4.7vw,5rem);bottom:clamp(2rem,5.4vw,4.6rem);width:min(640px,48vw);color:#fff;z-index:2}
+#cinematicHero .cinematicHeroLogoWrap{display:flex;align-items:flex-end;min-height:0;margin:0 0 .9rem}
+#cinematicHero .cinematicHeroLogoWrap[hidden]{display:none!important}
+#cinematicHero .cinematicHeroLogo{display:block;max-width:min(520px,42vw);max-height:165px;object-fit:contain;object-position:left bottom;filter:drop-shadow(0 4px 12px rgba(0,0,0,.65))}
+#cinematicHero .cinematicHeroTitle{font-size:clamp(2.25rem,4.45vw,4.65rem);line-height:.98;margin:0 0 .85rem;font-weight:760;letter-spacing:-.035em;text-shadow:0 3px 18px rgba(0,0,0,.72)}
+#cinematicHero.has-logo .cinematicHeroTitle{font-size:1.15rem;line-height:1.2;margin:.1rem 0 .7rem;color:rgba(255,255,255,.78);font-weight:600;letter-spacing:0}
+#cinematicHero .cinematicHeroMeta{color:rgba(255,255,255,.78);margin-bottom:.82rem;font-size:.98rem;font-weight:500;text-shadow:0 2px 8px rgba(0,0,0,.7)}
+#cinematicHero .cinematicHeroOverview{max-width:610px;color:rgba(255,255,255,.87);line-height:1.48;display:-webkit-box;-webkit-line-clamp:var(--cinematic-hero-overview-lines,3);-webkit-box-orient:vertical;overflow:hidden;text-shadow:0 2px 8px rgba(0,0,0,.82)}
+#cinematicHero .cinematicHeroActions{display:flex;gap:.75rem;margin-top:1.2rem}
+#cinematicHero button{min-height:2.9rem;padding:0 1.25rem;border:0;border-radius:6px;font-weight:700;cursor:pointer;transition:transform .16s ease,filter .16s ease,background .16s ease}
+#cinematicHero button:hover{transform:translateY(-1px)}
+#cinematicHero .cinematicHeroPlay{background:#fff;color:#111}
+#cinematicHero .cinematicHeroPlay:hover{filter:brightness(.92)}
+#cinematicHero .cinematicHeroMore{background:rgba(255,255,255,.17);color:#fff;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+#cinematicHero .cinematicHeroMore:hover{background:rgba(255,255,255,.25)}
+#cinematicHero .cinematicHeroNav{position:absolute;right:1.55rem;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:.55rem;z-index:4}
+#cinematicHero .cinematicHeroNav[hidden],#cinematicHero .cinematicHeroDots[hidden]{display:none!important}
+#cinematicHero .cinematicHeroNav button{width:46px;height:46px;min-height:46px;padding:0;border-radius:50%;background:rgba(10,10,12,.48);color:#fff;border:1px solid rgba(255,255,255,.16);font-size:2rem;line-height:1;display:grid;place-items:center;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 6px 18px rgba(0,0,0,.28)}
+#cinematicHero .cinematicHeroNav button:hover,#cinematicHero .cinematicHeroNav button:focus-visible{background:var(--cinematic-accent);color:#111;border-color:transparent;outline:none}
+#cinematicHero .cinematicHeroDots{position:absolute;right:1.7rem;bottom:1.45rem;display:flex;gap:.42rem;z-index:3;padding:.45rem .6rem;border-radius:999px;background:rgba(0,0,0,.18);backdrop-filter:blur(6px)}
+#cinematicHero .cinematicHeroDot{width:8px;height:8px;min-height:0;padding:0;border-radius:50%;background:rgba(255,255,255,.38);box-shadow:none}
+#cinematicHero .cinematicHeroDot.active{background:var(--cinematic-accent);transform:scale(1.25)}
+
+body.cinematic-home #homeTab{padding-top:0!important}
+body.cinematic-home #homeTab .verticalSection{margin-bottom:2rem!important}
+body.cinematic-home #homeTab .sectionTitleContainer{margin-bottom:.35rem!important}
+body.cinematic-home #homeTab .itemsContainer{gap:.8rem!important;padding-top:.3rem!important;padding-bottom:.55rem!important}
+body.cinematic-home #homeTab .portraitCard{width:11.3em!important}
+body.cinematic-home #homeTab .portraitCard:hover{transform:translateY(-5px) scale(1.035)!important;z-index:20!important}
+body.cinematic-home #homeTab .cardFooter{padding-top:.55rem!important}
+body.cinematic-home #homeTab .cardText{font-size:.94rem!important;font-weight:500!important;color:rgba(255,255,255,.92)!important}
+body.cinematic-home #homeTab .cardText-secondary{font-size:.82rem!important;color:rgba(255,255,255,.52)!important}
+
+@media(max-width:1000px){#cinematicHero[data-ready="1"]{min-height:500px}#cinematicHero .cinematicHeroContent{width:min(620px,62vw)}#cinematicHero::before{background:linear-gradient(90deg,rgba(6,6,8,.97) 0%,rgba(6,6,8,.80) 35%,rgba(6,6,8,.34) 70%,rgba(6,6,8,.42) 100%)}}
+@media(max-width:800px){#cinematicHero[data-ready="1"]{min-height:470px}#cinematicHero .cinematicHeroContent{width:auto;right:1.4rem;left:1.4rem;bottom:2.3rem}#cinematicHero .cinematicHeroLogo{max-width:min(420px,72vw);max-height:125px}#cinematicHero .cinematicHeroTitle{font-size:clamp(2rem,8vw,3.35rem)}#cinematicHero .cinematicHeroOverview{-webkit-line-clamp:2}#cinematicHero .cinematicHeroNav{right:.8rem;top:1rem;transform:none;flex-direction:row}#cinematicHero .cinematicHeroNav button{width:40px;height:40px;min-height:40px;font-size:1.65rem}#cinematicHero .cinematicHeroDots{right:1rem;bottom:.8rem}body.cinematic-home #homeTab .portraitCard{width:9.6em!important}}
+@media(max-width:560px){#cinematicHero[data-ready="1"]{min-height:430px;border-radius:0 0 12px 12px}#cinematicHero .cinematicHeroContent{left:1rem;right:1rem;bottom:2.5rem}#cinematicHero .cinematicHeroLogo{max-width:72vw;max-height:100px}#cinematicHero .cinematicHeroMeta{font-size:.88rem}#cinematicHero .cinematicHeroOverview{display:none}#cinematicHero .cinematicHeroActions{margin-top:.9rem}#cinematicHero button{min-height:2.65rem;padding:0 1rem}#cinematicHero .cinematicHeroDots{max-width:70vw;overflow:hidden}body.cinematic-login #loginPage>.padded-left.padded-right.padded-bottom-page{padding:4rem 1rem 2rem!important}body.cinematic-login #loginPage #divUsers{gap:1rem}body.cinematic-login #loginPage #divUsers .card{width:min(31vw,130px)!important}}
+@media(prefers-reduced-motion:reduce){body.cinematic-login.cinematic-login-motion #loginPage::after{animation:none!important}.card{transition:none!important}.card:hover{transform:none!important}#cinematicHero .cinematicHeroBg{transition:none!important;transform:scale(var(--cinematic-hero-zoom,1.08))!important}}

@@ -1,15 +1,11 @@
-# Jellyfin repository publication
+# Stable Jellyfin repository manifest
 
-Cinematic UI uses a release-hosted Jellyfin repository manifest.
+Add this URL in Dashboard → Plugins → Repositories:
 
-After the GitHub repository exists at:
+`https://raw.githubusercontent.com/guardipee14/Jellyfin.CinematicUI/repository/manifest.json`
 
-`https://github.com/guardipee14/Jellyfin.CinematicUI`
+The `repository` branch contains the live cumulative manifest. Source stays on `main`. Each immutable version points to its own public GitHub release ZIP, with the MD5 checksum Jellyfin expects. New versions are sorted numerically, newest first; older compatible releases remain available when later releases require a newer server ABI.
 
-pushing a version tag such as `v0.1.5` runs `.github/workflows/release.yml`. The workflow builds the plugin, creates the binary ZIP, calculates Jellyfin's MD5 checksum, creates `manifest.json`, and attaches both files to the GitHub Release.
+A manifest attached to a GitHub release is a publication-time snapshot. The stable branch URL is the catalog URL; `releases/latest/download/manifest.json` is not used for update discovery.
 
-Add this URL to Jellyfin under **Dashboard → Plugins → Repositories**:
-
-`https://github.com/guardipee14/Jellyfin.CinematicUI/releases/latest/download/manifest.json`
-
-The plugin GUID stays constant across manual and repository installs, so Jellyfin can associate the installed plugin with the repository once the manifest is reachable.
+See [PUBLISH-GITHUB.md](../PUBLISH-GITHUB.md) for the release procedure and recovery from failed publication.

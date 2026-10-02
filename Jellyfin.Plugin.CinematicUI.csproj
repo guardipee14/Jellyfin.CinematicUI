@@ -29,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="tests/**/*.cs" />
     <EmbeddedResource Include="Web/cinematic.css" />
     <EmbeddedResource Include="Web/client.js" />
     <EmbeddedResource Include="Configuration/configPage.html" />
