@@ -70,7 +70,11 @@ class Jellyfin:
         self.ready()
 
     def ready(self):
-        info = wait_for(lambda: self.request("/System/Info/Public"), "Jellyfin did not start")
+        def started():
+            info = self.request("/System/Info/Public")
+            # During migrations Jellyfin's startup middleware can return a 200 progress object.
+            return info if "Version" in info else None
+        info = wait_for(started, "Jellyfin did not finish startup")
         require(info["Version"] == "12.1.0.0", f"Wrong test ABI: {info['Version']}")
 
     def request(self, path, method="GET", data=None, raw=False):
