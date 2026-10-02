@@ -2,6 +2,7 @@
 import argparse
 import json
 import shutil
+import uuid
 from pathlib import Path
 from release import GUID, ASSEMBLY, require
 
@@ -20,7 +21,7 @@ def archive(config_root, backup):
             if meta.is_file():
                 # Do not guess ownership of an unreadable/malformed manifest.
                 manifest = json.loads(meta.read_text(encoding="utf-8-sig"))
-                if manifest.get("guid", "").lower() == GUID:
+                if manifest.get("guid") and uuid.UUID(manifest["guid"]) == uuid.UUID(GUID):
                     matches.append(folder)
             elif folder.name == "Cinematic UI" and (folder / ASSEMBLY).is_file():
                 matches.append(folder)

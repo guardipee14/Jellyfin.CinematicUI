@@ -24,8 +24,8 @@ class ManualArchiveTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)
             self.plugin(root, "Cinematic UI")
-            self.plugin(root, "Cinematic UI_0.1.6.0")
-            other = self.plugin(root, "Other Plugin", "other-guid")
+            self.plugin(root, "Cinematic UI_0.1.6.0", manual.GUID.replace("-", ""))
+            other = self.plugin(root, "Other Plugin", "11111111-1111-1111-1111-111111111111")
             xml = root / "plugins/configurations/Jellyfin.Plugin.CinematicUI.xml"
             xml.parent.mkdir()
             xml.write_bytes(b"saved configuration")

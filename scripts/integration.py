@@ -19,7 +19,7 @@ import urllib.request
 import uuid
 import zipfile
 from pathlib import Path
-from release import GUID, package, read_json, require, source_metadata, write_json
+from release import GUID, package, read_json, require, source_metadata, validate_manifest, version_tuple, verify_zip, write_json
 
 IMAGE = "ghcr.io/jellyfin/jellyfin:12.1"
 TEST_PASSWORD = "Cinematic release test 123!"
@@ -114,7 +114,7 @@ class Jellyfin:
 
     def catalog(self):
         packages = self.request("/Packages")
-        found = next((item for item in packages if item.get("guid") == GUID), None)
+        found = next((item for item in packages if uuid.UUID(item["guid"]) == uuid.UUID(GUID)), None)
         require(found is not None, f"Cinematic UI missing from catalog; repositories={self.request('/Repositories')}; packages={packages}")
         return found
 
@@ -128,7 +128,7 @@ class Jellyfin:
         self.login()
 
     def active(self, version):
-        plugins = [p for p in self.request("/Plugins") if p["Id"].lower() == GUID]
+        plugins = [p for p in self.request("/Plugins") if uuid.UUID(p["Id"]) == uuid.UUID(GUID)]
         require(len(plugins) == 1, f"Duplicate plugin identities after restart: {plugins}")
         require(plugins[0]["Version"] == version and plugins[0]["Status"] == "Active", f"Plugin did not activate: {plugins}")
 
@@ -180,6 +180,25 @@ def previous_artifact(root, workspace, current):
     return artifact, read_json(out / "release-entry.json")
 
 
+def published_previous(url, workspace, current):
+    with urllib.request.urlopen(url, timeout=60) as response:
+        manifest = validate_manifest(json.load(response))
+    candidates = [v for v in manifest[0]["versions"] if version_tuple(v["version"]) < version_tuple(current["version"])
+                  and version_tuple(v["targetAbi"]) <= (12, 1, 0, 0)]
+    if not candidates:
+        return None
+    previous = max(candidates, key=lambda v: version_tuple(v["version"]))
+    path = workspace / "served/previous/published-previous.zip"
+    path.parent.mkdir(parents=True)
+    with urllib.request.urlopen(previous["sourceUrl"], timeout=120) as response:
+        path.write_bytes(response.read())
+    verify_zip(path, previous)
+    entry = copy.deepcopy(manifest)
+    entry[0]["versions"] = [previous]
+    print(f"Testing upgrade from actual published version {previous['version']}", flush=True)
+    return path, entry
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--artifacts", default="artifacts")
@@ -195,7 +214,8 @@ def main():
         workspace = Path(folder)
         served = workspace / "served"
         served.mkdir()
-        old_zip, old_entry = previous_artifact(root, workspace, current)
+        published = published_previous(args.public_manifest, workspace, current) if args.public_manifest else None
+        old_zip, old_entry = published or previous_artifact(root, workspace, current)
         shutil.copy2(artifacts / entry[0]["versions"][0]["sourceUrl"].rsplit("/", 1)[1], served / "current.zip")
         handler = functools.partial(QuietHandler, directory=str(served))
         server = http.server.ThreadingHTTPServer(("0.0.0.0", 0), handler)
@@ -240,6 +260,9 @@ def main():
             write_json(served / "manifest.json", manifest)
             discovered = manual.catalog()["versions"]
             require(all(v["version"] != "99.0.0.0" for v in discovered), "Incompatible ABI was not filtered")
+            if published:
+                # This update downloads the real next GitHub release through Jellyfin's normal task.
+                manual.repository(args.public_manifest)
             manual.update_task()
             target = manual.config / f"plugins/Cinematic UI_{current['version']}" / "meta.json"
             require(target.is_file(), "Scheduled task did not install the compatible update")
