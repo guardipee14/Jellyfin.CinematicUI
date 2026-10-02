@@ -124,6 +124,9 @@ class Jellyfin:
 
     def restart(self):
         run("docker", "restart", self.name)
+        # Docker may reassign an automatically allocated host port when restarting a container.
+        port = run("docker", "port", self.name, "8096/tcp").split(":")[-1]
+        self.base = f"http://127.0.0.1:{port}"
         self.ready()
         self.login()
 
@@ -143,6 +146,8 @@ class Jellyfin:
 
     def update_task(self):
         task = next(t for t in self.request("/ScheduledTasks") if t["Key"] == "PluginUpdates")
+        wait_for(lambda: self.request(f"/ScheduledTasks/{task['Id']}")["State"] == "Idle", "Prior plugin task did not finish")
+        task = self.request(f"/ScheduledTasks/{task['Id']}")
         last = task.get("LastExecutionResult")
         self.request(f"/ScheduledTasks/Running/{task['Id']}", "POST")
         def complete():
