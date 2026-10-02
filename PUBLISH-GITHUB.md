@@ -2,17 +2,17 @@
 
 ## Normal release procedure
 
-1. Update `Version`, `AssemblyVersion`, and `FileVersion` in `Jellyfin.Plugin.CinematicUI.csproj`, and `version`, `changelog`, and UTC `timestamp` in `meta.json`. Use four-part plugin versions such as `0.1.6.0`. Keep the assembly name and plugin GUID unchanged.
+1. Update `Version`, `AssemblyVersion`, and `FileVersion` in `Jellyfin.Plugin.CinematicUI.csproj`, and `version`, `changelog`, and UTC `timestamp` in `meta.json`. Use four-part plugin versions such as `0.1.7.0`. Keep the assembly name and plugin GUID unchanged.
 2. If changing the Jellyfin API baseline, update both Jellyfin package references and `targetAbi` together. Confirm the real server compatibility with the Docker integration test before releasing.
 3. Commit and push to `main`. Wait for CI to pass.
 4. Tag that commit and push the tag:
 
 ```bash
-git tag v0.1.6
-git push origin v0.1.6
+git tag v0.1.7
+git push origin v0.1.7
 ```
 
-The tag must exactly match the source version. Tags such as `v0.1.6-beta` and version overrides are rejected.
+The tag must exactly match the source version. Tags such as `v0.1.7-beta` and version overrides are rejected.
 
 ## What Actions publishes
 
@@ -22,7 +22,7 @@ After every required check passes, the publishing job uses the built-in `GITHUB_
 
 1. Read the existing manifest from the `repository` branch and validate its history.
 2. Merge the verified version without changing earlier entries.
-3. Create a draft GitHub release with the runtime ZIP, `release-entry.json`, and a cumulative `manifest.json` snapshot.
+3. Create a draft GitHub release, wait up to two minutes for its authenticated listing to become visible, then upload the runtime ZIP, `release-entry.json`, and a cumulative `manifest.json` snapshot.
 4. Download the staged ZIP and check its exact checksum/layout.
 5. Publish the release and verify all package URLs without authentication.
 6. Advance the stable manifest branch only after the binaries are publicly downloadable.
@@ -37,7 +37,7 @@ No PAT, custom updater, or separate hosting provider is required. Repositories t
 
 ## Failure and retry
 
-Failed verification publishes nothing. A failure after public release creation leaves the prior catalog manifest intact; users never receive a manifest entry pointing at a draft or missing asset. Fix the operational problem and rerun the failed workflow. If the publication controller itself needs a fix, land that fix on `main`, then dispatch the release workflow from `main` with the existing tag. Verification still checks out and builds the immutable tag; the corrected publication controller uses the verified artifacts and checks out the tagged source separately for its public installation test. Do not move the release tag to apply a tooling fix.
+Failed verification publishes nothing. Until catalog advancement, a publication failure leaves the prior manifest intact; advancement requires publicly downloadable, checksum-verified packages. A failure in the final public-installation test can occur after advancement, so inspect the release and manifest before diagnosing or retrying that step. Fix the operational problem and rerun the failed workflow. If the publication controller itself needs a fix, land that fix on `main`, then dispatch the release workflow from `main` with the existing tag. Verification still checks out and builds the immutable tag; the corrected publication controller uses the verified artifacts and checks out the tagged source separately for its public installation test. Do not move the release tag to apply a tooling fix.
 
 Published version entries and ZIP checksums are immutable. A rerun must produce the same package. If code, metadata, or binary content changes, increment the version and create a new tag. Do not move release tags or overwrite published assets. Backfilled older versions are merged in numeric order without dropping newer versions.
 
