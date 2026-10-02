@@ -8,6 +8,14 @@
     "category": "General",
     "versions": [
       {
+        "version": "0.1.6.0",
+        "changelog": "Repository-management release: verified catalog installation and normal Jellyfin Update Plugins upgrades from v0.1.5, a stable cumulative GitHub manifest, immutable runtime packages, retained configuration, and safe TrueNAS rollback backups. Preserves the original v0.1.5 login, theme, and hero assets; no new UI features.",
+        "targetAbi": "12.1.0.0",
+        "timestamp": "2026-10-02T21:07:54Z",
+        "sourceUrl": "https://github.com/guardipee14/Jellyfin.CinematicUI/releases/download/v0.1.6/CinematicUI-v0.1.6-jf12.1.zip",
+        "checksum": "f112e1d6d5646c091dcae30772fb6502"
+      },
+      {
         "version": "0.1.5.0",
         "changelog": "Clarifies Jellyfin library permissions versus cosmetic navigation hiding, adds generic optional navigation hiding by library name, adds login header-branding control, adds hero title-keyword exclusions and optional played-title filtering, improves hero rotation lifecycle, and adds GitHub repository-release automation assets.",
         "targetAbi": "12.1.0.0",
