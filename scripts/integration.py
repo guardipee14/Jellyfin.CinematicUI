@@ -75,7 +75,9 @@ class Jellyfin:
             # During migrations Jellyfin's startup middleware can return a 200 progress object.
             return info if "Version" in info else None
         info = wait_for(started, "Jellyfin did not finish startup")
-        require(info["Version"] == "12.1.0.0", f"Wrong test ABI: {info['Version']}")
+        abi = tuple(map(int, info["Version"].split(".")))
+        abi += (0,) * (4 - len(abi))
+        require(abi == (12, 1, 0, 0), f"Wrong test ABI: {info['Version']}")
 
     def request(self, path, method="GET", data=None, raw=False):
         headers = {"Content-Type": "application/json",
