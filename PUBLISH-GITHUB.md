@@ -27,12 +27,13 @@ After every required check passes, the publishing job uses the built-in `GITHUB_
 5. Publish the release and verify all package URLs without authentication.
 6. Advance the stable manifest branch only after the binaries are publicly downloadable.
 7. Verify the public raw manifest.
+8. Repeat catalog installation from the public GitHub URL. When an earlier compatible release exists, seed its actual released ZIP as a manual installation and upgrade it through Jellyfin's scheduled task from the public repository.
 
 Public catalog URL:
 
 `https://raw.githubusercontent.com/guardipee14/Jellyfin.CinematicUI/repository/manifest.json`
 
-No PAT, custom updater, or separate hosting provider is required. Repositories that protect the generated `repository` branch must allow Actions to write that branch. Publication is serialized across tags; a concurrent external branch change causes a safe failure rather than overwriting history.
+No PAT, custom updater, or separate hosting provider is required. Repositories that protect the generated `repository` branch must allow Actions to write that branch. Publication is serialized across tags; a concurrent external branch change causes a safe failure rather than overwriting history. Push one release tag at a time and wait for its workflow to finish; GitHub concurrency can replace an older pending run when several tags are pushed together.
 
 ## Failure and retry
 
