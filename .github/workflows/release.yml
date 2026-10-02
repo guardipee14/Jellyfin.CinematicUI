@@ -33,7 +33,13 @@ jobs:
     steps:
       - uses: actions/checkout@v7.0.1
         with:
-          ref: ${{ github.event.inputs.tag || github.sha }}
+          ref: ${{ github.sha }}
+      - name: Check out the verified release source separately from the publication controller
+        uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ github.event.inputs.tag || github.ref_name }}
+          path: release-source
+          persist-credentials: false
       - uses: actions/setup-python@v7.0.0
         with:
           python-version: '3.12'
@@ -50,4 +56,4 @@ jobs:
         with:
           dotnet-version: '10.0.x'
       - name: Verify public catalog installation and published-version updates
-        run: python scripts/integration.py --public-manifest 'https://raw.githubusercontent.com/guardipee14/Jellyfin.CinematicUI/repository/manifest.json'
+        run: python scripts/integration.py --root release-source --public-manifest 'https://raw.githubusercontent.com/guardipee14/Jellyfin.CinematicUI/repository/manifest.json'
