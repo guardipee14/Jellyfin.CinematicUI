@@ -113,7 +113,10 @@ class Jellyfin:
         self.request("/Repositories", "POST", [{"Name": "Cinematic CI", "Url": url, "Enabled": True}])
 
     def catalog(self):
-        return next(item for item in self.request("/Packages") if item["guid"] == GUID)
+        packages = self.request("/Packages")
+        found = next((item for item in packages if item.get("guid") == GUID), None)
+        require(found is not None, f"Cinematic UI missing from catalog; repositories={self.request('/Repositories')}; packages={packages}")
+        return found
 
     def install(self, version):
         query = urllib.parse.urlencode({"assemblyGuid": GUID, "version": version})
@@ -253,7 +256,7 @@ def main():
             print("PASS: manual migration, compatible scheduled update, one active plugin, preserved XML/settings, and hard refresh", flush=True)
         except Exception:
             for instance in (clean, manual):
-                log = subprocess.run(["docker", "logs", "--tail", "100", instance.name], text=True, capture_output=True)
+                log = subprocess.run(["docker", "logs", "--tail", "200", instance.name], text=True, capture_output=True)
                 print(log.stdout + log.stderr, file=sys.stderr)
             raise
         finally:
