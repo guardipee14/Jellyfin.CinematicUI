@@ -32,6 +32,25 @@ class PublicationTests(unittest.TestCase):
         with patch.object(publish.subprocess, "run", return_value=result):
             self.assertEqual("https://github.com/example/release", publish.gh("release", "create"))
 
+    def test_new_draft_can_become_visible_after_creation(self):
+        draft = {"tag_name": "v0.1.6", "draft": True, "assets": []}
+        with patch.object(publish, "find_release", side_effect=[None, None, draft]), patch.object(publish.time, "sleep") as sleep:
+            self.assertEqual(draft, publish.wait_for_release("v0.1.6", attempts=3, delay=5))
+            self.assertEqual(2, sleep.call_count)
+
+    def test_missing_draft_has_a_bounded_wait(self):
+        with patch.object(publish, "find_release", return_value=None) as lookup, patch.object(publish.time, "sleep") as sleep:
+            with self.assertRaisesRegex(RuntimeError, "not visible after waiting"):
+                publish.wait_for_release("v0.1.6", attempts=3, delay=5)
+            self.assertEqual(3, lookup.call_count)
+            self.assertEqual(2, sleep.call_count)
+
+    def test_ambiguous_draft_is_not_retried(self):
+        with patch.object(publish, "find_release", side_effect=ValueError("Multiple releases")), patch.object(publish.time, "sleep") as sleep:
+            with self.assertRaisesRegex(ValueError, "Multiple releases"):
+                publish.wait_for_release("v0.1.6")
+            sleep.assert_not_called()
+
 
 if __name__ == "__main__":
     unittest.main()

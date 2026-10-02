@@ -37,10 +37,21 @@ def api(path, method="GET", payload=None, missing_ok=False):
 
 def find_release(tag):
     # The tag endpoint is for published releases. Listing also returns our staged drafts.
-    pages = gh("api", f"repos/{REPOSITORY}/releases?per_page=100", "--paginate", "--slurp")
+    pages = gh("api", f"repos/{REPOSITORY}/releases?per_page=100", "--header", "Cache-Control: no-cache", "--paginate", "--slurp")
     matches = [release for page in pages for release in page if release["tag_name"] == tag]
     require(len(matches) <= 1, "Multiple releases share the tag; resolve duplicate drafts before retrying")
     return matches[0] if matches else None
+
+
+def wait_for_release(tag, attempts=24, delay=5):
+    # Creation can succeed before the authenticated release list reflects the draft.
+    for attempt in range(attempts):
+        release = find_release(tag)
+        if release is not None:
+            return release
+        if attempt + 1 < attempts:
+            time.sleep(delay)
+    raise RuntimeError("New draft release is not visible after waiting; retry the existing tag")
 
 
 def main():
@@ -81,8 +92,7 @@ def main():
         (folder / "release-notes.md").write_text(notes, encoding="utf-8")
         gh("release", "create", args.tag, "--repo", REPOSITORY, "--draft", "--verify-tag", "--title", f"Cinematic UI {args.tag}",
            "--notes-file", str(folder / "release-notes.md"))
-        existing = find_release(args.tag)
-        require(existing is not None, "New draft release is not visible to the publishing token")
+        existing = wait_for_release(args.tag)
 
     if existing["draft"]:
         gh("release", "upload", args.tag, "--repo", REPOSITORY, str(folder / zip_name), str(folder / "release-entry.json"),
