@@ -1,12 +1,12 @@
 {
   "category": "General",
-  "changelog": "Repository-management release: verified catalog installation and normal Jellyfin Update Plugins upgrades from v0.1.5, a stable cumulative GitHub manifest, immutable runtime packages, retained configuration, and safe TrueNAS rollback backups. Preserves the original v0.1.5 login, theme, and hero assets; no new UI features.",
+  "changelog": "UI hardening: preserve keyboard focus on hero indicators, expose the current title to assistive technology, add explicit Pause/Resume rotation, pause for keyboard focus and reduced motion, enlarge and scroll indicator hit areas, and support Jellyfin 12.1 React headers for login branding and cosmetic navigation hiding. Keep profile and recovery controls scrollable on small screens. Retains the catalog update pipeline, plugin identity, and existing settings.",
   "description": "A unified cinematic Jellyfin Web customization with a profile-forward login screen, Plex-inspired theme, and rotating library-driven home hero.",
   "guid": "e4c17f1b-c451-4a31-b98c-5d0ef44f9a21",
   "name": "Cinematic UI",
   "overview": "Cinematic login and home experience for Jellyfin Web",
   "owner": "Donaven Guardipee",
   "targetAbi": "12.1.0.0",
-  "timestamp": "2026-10-02T21:07:54Z",
-  "version": "0.1.6.0"
+  "timestamp": "2026-10-02T23:53:23Z",
+  "version": "0.1.7.0"
 }
