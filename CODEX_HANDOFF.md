@@ -1,209 +1,60 @@
 # Codex Handoff — Jellyfin.CinematicUI
 
-## Goal
+## Repository-management milestone
 
-Turn `guardipee14/Jellyfin.CinematicUI` into a proper Jellyfin third-party plugin repository so Jellyfin can:
+Completed October 2, 2026. The interrupted source transfer is repaired, v0.1.5 builds cleanly in CI, and both v0.1.5 and the maintenance v0.1.6 release are published. Clean installation from the public GitHub catalog and the actual published v0.1.5-to-v0.1.6 upgrade through Jellyfin's normal Update Plugins task both passed. [VALIDATION.md](VALIDATION.md) records the evidence and production scope.
 
-1. discover Cinematic UI from a repository manifest hosted on GitHub,
-2. install the plugin through Dashboard -> Plugins -> Catalog,
-3. see future versions when we publish a new release/tag,
-4. use Jellyfin's built-in **Update Plugins** scheduled task to pull newer compatible versions,
-5. preserve plugin configuration across updates,
-6. continue supporting manual TrueNAS installation as a fallback.
+The missing `Web/cinematic.css` and `Web/client.js` were recovered exactly from the owner's working v0.1.5 TrueNAS installer archive. Every other original archive file matched the transferred source after normalizing line endings. Both recovered asset hashes match the resources served by the production plugin. No new UI features were added. [RECOVERY.md](RECOVERY.md) records provenance; [README.md](README.md) describes the retained login, hero, theme, and navigation behavior.
 
-Official Jellyfin documentation confirms that third-party repositories are manifest URLs whose versions point to binary plugin packages, and Jellyfin includes an **Update Plugins** scheduled task.
+## Stable catalog and identity
 
-## Current deployed state
+Add this third-party repository in **Jellyfin Dashboard → Plugins → Repositories**:
 
-- TrueNAS SCALE / Docker Jellyfin container: `ix-jellyfin-jellyfin-1`
-- Jellyfin server line: 12.1
-- Runtime target: .NET 10
-- Plugin name: `Cinematic UI`
-- Plugin GUID: `e4c17f1b-c451-4a31-b98c-5d0ef44f9a21`
-- Current working version deployed on the server: **0.1.5.0**
-- Jellyfin log has confirmed:
-  - `Loaded assembly Jellyfin.Plugin.CinematicUI, Version=0.1.5.0`
-  - `Loaded plugin: Cinematic UI 0.1.5.0`
-- The plugin is currently installed under Jellyfin's persistent config at:
-  - host: `/mnt/New NAS/Apps/jellyfin/plugins/Cinematic UI`
-  - container: `/config/plugins/Cinematic UI`
+```text
+https://raw.githubusercontent.com/guardipee14/Jellyfin.CinematicUI/repository/manifest.json
+```
 
-The working v0.1.5 was originally built with the TrueNAS installer and is already functioning in Jellyfin Web.
+- Repository: `guardipee14/Jellyfin.CinematicUI`
+- Plugin: `Cinematic UI`
+- GUID: `e4c17f1b-c451-4a31-b98c-5d0ef44f9a21`
+- Assembly: `Jellyfin.Plugin.CinematicUI.dll`
+- Runtime: .NET 10 (`net10.0`)
+- Jellyfin package references: `12.1.0`
+- Target ABI: `12.1.0.0`
+- Settings: `/config/plugins/configurations/Jellyfin.Plugin.CinematicUI.xml`
 
-## Current UI behavior that must not regress
+Source lives on `main`; the generated `repository` branch contains the cumulative manifest. GitHub releases host the runtime ZIPs. Each ZIP contains only the plugin DLL and `meta.json`; its exact bytes determine Jellyfin's MD5 checksum. Prior compatible version entries are retained and sorted numerically. Published entries and checksums are immutable.
 
-### Login
-- profile-forward “Who’s watching?” layout
-- custom server title
-- circular profile cards
-- animated splash/poster wall
-- configurable blur/darkness/motion
-- optional hiding of Jellyfin header branding
+## Installation and normal updates
 
-### Home
-- rotating library-driven hero
-- hero restricted to configured libraries, default:
-  - Anime
-  - Movies
-  - TV Shows
-- transparent Jellyfin Logo artwork when available
-- fallback to text title
-- backdrop/Thumb/Primary artwork fallbacks
-- Play and More Info buttons
-- carousel dots
-- Previous/Next controls
-- pause on hover
-- cross-fade transitions
-- repeat avoidance
-- title keyword exclusions
-- optional exclude-played behavior
-- Other Videos is excluded from the hero when it is not in HeroLibraryNames
+For a clean installation, add the repository, choose Cinematic UI in **Catalog**, install, and restart when requested. The release package targets Jellyfin 12.1 and automatic updates remain enabled.
 
-### Theme
-- Plex-inspired dark theme with gold accent
-- card hover/focus treatment
-- progress bars and indicators
-- dialogs / inputs / detail page styling
-- hides duplicate My Media row when enabled
-- optionally hides Other Videos Home rows
-- cosmetic navigation hiding is separate from Jellyfin user library permissions
+Existing manual v0.1.5 installations share the GUID and configuration filename. Add the same repository and run the normal **Update Plugins** scheduled task. A strictly newer catalog version is required: v0.1.6 is the maintenance release that enables this transition. After restart, Jellyfin activates one current plugin identity and supersedes the older unversioned folder. Settings remain intact. Keep rollback copies outside `/config/plugins`.
 
-## IMPORTANT: GitHub repository is only partially populated
+Hard-refresh Jellyfin Web after activation. On TrueNAS, use **Apps → Jellyfin → Restart**. No custom updater or shell installation is required for catalog users.
 
-The GitHub repository has been created and many project files have been committed, but the previous interactive transfer was interrupted.
+## Release procedure and recovery
 
-Do **not** assume current GitHub HEAD is buildable until you inspect it.
+Follow [PUBLISH-GITHUB.md](PUBLISH-GITHUB.md). For the next release, update the project/metadata versions to a new four-part value such as `0.1.7.0`, update the changelog, timestamp, and displayed settings version, land the source on main, wait for CI, then push the matching `v0.1.7` tag.
 
-At minimum, verify whether these embedded assets are present and complete:
+The release workflow restores/builds with warnings treated as errors, checks compiled assembly identity and exact embedded resources, validates metadata/tag/checksums, and runs tooling and real Jellyfin integration tests. After verification, it uses the built-in `GITHUB_TOKEN` with `contents: write` to stage and verify a draft release, publish its assets, check unauthenticated downloads, and advance the stable manifest. A final test installs from the public GitHub URL and upgrades an actual prior published ZIP when one exists.
 
-- `Web/cinematic.css`
-- `Web/client.js`
+Publication is serialized. The publisher waits for newly created drafts to appear in GitHub's authenticated release listing and refuses duplicate drafts, changed published versions, corrupted history, or concurrent external manifest changes. If the controller needs a fix, merge it on main and dispatch the release workflow from main with the existing tag. Tagged source is still built and tested separately. Never move release tags or replace published ZIPs.
 
-The current root listing did not show a `Web` directory after the interruption, even though the working TrueNAS v0.1.5 bundle embeds those resources.
+## Validation and production scope
 
-Also validate:
+See [VALIDATION.md](VALIDATION.md) for run links and exact scope. CI runs disposable Jellyfin 12.1 containers to test catalog installation, manual migration, ABI filtering, the scheduled Update Plugins task, one active identity after restart, unchanged settings/XML, and intact UI injection after a cache-bypassing request. Candidate checks use a synthetic prior version; public release checks use actual prior published packages when available.
 
-- `Configuration/configPage.html`
-- `Configuration/PluginConfiguration.cs`
-- `EmbeddedAssets.cs`
-- `IndexInjectionMiddleware.cs`
-- `Plugin.cs`
-- `ServiceRegistrator.cs`
-- `Jellyfin.Plugin.CinematicUI.csproj`
-- `meta.json`
-- `install-truenas.sh`
-- `uninstall-truenas.sh`
-- `.github/workflows/release.yml`
-- repository manifest generation
+The production TrueNAS server was inspected read-only and remains on Jellyfin `12.1.0.0` with Cinematic UI `0.1.5.0`, the expected GUID, and automatic updates enabled. Its container is `ix-jellyfin-jellyfin-1`, with persistent `/config` at `/mnt/New NAS/Apps/jellyfin`. The original manual plugin folder is `/config/plugins/Cinematic UI`.
 
-Treat the deployed TrueNAS v0.1.5 behavior as the functional baseline.
+Production repositories, files, configuration, and container lifecycle were not changed. No production upgrade/restart or browser visual walkthrough is claimed. The served production resources and recovered source assets match byte-for-byte.
 
-## Repository/update architecture to implement
+## TrueNAS fallback constraints
 
-Preferred architecture:
+- Build with the official .NET 10 SDK Docker image; do not install development packages in the TrueNAS base OS.
+- Do not replace the app container or alter TrueNAS application ownership/lifecycle.
+- The manual helper gives only its newly installed payload to the app's existing UID/GID and archives old copies outside plugin discovery.
+- Configuration is retained on installation, removal, and rollback.
+- Restart through the TrueNAS Apps UI.
 
-1. Source lives on `main`.
-2. A version/tag release such as `v0.1.6` triggers GitHub Actions.
-3. The workflow:
-   - restores packages,
-   - builds Release for `net10.0`,
-   - packages only runtime plugin files into a ZIP,
-   - calculates the checksum expected by Jellyfin,
-   - creates or updates a repository `manifest.json`,
-   - publishes the plugin ZIP and manifest in a way Jellyfin can fetch reliably.
-4. Jellyfin repository URL should be stable.
-5. Version history in the manifest should be handled correctly. Do not accidentally publish only the newest version if Jellyfin expects prior compatible versions to remain represented.
-6. Package GUID must remain constant.
-7. `targetAbi` must stay compatible with the target Jellyfin server line.
-8. Plugin settings/config must survive upgrades.
-9. Release packages should not contain source-only/build artifacts.
-
-## Repository URL
-
-Target GitHub repository:
-
-`https://github.com/guardipee14/Jellyfin.CinematicUI`
-
-A candidate repository URL previously discussed was:
-
-`https://github.com/guardipee14/Jellyfin.CinematicUI/releases/latest/download/manifest.json`
-
-Before finalizing that design, verify it against current Jellyfin repository behavior and consider whether a raw file on a stable branch (for example a dedicated manifest branch or `main/repository/manifest.json`) is more robust for maintaining version history.
-
-## Desired user workflow
-
-### First-time install
-
-User should only need to:
-
-1. Dashboard -> Plugins -> Manage Repositories
-2. add the Cinematic UI repository URL
-3. open Catalog
-4. choose Cinematic UI
-5. install
-6. restart Jellyfin if required
-
-No TrueNAS shell work should be required for normal users.
-
-### Future updates
-
-For each new release:
-
-1. update plugin version and changelog,
-2. push code,
-3. tag/release,
-4. GitHub Actions builds and publishes package + manifest,
-5. Jellyfin detects the newer compatible version through its repository,
-6. Jellyfin's normal plugin update mechanism / scheduled **Update Plugins** task installs the update,
-7. restart only when Jellyfin requires it for plugin activation.
-
-Do not build a custom self-updater into the plugin unless Jellyfin's standard plugin mechanism is insufficient.
-
-## Validation requirements
-
-Before publishing a version:
-
-- `dotnet restore` succeeds
-- `dotnet build -c Release` succeeds with 0 errors
-- plugin ZIP contains the correct DLL and metadata only
-- manifest JSON validates
-- checksum exactly matches the released ZIP
-- source URL is downloadable without authentication
-- version is higher than the installed version
-- GUID matches `e4c17f1b-c451-4a31-b98c-5d0ef44f9a21`
-- target ABI is correct for Jellyfin 12.1
-- clean Jellyfin test can discover the plugin from the repository
-- existing manual install can transition to repository-managed updates without creating a duplicate plugin
-- configuration survives upgrade
-- UI injection continues to work after hard refresh
-- login and hero do not regress
-
-## TrueNAS deployment constraints
-
-- Do not install development packages into the TrueNAS base OS.
-- Existing manual installer uses the official Microsoft .NET 10 SDK Docker image for isolated builds.
-- Do not change TrueNAS app ownership or lifecycle by manually replacing the application container.
-- Restart Jellyfin through TrueNAS Apps UI for final validation.
-- Existing Jellyfin persistent plugin path is under the /config mount.
-
-## Security / robustness
-
-- Do not inject secrets into the repository or workflow.
-- GitHub Actions should use the built-in `GITHUB_TOKEN` with the minimum release permissions needed.
-- Fail open in the web injection middleware so a UI injection problem does not prevent Jellyfin Web from loading.
-- Keep asset/config values HTML/JS-safe.
-- Avoid dependence on brittle Jellyfin DOM selectors where possible; use resilient selectors/observers.
-- Keep an uninstall/rollback path.
-
-## Suggested first Codex tasks
-
-1. Inspect the entire repository and identify missing/incomplete files from the interrupted transfer.
-2. Restore a complete buildable v0.1.5 baseline.
-3. Build it in CI.
-4. Fix/finish the GitHub Actions release workflow.
-5. Design a stable Jellyfin repository manifest strategy with version history.
-6. Publish the first repository-managed release.
-7. Verify the manifest and release asset URLs.
-8. Provide the exact repository URL to add in Jellyfin.
-9. Document how to release v0.1.6 and later with one tag/push workflow.
-10. Do not add new UI features until the repository/install/update pipeline is proven end to end.
+See [INSTALL-TRUENAS.md](INSTALL-TRUENAS.md) for the manual fallback and rollback. Keep credentials out of source, workflow files, and release assets.
