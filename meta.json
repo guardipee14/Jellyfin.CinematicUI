@@ -1,0 +1,12 @@
+{
+  "category": "General",
+  "changelog": "Clarifies Jellyfin library permissions versus cosmetic navigation hiding, adds generic optional navigation hiding by library name, adds login header-branding control, adds hero title-keyword exclusions and optional played-title filtering, improves hero rotation lifecycle, and adds GitHub repository-release automation assets.",
+  "description": "A unified cinematic Jellyfin Web customization with a profile-forward login screen, Plex-inspired theme, and rotating library-driven home hero.",
+  "guid": "e4c17f1b-c451-4a31-b98c-5d0ef44f9a21",
+  "name": "Cinematic UI",
+  "overview": "Cinematic login and home experience for Jellyfin Web",
+  "owner": "Donaven Guardipee",
+  "targetAbi": "12.1.0.0",
+  "timestamp": "2026-10-02T20:15:00Z",
+  "version": "0.1.5.0"
+}
