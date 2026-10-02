@@ -11,6 +11,6 @@ Both files were restored from the working `Jellyfin.CinematicUI-v0.1.5-TrueNAS-I
 
 Restored v0.1.5 builds for `net10.0` against Jellyfin 12.1.0 with zero warnings/errors. The production server was inspected over SSH: Jellyfin reports `12.1.0.0`; Cinematic UI reports `0.1.5.0`, the expected GUID, and `autoUpdate: true`.
 
-The UI resources are recovered assets, with no new UI features. Repository-management changes replace release tooling/documentation and correct the repository URL shown in settings.
+The UI resources are recovered assets, with no new UI features. Both recovered hashes also match the assets served by the deployed plugin in `/web/index.html`, which contains one injection marker. Repository-management changes replace release tooling/documentation and correct the repository URL shown in settings.
 
 The automated Docker test uses a synthetic previous assembly version built from the current UI source. It checks the real Jellyfin installer/update mechanism rather than treating that fixture as a historical deployed release. Production restart and browser visual checks are separate from CI and must be reported separately.
