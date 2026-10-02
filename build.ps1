@@ -1,14 +1,15 @@
+param([string]$Python = 'python')
 $ErrorActionPreference = 'Stop'
 Push-Location $PSScriptRoot
 try {
-    dotnet restore
-    dotnet build -c Release --no-restore
-    $out = Join-Path $PSScriptRoot 'dist'
-    if (Test-Path $out) { Remove-Item $out -Recurse -Force }
-    New-Item -ItemType Directory -Path $out | Out-Null
-    Copy-Item '.\bin\Release\net10.0\Jellyfin.Plugin.CinematicUI.dll' $out
-    Copy-Item '.\meta.json' $out
-    Compress-Archive -Path "$out\*" -DestinationPath '.\CinematicUI-v0.1.5.zip' -Force
-    Write-Host 'Built .\CinematicUI-v0.1.5.zip'
-}
-finally { Pop-Location }
+    $version = & $Python scripts/release.py check-source
+    if ($LASTEXITCODE -ne 0) { throw 'Source validation failed' }
+    dotnet restore Jellyfin.Plugin.CinematicUI.csproj
+    if ($LASTEXITCODE -ne 0) { throw 'Restore failed' }
+    dotnet build Jellyfin.Plugin.CinematicUI.csproj -c Release --no-restore -warnaserror
+    if ($LASTEXITCODE -ne 0) { throw 'Build failed' }
+    dotnet run --project tests/Contracts/Contracts.csproj -c Release -- .
+    if ($LASTEXITCODE -ne 0) { throw 'Assembly verification failed' }
+    & $Python scripts/release.py package --tag ('v' + $version.Substring(0, $version.Length - 2))
+    if ($LASTEXITCODE -ne 0) { throw 'Packaging failed' }
+} finally { Pop-Location }

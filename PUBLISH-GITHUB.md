@@ -1,39 +1,43 @@
-# Publish Cinematic UI to GitHub
+# Publishing Cinematic UI
 
-Intended repository:
+## Normal release procedure
 
-`https://github.com/guardipee14/Jellyfin.CinematicUI`
-
-## First publication
-
-Create an empty public repository named `Jellyfin.CinematicUI` under the `guardipee14` account, then push this source tree to its `main` branch.
-
-If GitHub CLI is installed and authenticated, from this directory you can use:
+1. Update `Version`, `AssemblyVersion`, and `FileVersion` in `Jellyfin.Plugin.CinematicUI.csproj`, and `version`, `changelog`, and UTC `timestamp` in `meta.json`. Use four-part plugin versions such as `0.1.6.0`. Keep the assembly name and plugin GUID unchanged.
+2. If changing the Jellyfin API baseline, update both Jellyfin package references and `targetAbi` together. Confirm the real server compatibility with the Docker integration test before releasing.
+3. Commit and push to `main`. Wait for CI to pass.
+4. Tag that commit and push the tag:
 
 ```bash
-git init
-git add .
-git commit -m "release: Cinematic UI v0.1.5"
-git branch -M main
-gh repo create guardipee14/Jellyfin.CinematicUI --public --source=. --remote=origin --push
+git tag v0.1.6
+git push origin v0.1.6
 ```
 
-Then publish v0.1.5 by pushing the tag:
+The tag must exactly match the source version. Tags such as `v0.1.6-beta` and version overrides are rejected.
 
-```bash
-git tag v0.1.5
-git push origin v0.1.5
-```
+## What Actions publishes
 
-The included GitHub Actions workflow builds the plugin and publishes these release assets automatically:
+The shared verification job restores and builds with .NET 10, checks the compiled assembly identity and all embedded resources, runs release-tool tests, packages only `Jellyfin.Plugin.CinematicUI.dll` and `meta.json`, and exercises a real disposable Jellyfin 12.1 server. The integration test covers catalog installation, restart, intact injection after a cache-bypassing request, migration from a manual folder, a newer compatible update through the scheduled Update Plugins task, exclusion of a future incompatible ABI, one active plugin after restart, and unchanged settings/XML.
 
-- `CinematicUI-v0.1.5-jf12.1.zip`
-- `manifest.json`
+After every required check passes, the publishing job uses the built-in `GITHUB_TOKEN` with `contents: write` to:
 
-## Jellyfin repository URL
+1. Read the existing manifest from the `repository` branch and validate its history.
+2. Merge the verified version without changing earlier entries.
+3. Create a draft GitHub release with the runtime ZIP, `release-entry.json`, and a cumulative `manifest.json` snapshot.
+4. Download the staged ZIP and check its exact checksum/layout.
+5. Publish the release and verify all package URLs without authentication.
+6. Advance the stable manifest branch only after the binaries are publicly downloadable.
+7. Verify the public raw manifest.
 
-After the workflow finishes, add this URL under **Dashboard → Plugins → Repositories**:
+Public catalog URL:
 
-`https://github.com/guardipee14/Jellyfin.CinematicUI/releases/latest/download/manifest.json`
+`https://raw.githubusercontent.com/guardipee14/Jellyfin.CinematicUI/repository/manifest.json`
 
-The repository manifest uses the same plugin GUID as the manual install, allowing Jellyfin to associate the existing Cinematic UI installation with the repository metadata.
+No PAT, custom updater, or separate hosting provider is required. Repositories that protect the generated `repository` branch must allow Actions to write that branch. Publication is serialized across tags; a concurrent external branch change causes a safe failure rather than overwriting history.
+
+## Failure and retry
+
+Failed verification publishes nothing. A failure after public release creation leaves the prior catalog manifest intact; users never receive a manifest entry pointing at a draft or missing asset. Fix the operational problem and rerun the failed workflow. The workflow can also be dispatched manually with the existing tag, and checks out that tag rather than current `main`.
+
+Published version entries and ZIP checksums are immutable. A rerun must produce the same package. If code, metadata, or binary content changes, increment the version and create a new tag. Do not move release tags or overwrite published assets. Backfilled older versions are merged in numeric order without dropping newer versions.
+
+For a local artifact check, install .NET 10 and Python 3.12+, then run `bash build.sh`, or `./build.ps1 -Python python`. To run the integration test locally on Linux with Docker, first build the artifacts, then run `python3 scripts/integration.py`. After a release, use `--public-manifest <catalog URL>` to repeat clean installation using the published GitHub URL.

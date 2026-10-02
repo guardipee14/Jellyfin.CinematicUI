@@ -1,165 +1,63 @@
-# Cinematic UI v0.1.5
+# Cinematic UI
 
-Cinematic UI is a Jellyfin 12.1 plugin that owns the customized Jellyfin Web experience instead of relying on Dashboard → Branding → Custom CSS.
+Cinematic UI is a Jellyfin 12.1 plugin providing a profile-forward login, Plex-inspired theme, and rotating library-driven home hero. Its Web assets are embedded in the plugin DLL.
 
-## What changed in v0.1.5
+## Install from Jellyfin's catalog
 
-- Clarifies the difference between **Jellyfin library permissions** and cosmetic navigation hiding.
-- Replaces the old hard-coded “Hide Other Videos from Web navigation” behavior with an optional comma-separated list of library names to hide cosmetically.
-- Adds a **Hide Jellyfin header branding on login** option.
-- Adds optional **hero title keyword exclusions**.
-- Adds optional **exclude fully played titles from hero** behavior.
-- Pauses hero rotation when the browser tab is hidden and resumes cleanly when it becomes visible.
-- Adds render-generation protection so quick Next/Previous clicks cannot leave stale hero artwork behind.
-- Adds GitHub Actions release automation that builds a Jellyfin-compatible plugin ZIP and repository `manifest.json`.
+1. Open **Dashboard → Plugins → Repositories** (or **Manage Repositories**).
+2. Add a repository named **Cinematic UI** with this URL:
 
-## Current features
+```text
+https://raw.githubusercontent.com/guardipee14/Jellyfin.CinematicUI/repository/manifest.json
+```
 
-### Login
-- Profile-forward “Who’s watching?” layout
-- Custom server title
-- Circular profile cards with accent hover ring
-- Renamed alternate-account sign-in button
-- Slowly moving Jellyfin splash/poster-wall background
-- Configurable movement speed, blur, and darkness
-- Optional hiding of the normal Jellyfin header branding on the login page
+3. Open **Catalog**, select **Cinematic UI**, and install the latest compatible version.
+4. Restart Jellyfin when requested. On TrueNAS, use **Apps → Jellyfin → Restart**.
+5. Hard-refresh Jellyfin Web with `Ctrl+Shift+R`, then open **Dashboard → Plugins → Cinematic UI → Settings**.
 
-### Home
-- Rotating featured-title hero using real Jellyfin library items
-- Per-library hero source restriction (default: Anime, Movies, TV Shows)
-- Backdrop / Thumb / Primary image fallbacks
-- Transparent Jellyfin Logo artwork when available
-- Cross-fade background transitions and repeat avoidance
-- Play and More Info actions
-- Clickable carousel dots
-- Optional Previous / Next controls and keyboard Left / Right navigation
-- Optional title-keyword exclusions
-- Optional fully-played-title filtering
-- Configurable rotation interval, number of items, artwork zoom, and overview length
-- Tablet / mobile layout
+The plugin is distributed through this third-party repository. Adding the URL makes it available in your server's catalog; it does not add it to Jellyfin's official repository.
 
-### Navigation and theme
-- Plex-inspired global dark theme with gold accent
-- Hide duplicate My Media Home row
-- Hide Other Videos Home rows if desired
-- Optional cosmetic hiding of named libraries from Jellyfin Web navigation
-- Library permissions remain controlled exclusively through Jellyfin user settings
-- Styled cards, progress bars, navigation, dialogs, inputs, and detail pages
+## Updates and existing manual installations
 
-## Install / upgrade on TrueNAS SCALE
+Jellyfin's normal **Update Plugins** scheduled task discovers and installs newer compatible releases. A release with a higher `targetAbi` is filtered out on older servers, and prior compatible versions remain in the manifest. Activation may require a server restart.
 
-Extract the source bundle and run:
+Existing manual installations use the same GUID (`e4c17f1b-c451-4a31-b98c-5d0ef44f9a21`) and assembly name. Add the repository and leave automatic updates enabled. A catalog release must be strictly newer than the installed version to be picked up by the scheduled task. Adding a repository alone does not upgrade an equal version. The old unversioned manual folder is superseded by the managed version after restart; keep rollback copies outside `/config/plugins`.
+
+Settings remain in `/config/plugins/configurations/Jellyfin.Plugin.CinematicUI.xml`. Neither release ZIPs nor the installer overwrite or delete this file.
+
+## Existing UI behavior
+
+- Login: custom server title, circular profile cards, animated poster wall, configurable blur/darkness/motion, optional header-branding hiding.
+- Home: library-driven hero (Anime, Movies, TV Shows by default), transparent Logo artwork with title fallback, Backdrop/Thumb/Primary fallbacks, Play/More Info, cross-fades, dots, arrows, pause on hover, repeat avoidance, title exclusions, optional played-title filtering.
+- Theme: dark interface with gold accent, card hover/focus, progress indicators, dialogs, inputs, detail styling, optional My Media and Other Videos row hiding.
+- Navigation hiding is cosmetic. Actual library permissions remain under **Dashboard → Users → Library Access**.
+
+The missing v0.1.5 Web resources were restored from the original working installer archive. Repository-management work adds no new UI features. See [RECOVERY.md](RECOVERY.md) for provenance and validation scope.
+
+## Manual TrueNAS fallback and rollback
+
+The normal catalog install requires no shell work. If needed, build from a complete source checkout using:
 
 ```bash
 sudo bash ./install-truenas.sh
 ```
 
-The installer:
-1. finds `ix-jellyfin-jellyfin-1` by default,
-2. finds the host dataset mounted to `/config`,
-3. builds with the official .NET 10 SDK container,
-4. backs up the currently installed Cinematic UI directory,
-5. installs the compiled DLL and metadata,
-6. creates a reusable binary plugin ZIP,
-7. creates a Jellyfin repository `manifest.json` alongside the binary ZIP.
+The helper builds in the official .NET 10 SDK Docker image, keeps backups outside plugin discovery, and creates a runtime ZIP under `artifacts/`. It does not install SDK packages into the TrueNAS base OS or replace the app container.
 
-Restart Jellyfin from the TrueNAS Apps UI after installation, then hard-refresh Jellyfin Web with `Ctrl+Shift+R`.
+Removal and rollback instructions are in [INSTALL-TRUENAS.md](INSTALL-TRUENAS.md). Plugin configuration is retained on removal.
 
-## Plugin settings
+## Development and releases
 
-Open:
-
-`Dashboard → Plugins → Cinematic UI → Settings`
-
-Settings are grouped into:
-- Appearance
-- Login
-- Home Hero
-- Navigation & Home Rows
-- Repository
-
-### Important permission note
-
-The navigation-hiding field is **cosmetic only**. It does not grant or revoke library access. Use:
-
-`Dashboard → Users → <profile> → Library Access`
-
-for actual access control.
-
-## Repository-ready release workflow
-
-The source contains:
-
-```text
-.github/workflows/release.yml
-repository/README.md
-repository/manifest.example.json
-```
-
-Once the source is published at:
-
-```text
-https://github.com/guardipee14/Jellyfin.CinematicUI
-```
-
-pushing a tag such as:
-
-```text
-v0.1.5
-```
-
-builds the DLL, packages the plugin ZIP, calculates Jellyfin's MD5 checksum, creates `manifest.json`, and attaches both files to the GitHub Release.
-
-The Jellyfin repository URL will be:
-
-```text
-https://github.com/guardipee14/Jellyfin.CinematicUI/releases/latest/download/manifest.json
-```
-
-Add it under:
-
-`Dashboard → Plugins → Repositories`
-
-Once that manifest is reachable, Jellyfin can associate Cinematic UI with its repository rather than treating it only as a manually installed plugin.
-
-## Manual repository artifacts
-
-The TrueNAS installer still generates:
-
-```text
-artifacts/CinematicUI-v0.1.5-jf12.1.zip
-artifacts/manifest.json
-```
-
-The generated manifest defaults its binary URL to:
-
-```text
-https://github.com/guardipee14/Jellyfin.CinematicUI/releases/download/v0.1.5/CinematicUI-v0.1.5-jf12.1.zip
-```
-
-You can override the binary URL while installing/building:
+Requires .NET 10 and Python 3.12+ for release tooling. CI also uses Node for JavaScript syntax validation and Docker for a disposable Jellyfin 12.1 integration test.
 
 ```bash
-sudo -E CINEMATIC_RELEASE_URL='https://example.com/CinematicUI-v0.1.5-jf12.1.zip' bash ./install-truenas.sh
+bash build.sh
+python3 -m unittest discover -s tests -p 'test_*.py' -v
+python3 scripts/integration.py
 ```
 
-## Uninstall / rollback
+On Windows: `./build.ps1 -Python python`.
 
-```bash
-sudo bash ./uninstall-truenas.sh
-```
+Update the version/changelog, push the code, and push a matching tag such as `v0.1.6`. The workflow validates the candidate, publishes an immutable GitHub release ZIP and manifest snapshot, then updates the cumulative `repository` branch only after checking public downloads. See [PUBLISH-GITHUB.md](PUBLISH-GITHUB.md) for release and retry details.
 
-The uninstall helper moves the plugin directory aside instead of deleting it.
-
-## Compatibility
-
-- Jellyfin Server: 12.1
-- Target ABI: 12.1.0.0
-- Runtime: .NET 10
-- Tested deployment model: TrueNAS SCALE Apps / Docker-based Jellyfin
-
-## Project
-
-Developer: Donaven Guardipee  
-GitHub: `guardipee14`  
-Intended repository: `https://github.com/guardipee14/Jellyfin.CinematicUI`
+Compatibility: Jellyfin Server 12.1, target ABI `12.1.0.0`, .NET 10. Developer: Donaven Guardipee ([guardipee14](https://github.com/guardipee14)).

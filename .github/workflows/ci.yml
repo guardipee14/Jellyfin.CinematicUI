@@ -1,0 +1,15 @@
+name: CI
+
+on:
+  push:
+    branches-ignore:
+      - repository
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    uses: ./.github/workflows/verify.yml

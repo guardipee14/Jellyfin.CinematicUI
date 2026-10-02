@@ -1,11 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 cd "$(dirname "$0")"
-dotnet restore
-dotnet build -c Release --no-restore
-rm -rf dist
-mkdir -p dist
-cp bin/Release/net10.0/Jellyfin.Plugin.CinematicUI.dll dist/
-cp meta.json dist/
-zip -j -r CinematicUI-v0.1.5.zip dist/*
-echo "Built ./CinematicUI-v0.1.5.zip"
+VERSION="$(python3 scripts/release.py check-source)"
+dotnet restore Jellyfin.Plugin.CinematicUI.csproj
+dotnet build Jellyfin.Plugin.CinematicUI.csproj -c Release --no-restore -warnaserror
+dotnet run --project tests/Contracts/Contracts.csproj -c Release -- .
+python3 scripts/release.py package --tag "v${VERSION%.0}"
