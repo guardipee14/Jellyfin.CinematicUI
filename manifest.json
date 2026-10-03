@@ -8,6 +8,14 @@
     "category": "General",
     "versions": [
       {
+        "version": "0.1.9.0",
+        "changelog": "Plex-inspired Jellyfin Web video player: slim timeline, compact bottom controls, footer title, centered transport on wide screens, and responsive controls on smaller screens. Retains native playback, seeking, volume, audio/subtitle/settings menus, fullscreen, episode transitions, and control visibility. Adds a default-enabled Appearance opt-out and preserves legacy settings. Fixes the global theme overriding Jellyfin's transparent playback background. TV and unrecognized player structures retain their native layout.",
+        "targetAbi": "12.1.0.0",
+        "timestamp": "2026-10-03T03:31:00Z",
+        "sourceUrl": "https://github.com/guardipee14/Jellyfin.CinematicUI/releases/download/v0.1.9/CinematicUI-v0.1.9-jf12.1.zip",
+        "checksum": "709239d9277faaa2e77774d5d6fae7ef"
+      },
+      {
         "version": "0.1.8.0",
         "changelog": "Plex-inspired library layout for Jellyfin 12.1: desktop sidebar using existing profile-visible navigation, active library heading, a search pill, smaller spaced posters, left-aligned transparent captions, and quieter toolbar and count badges. Smaller screens retain native navigation. Filter, sort, grid/list view, details, and playback remain Jellyfin controls. Adds an appearance opt-out while preserving existing settings and the catalog update pipeline.",
         "targetAbi": "12.1.0.0",
