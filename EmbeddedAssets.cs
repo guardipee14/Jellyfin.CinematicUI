@@ -39,6 +39,7 @@ internal static class EmbeddedAssets
             {
                 enableGlobalTheme = cfg?.EnableGlobalTheme ?? true,
                 enableLibraryLayout = cfg?.EnableLibraryLayout ?? true,
+                enablePlayerLayout = cfg?.EnablePlayerLayout ?? true,
                 enableLoginExperience = cfg?.EnableLoginExperience ?? true,
                 enableHomeHero = cfg?.EnableHomeHero ?? true,
                 hideMyMediaRow = cfg?.HideMyMediaRow ?? true,

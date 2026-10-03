@@ -2,6 +2,7 @@
 const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
+const playerFixture = require('./player-fixture.cjs');
 
 const root = path.resolve(__dirname, '../..');
 const items = ['Harbor Lights', 'Alpine Journey', 'City of Clouds'].map((Name, index) => ({
@@ -22,11 +23,12 @@ function html(params) {
     serverTitle: 'CINEMATIC TEST SERVER', heroRotationSeconds: 5, heroAvoidRepeatCount: 0,
     heroPauseOnHover: params.get('hover') !== 'off', loginHideHeaderBranding: params.get('branding') !== 'show',
     hiddenNavigationLibraryNames: params.get('hideNavigation') === 'yes' ? 'Other Videos' : '',
-    enableLibraryLayout: params.get('libraryLayout') !== 'off'
+    enableLibraryLayout: params.get('libraryLayout') !== 'off',
+    enablePlayerLayout: params.get('playerLayout') !== 'off', enableGlobalTheme: params.get('theme') !== 'off'
   };
   const profiles = Array.from({ length: params.get('profiles') === 'many' ? 12 : 2 }, (_, i) =>
     `<button class="card" type="button"><div class="cardImageContainer"><div class="cardImage" aria-hidden="true">●</div></div><div class="cardFooter"><div class="cardText">Guest ${i + 1}</div></div></button>`).join('');
-  return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Cinematic UI browser fixture</title>
+  return `<!doctype html><html class="${params.get('layout') === 'tv' ? 'layout-tv' : ''}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Cinematic UI browser fixture</title>
     <link rel="stylesheet" href="/Web/cinematic.css"><style>
       *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Arial,sans-serif;background:#0d0d0f;color:#fff}.hide{display:none!important}
       header{position:fixed;top:0;left:0;width:100%;z-index:20;background:#141414}header .MuiToolbar-root{display:flex;align-items:center;padding:0 24px;min-height:48px;gap:12px}header .MuiStack-root{display:flex;align-items:center;gap:20px}header .fixtureHeaderActions{display:flex;align-items:center;justify-content:flex-end;flex:1;gap:8px}header button,header a{border:0;background:transparent;color:#ddd;padding:8px;text-decoration:none}header button{cursor:pointer}header svg{width:20px;height:20px;fill:currentColor}header .fixtureControls{display:flex;gap:8px;align-items:center;margin-left:auto}a{color:#fff}#fixtureSpacer{height:48px}#fixturePage{position:relative;height:calc(100vh - 48px)}.libraryFixture #fixtureSpacer{height:96px}.libraryFixture #fixturePage{height:calc(100vh - 96px)}.verticalSection{padding:20px}.fixtureOutside{margin:20px;padding:10px}
@@ -34,7 +36,8 @@ function html(params) {
       .cardImage{height:130px;display:grid;place-items:center;background:#147d98;font-size:48px}.cardText{margin:8px 0}.readOnlyContent button{display:block;margin:10px auto;padding:12px;color:white}.visualLoginForm>h1{text-align:center}
       header .MuiStack-root{min-width:0;overflow-x:auto}header .MuiStack-root>a{flex-shrink:0}.fixtureList{padding:24px 40px}.fixtureList a{display:block;padding:12px;border-bottom:1px solid #444}
       @media(max-width:600px){.fixtureRange{display:none}header .fixtureControls{gap:1px}header .fixtureControls button{padding:4px}header .MuiToolbar-root{gap:4px}}
-    </style></head><body><div id="reactRoot"><div id="fixtureApp"><header class="MuiAppBar-root"></header><div id="fixtureSpacer"></div><main id="fixturePage"></main></div></div>
+      ${playerFixture.style}
+    </style></head><body><div id="fixtureVideoMount"></div><div class="backgroundContainer"></div><div id="reactRoot"><div id="fixtureApp"><header class="MuiAppBar-root"></header><div id="fixtureSpacer"></div><main id="fixturePage"></main></div></div>
     <script>
       const loginMarkup = '<div id="loginPage"><div class="padded-left padded-right padded-bottom-page"><div class="visualLoginForm"><h1>Please sign in</h1><div id="divUsers">${profiles}</div></div><div class="readOnlyContent"><button class="btnManual"><span>Manual login</span></button><button>Use Quick Connect</button><button>Forgot Password</button></div></div></div>';
       const homeMarkup = '<div id="homeTab"><div class="homeSectionsContainer"><section class="verticalSection"><h2 class="sectionTitle">My Media</h2></section><section class="verticalSection"><h2 class="sectionTitle">Recently Added in Other Videos</h2></section><section class="verticalSection"><h2 class="sectionTitle">Recently Added in Movies</h2><p>Normal library content remains available.</p></section></div><button class="fixtureOutside">Outside hero</button></div>';
@@ -47,12 +50,28 @@ function html(params) {
       }).join('') + '</div></div></div>';
       localStorage.setItem('jellyfin_credentials', JSON.stringify({Servers:[{UserId:'fixture-user',AccessToken:'disposable-fixture-token',Id:'fixture-server',ManualAddress:location.origin}]}));
       window.CinematicUIConfig = ${JSON.stringify(config)};
+      const playerMarkup = ${JSON.stringify(playerFixture.markup)};
+      const setupPlayer = ${playerFixture.setup.toString()};
       function route() {
         const page = document.querySelector('#fixturePage');
         const library = /^#\\/(tv|movies|mixed)(\\?|$)/.test(location.hash);
+        const player = location.hash.startsWith('#/video');
+        document.querySelector('video')?.pause();
+        document.querySelector('#fixtureVideoMount').innerHTML = player ? '<div class="videoPlayerContainer"><video class="htmlvideoplayer" src="/fixture.webm" poster="/fixture-frame.svg" preload="metadata" playsinline></video></div>' : '';
+        document.querySelector('.backgroundContainer').classList.toggle('backgroundContainer-transparent',player);
+        document.body.classList.toggle('playerFixture',player);
         document.body.classList.toggle('libraryFixture', library);
+        document.querySelector('header').className='MuiAppBar-root';
         document.querySelector('header').innerHTML = '<div class="MuiToolbar-root"><div class="MuiStack-root">'+links+'</div><div class="fixtureHeaderActions"><button aria-label="Cast to Device">'+icon+'</button><a href="#/search" aria-label="Search">'+icon+'</a></div><button aria-label="User Menu">●</button></div>' + (library ? '<div class="MuiToolbar-root"><button aria-label="Shows">Shows ▾</button><span class="fixtureRange">1–24 of 24</span><div class="fixtureControls"><button>Play All</button><button aria-label="Shuffle">⇄</button><button aria-label="Filter">Filter</button><button aria-label="Sort">A–Z</button><button aria-label="View settings">▦</button><button aria-label="Previous" disabled>‹</button><button aria-label="Next">›</button></div></div>' : '');
-        if (location.hash.startsWith('#/details')) page.innerHTML = '<div id="itemDetailPage"><h1>Fixture details</h1><button class="btnPlay">Play</button><a href="#home">Back to Home</a></div>';
+        if (player) {
+          document.querySelector('header').className='skinHeader osdHeader';
+          document.querySelector('header').innerHTML='<div class="videoOsd-appBar"><button aria-label="Back">←</button><p>Northern Lights — S1:E1 — The First Journey</p><div class="MuiBox-root"><button aria-label="Cast to Device">▣</button></div></div>';
+          page.innerHTML='<div class="mainAnimatedPages">'+playerMarkup+'</div><button id="fixtureHideControls" class="fixtureDriver">Hide controls</button><button id="fixtureShowControls" class="fixtureDriver">Show controls</button>';
+          if (${params.get('playerShape') === 'unknown'}) page.querySelector('.osdPositionSlider').className='unknownPosition';
+          if (${params.get('playerTitle') === 'legacy'}) {page.querySelector('.osdTitle').textContent='Legacy native title';document.querySelector('.videoOsd-appBar>p').remove();}
+          if (${params.get('playerShape') !== 'unknown'}) setupPlayer();
+        }
+        else if (location.hash.startsWith('#/details')) page.innerHTML = '<div id="itemDetailPage"><h1>Fixture details</h1><button class="btnPlay">Play</button><a href="#home">Back to Home</a></div>';
         else if (library) page.innerHTML = libraryMarkup;
         else page.innerHTML = location.hash === '#login' ? loginMarkup : homeMarkup;
         for (const action of ['Filter','Sort','View settings']) document.querySelector('header button[aria-label="'+action+'"]')?.addEventListener('click',()=>{
@@ -71,8 +90,18 @@ function html(params) {
 
 const server = http.createServer((request, response) => {
   const url = new URL(request.url, 'http://127.0.0.1');
+  if (url.pathname === '/fixture.webm') {
+    const clip = fs.readFileSync(path.join(__dirname,'media/fixture.webm'));
+    const match = request.headers.range?.match(/^bytes=(\d+)-(\d*)$/);
+    const start = match ? Number(match[1]) : 0, end = match?.[2] ? Math.min(Number(match[2]),clip.length-1) : clip.length-1;
+    if (start > end || start >= clip.length) {response.writeHead(416,{'Content-Range':`bytes */${clip.length}`});response.end();return;}
+    const headers={'Content-Type':'video/webm','Cache-Control':'no-store','Accept-Ranges':'bytes','Content-Length':end-start+1};
+    if(match) headers['Content-Range']=`bytes ${start}-${end}/${clip.length}`;
+    response.writeHead(match?206:200,headers);response.end(clip.subarray(start,end+1));return;
+  }
   let body, type = 'application/json';
   if (url.pathname === '/__health') body = JSON.stringify({ fixture: 'cinematic-ui' });
+  else if (url.pathname === '/fixture-frame.svg') {body = image('Northern Lights');type = 'image/svg+xml';}
   else if (url.pathname === '/') { body = html(url.searchParams); type = 'text/html'; }
   else if (['/Web/client.js', '/Web/cinematic.css'].includes(url.pathname)) {
     body = fs.readFileSync(path.join(root, url.pathname)); type = url.pathname.endsWith('.js') ? 'text/javascript' : 'text/css';

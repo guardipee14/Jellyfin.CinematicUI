@@ -33,10 +33,16 @@ The layout uses existing profile-visible header links and icons in a desktop sid
 
 Published October 2, 2026. Responsive geometry, active/keyboard library navigation, native controls and list view, configured navigation exclusions, appearance opt-out, legacy settings defaults, and route cleanup passed CI: all 32 browser checks, 24 tooling tests, compiled build/resource contracts, and real Jellyfin install/update checks. Clean public installation and the actual published v0.1.7-to-v0.1.8 update passed with settings/XML preserved. Preview media is synthetic; no production metadata or media files are copied into fixtures. See [VALIDATION.md](VALIDATION.md).
 
-## 4. Profile and library-selection reliability — next
+## 4. Plex-inspired video player — v0.1.9
+
+The owner asked to continue the Plex-inspired appearance in the video player. The desktop layout uses a thin timeline, footer title, centered transport on wide screens, and compact playback options. Smaller screens wrap controls without changing their handlers. The appearance setting defaults on for legacy configurations and offers an opt-out. TV layout and unrecognized player structures fall back. Native playback visibility, menus, streams, subtitles, fullscreen, and episode navigation remain Jellyfin responsibilities. The global theme must preserve the native transparent playback background.
+
+All 48 local desktop/phone browser checks and 24 tooling tests pass, along with the warning-free .NET build and compiled contracts. Eight new player cases cover geometry/transparency, real synthetic-video play/pause/seeking, native menu handlers, volume/mute, desktop fullscreen and title transitions, hidden controls, opt-out/fallback/legacy title, and route cleanup. CI and public publication validation are pending.
+
+## 5. Profile and library-selection reliability — next
 
 Check account switching and pending artwork requests, configured library-name mismatches, view-enumeration failures, played-title/keyword exclusions, and repeat history across users. Define the expected fallback behavior explicitly before changing it. Jellyfin user library permissions remain the source of access control; navigation hiding remains cosmetic.
 
-## 5. Performance and further visual refinement — afterward
+## 6. Performance and further visual refinement — afterward
 
 Measure observer activity, request volume, object-URL lifetime, and route cleanup. Use those findings to prioritize focused refinements to login and hero layouts. Preserve the working catalog update path and settings compatibility for every release.

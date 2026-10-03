@@ -4,6 +4,7 @@
     const cfg = Object.assign({
         enableGlobalTheme: true,
         enableLibraryLayout: true,
+        enablePlayerLayout: true,
         enableLoginExperience: true,
         enableHomeHero: true,
         hideMyMediaRow: true,
@@ -241,6 +242,47 @@
         }
         const title = selected?.label || toolbar.querySelector('button')?.textContent.trim() || 'Library';
         if (heading.firstElementChild.textContent !== title) heading.firstElementChild.textContent = title;
+    }
+
+    function applyPlayerLayout() {
+        const page = document.querySelector('#videoOsdPage');
+        const controls = page?.querySelector('.videoOsdBottom-maincontrols .osdControls');
+        const timeline = controls?.querySelector('.osdPositionSlider')?.closest('.sliderContainer')?.parentElement;
+        const buttons = controls?.querySelector('.buttons');
+        const transport = buttons?.querySelector(':scope > [dir="ltr"]');
+        const mainText = controls?.querySelector('.osdMainTextContainer');
+        const active = !!(cfg.enableGlobalTheme && cfg.enablePlayerLayout && page && visible(page) &&
+            timeline?.parentElement === controls && transport?.querySelector('.btnPause') && mainText &&
+            !document.documentElement.classList.contains('layout-tv'));
+        const toggle = (element, name, value) => {
+            if (element && element.classList.contains(name) !== value) element.classList.toggle(name, value);
+        };
+        toggle(document.body, 'cinematic-player', active);
+        if (!active) {
+            document.querySelectorAll('.cinematicPlayerTitle').forEach(element => element.remove());
+            for (const name of ['cinematicPlayerControls', 'cinematicPlayerTimeline', 'cinematicPlayerButtons', 'cinematicPlayerTransport', 'cinematicPlayerHeaderTitle']) {
+                document.querySelectorAll('.' + name).forEach(element => toggle(element, name, false));
+            }
+            return;
+        }
+        toggle(controls, 'cinematicPlayerControls', true);
+        toggle(timeline, 'cinematicPlayerTimeline', true);
+        toggle(buttons, 'cinematicPlayerButtons', true);
+        toggle(transport, 'cinematicPlayerTransport', true);
+        // Modern Jellyfin puts the title in its React header; project that visible text
+        // into the footer without moving native nodes, binding controls, or reading media APIs.
+        const headerTitle = document.querySelector('.videoOsd-appBar > p');
+        const text = mainText.querySelector('.osdTitle')?.textContent.trim() ? '' : headerTitle?.textContent.trim();
+        let title = mainText.querySelector('.cinematicPlayerTitle');
+        if (text) {
+            if (!title) {
+                title = document.createElement('p');
+                title.className = 'cinematicPlayerTitle';
+                mainText.prepend(title);
+            }
+            if (title.textContent !== text) title.textContent = text;
+        } else title?.remove();
+        toggle(headerTitle, 'cinematicPlayerHeaderTitle', !!text);
     }
 
     function getCredentials() {
@@ -874,6 +916,7 @@
         try { applyNavigationVisibility(); } catch (error) { warn('navigation apply failed', error); }
         try { applyLogin(); } catch (error) { warn('login apply failed', error); }
         try { applyLibraryLayout(); } catch (error) { warn('library layout apply failed', error); }
+        try { applyPlayerLayout(); } catch (error) { warn('player layout apply failed', error); }
         try { applyHome(); } catch (error) { warn('home apply failed', error); }
         try { maybeAutoplayDetails(); } catch (error) { warn('autoplay failed', error); }
     }

@@ -7,6 +7,7 @@ public sealed class PluginConfiguration : BasePluginConfiguration
     public bool EnableInjection { get; set; } = true;
     public bool EnableGlobalTheme { get; set; } = true;
     public bool EnableLibraryLayout { get; set; } = true;
+    public bool EnablePlayerLayout { get; set; } = true;
     public bool EnableLoginExperience { get; set; } = true;
     public bool EnableHomeHero { get; set; } = true;
 
