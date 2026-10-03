@@ -22,6 +22,8 @@ Require(restored.EnableLibraryLayout && restored.ServerTitle == "Retained title"
 var embeddedType = assembly.GetType("Jellyfin.Plugin.CinematicUI.EmbeddedAssets")!;
 using var configJson = JsonDocument.Parse((string)embeddedType.GetProperty("ConfigJson")!.GetValue(null)!);
 Require(configJson.RootElement.GetProperty("enableLibraryLayout").GetBoolean(), "Library appearance flag is missing from injected configuration");
+Require(restored.EnablePlayerLayout, "Legacy XML must default the player appearance flag on");
+Require(configJson.RootElement.GetProperty("enablePlayerLayout").GetBoolean(), "Player appearance flag is missing from injected configuration");
 foreach (var asset in new[] { "Web/cinematic.css", "Web/client.js", "Configuration/configPage.html" })
 {
     var name = "Jellyfin.Plugin.CinematicUI." + asset.Replace('/', '.');

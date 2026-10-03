@@ -38,6 +38,8 @@ body.cinematic-login #loginPage .btnQuick,body.cinematic-login #loginPage .btnFo
 
 /* GLOBAL PLEX-LIKE THEME */
 body.cinematic-global .backgroundContainer,body.cinematic-global .mainAnimatedPages{background:var(--cinematic-bg)!important}
+/* Native playback transparency must win over the global browsing background. */
+body.cinematic-global .backgroundContainer.backgroundContainer-transparent,body.cinematic-global .mainAnimatedPages:has(#videoOsdPage:not(.hide)){background:transparent!important}
 body.cinematic-global .skinHeader{min-height:3.6rem!important;background:linear-gradient(180deg,rgba(10,10,10,.97),rgba(10,10,10,.84))!important;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 1px 0 rgba(255,255,255,.05),0 6px 24px rgba(0,0,0,.35)!important}
 body.cinematic-global .mainDrawer{background:rgba(15,15,15,.985)!important;border-right:1px solid rgba(255,255,255,.06)}
 body.cinematic-global .navMenuOption{border-radius:6px!important;margin:.15rem .45rem!important;color:rgba(255,255,255,.72)!important}
@@ -120,6 +122,50 @@ body.cinematic-library .portraitCard .playedIndicator svg{color:var(--cinematic-
  body.cinematic-library .itemsContainer.vertical-wrap>.portraitCard{width:calc((100% - 54px)/4)!important;flex-basis:calc((100% - 54px)/4)}
 }
 @media(max-width:600px){body.cinematic-library .itemsContainer.vertical-wrap>.portraitCard{width:calc((100% - 18px)/2)!important;flex-basis:calc((100% - 18px)/2)}}
+
+/* VIDEO PLAYER — presentation only; Jellyfin owns controls, visibility, and media state */
+body.cinematic-player .skinHeader.osdHeader{height:48px!important;min-height:48px!important;background:rgba(12,12,12,.5)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;box-shadow:none!important}
+body.cinematic-player .videoOsd-appBar{min-height:48px;padding:0 16px}
+body.cinematic-player .videoOsd-appBar>.MuiBox-root{margin-left:auto}
+body.cinematic-player .videoOsdBottom-maincontrols{padding-top:32px!important;padding-bottom:max(12px,env(safe-area-inset-bottom))!important;background:linear-gradient(transparent,rgba(18,18,18,.72) 28%,rgba(18,18,18,.94))}
+.cinematicPlayerControls{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:24px minmax(66px,auto);column-gap:16px;padding:0 20px!important;min-width:0;box-sizing:border-box}
+.cinematicPlayerTimeline{grid-column:1/-1;grid-row:1;display:flex;align-items:center;gap:12px;min-width:0}
+.cinematicPlayerTimeline>.sliderContainer{margin:0!important;flex:1;min-width:0;height:24px}
+.cinematicPlayerTimeline .osdTextContainer{font-size:11px;line-height:24px;margin:0!important;padding:0;color:rgba(255,255,255,.62);font-variant-numeric:tabular-nums}
+.cinematicPlayerTimeline .mdl-slider-background-lower{background:var(--cinematic-accent)!important}
+.cinematicPlayerTimeline .mdl-slider-background-upper{background:rgba(255,255,255,.3)}
+.cinematicPlayerTimeline .mdl-slider-background-flex-container{height:3px}
+.cinematicPlayerTimeline .osdPositionSlider{height:24px;cursor:pointer}
+.cinematicPlayerControls .osdMainTextContainer{grid-column:1;grid-row:2;align-self:center;min-width:0;padding:0;margin:0;display:flex;flex-direction:column;align-items:flex-start;gap:4px}
+.cinematicPlayerTitle,.cinematicPlayerControls .osdTitle{margin:0;font-size:13px;font-weight:500;line-height:19px;max-width:100%;overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2}
+.cinematicPlayerControls .osdTitle:empty{display:none}
+.cinematicPlayerControls .osdSecondaryMediaInfo{position:absolute;left:20px;bottom:4px;max-width:30%;margin:0;font-size:11px;color:rgba(255,255,255,.55)}
+.cinematicPlayerButtons{grid-column:2;grid-row:2;align-self:center;display:flex!important;align-items:center;justify-content:flex-end;flex-wrap:nowrap!important;gap:2px;padding:0!important}
+.cinematicPlayerButtons .paper-icon-button-light{width:40px;height:40px;min-width:40px;padding:8px;margin:0;box-sizing:border-box;color:rgba(255,255,255,.75);background:transparent;border-radius:50%}
+.cinematicPlayerButtons .paper-icon-button-light:hover{color:#fff;background:rgba(255,255,255,.08)}
+.cinematicPlayerButtons .paper-icon-button-light:focus-visible,.cinematicPlayerTimeline input:focus-visible{outline:2px solid var(--cinematic-accent);outline-offset:2px}
+.cinematicPlayerButtons .material-icons{font-size:22px}
+.cinematicPlayerButtons .btnPause{width:44px;height:44px;min-width:44px;background:rgba(0,0,0,.35);color:#fff}
+.cinematicPlayerButtons .volumeButtons{margin:0 4px;gap:2px}
+.cinematicPlayerButtons .osdVolumeSliderContainer{width:76px;flex-grow:0}
+.cinematicPlayerTransport{position:absolute;left:50%;top:35px;transform:translateX(-50%);display:flex;align-items:center;justify-content:center;gap:4px}
+.cinematicPlayerButtons .osdTimeText{position:absolute;bottom:0;left:50%;transform:translateX(-50%);margin:0;font-size:10px;line-height:14px;color:rgba(255,255,255,.5);white-space:nowrap}
+@media(min-width:1300px){body.cinematic-player .cinematicPlayerHeaderTitle{display:none}.cinematicPlayerControls .osdMainTextContainer{max-width:32vw}}
+@media(max-width:1299px){
+ .cinematicPlayerControls{grid-template-columns:minmax(0,1fr);grid-template-rows:24px auto auto;padding:0 16px!important;row-gap:8px}
+ .cinematicPlayerButtons{grid-column:1;grid-row:3;justify-content:space-between;flex-wrap:wrap!important;gap:4px}
+ .cinematicPlayerTransport{position:static;transform:none;justify-content:flex-start;margin-right:auto}
+ .cinematicPlayerButtons .osdTimeText{position:static;transform:none;order:10;flex-basis:100%;text-align:right}
+ .cinematicPlayerControls .osdSecondaryMediaInfo{position:static;grid-column:1;grid-row:2;align-self:end;max-width:100%;margin-top:24px}
+}
+@media(max-width:600px){
+ .cinematicPlayerControls{padding:0 12px!important}
+ .cinematicPlayerButtons{justify-content:center;gap:2px}
+ .cinematicPlayerButtons .paper-icon-button-light{width:44px;height:44px;min-width:44px}
+ .cinematicPlayerTransport{flex:0 0 100%;margin:0;justify-content:center}
+ .cinematicPlayerTitle,.cinematicPlayerControls .osdTitle{font-size:12px;line-height:17px}
+ body.cinematic-player .videoOsd-appBar{padding:0 8px}
+}
 
 /* HOME HERO */
 #cinematicHero{position:relative;min-height:0;margin:0;overflow:hidden;border-radius:0 0 16px 16px;background:#0a0a0b;isolation:isolate;opacity:0;visibility:hidden;max-height:0;transition:opacity .4s ease}
