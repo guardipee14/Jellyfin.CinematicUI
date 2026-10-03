@@ -4,6 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const playerFixture = require('./player-fixture.cjs');
 const detailsFixture = require('./details-fixture.cjs');
+const profileFixture = require('./profile-fixture.cjs');
 
 const root = path.resolve(__dirname, '../..');
 const items = ['Harbor Lights', 'Alpine Journey', 'City of Clouds'].map((Name, index) => ({
@@ -26,7 +27,11 @@ function html(params) {
     hiddenNavigationLibraryNames: params.get('hideNavigation') === 'yes' ? 'Other Videos' : '',
     enableLibraryLayout: params.get('libraryLayout') !== 'off',
     enablePlayerLayout: params.get('playerLayout') !== 'off', enableGlobalTheme: params.get('theme') !== 'off',
-    enableDetailsLayout: params.get('detailsLayout') !== 'off', accentColor: params.get('accent') || '#e5a00d'
+    enableDetailsLayout: params.get('detailsLayout') !== 'off', accentColor: params.get('accent') || '#e5a00d',
+    enableProfileLayout: params.get('profileLayout') !== 'off',
+    heroLibraryNames: params.has('heroLibraries') ? params.get('heroLibraries') : 'Anime,Movies,TV Shows',
+    heroExcludePlayed: params.get('excludePlayed') === 'yes', heroExcludedTitleKeywords: params.get('excluded') || '',
+    heroAvoidRepeatCount: Number(params.get('history') || 0)
   };
   const profiles = Array.from({ length: params.get('profiles') === 'many' ? 12 : 2 }, (_, i) =>
     `<button class="card" type="button"><div class="cardImageContainer"><div class="cardImage" aria-hidden="true">●</div></div><div class="cardFooter"><div class="cardText">Guest ${i + 1}</div></div></button>`).join('');
@@ -35,7 +40,7 @@ function html(params) {
       *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Arial,sans-serif;background:#0d0d0f;color:#fff}.hide{display:none!important}
       header{position:fixed;top:0;left:0;width:100%;z-index:20;background:#141414}header .MuiToolbar-root{display:flex;align-items:center;padding:0 24px;min-height:48px;gap:12px}header .MuiStack-root{display:flex;align-items:center;gap:20px}header .fixtureHeaderActions{display:flex;align-items:center;justify-content:flex-end;flex:1;gap:8px}header button,header a{border:0;background:transparent;color:#ddd;padding:8px;text-decoration:none}header button{cursor:pointer}header svg{width:20px;height:20px;fill:currentColor}header .fixtureControls{display:flex;gap:8px;align-items:center;margin-left:auto}a{color:#fff}#fixtureSpacer{height:48px}#fixturePage{position:relative;height:calc(100vh - 48px)}.libraryFixture #fixtureSpacer{height:96px}.libraryFixture #fixturePage{height:calc(100vh - 96px)}.verticalSection{padding:20px}.fixtureOutside{margin:20px;padding:10px}
       .libraryPage{position:absolute;inset:0;overflow:auto;padding-bottom:30px}.itemsContainer.vertical-wrap{display:flex;flex-wrap:wrap;padding:0 40px}.portraitCard{width:200px;padding:0}.cardBox{margin:8px;background:#252525}.cardScalable{position:relative}.cardPadder-portrait{padding-top:150%}.cardContent,.cardContent>.cardImageContainer{position:absolute;inset:0}.cardContent img{width:100%;height:100%;object-fit:cover}.cardFooter{padding:8px;text-align:center}.cardFooter a{color:inherit;text-decoration:none}.cardText{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.cardOverlayContainer{position:absolute;inset:0;opacity:0;background:rgba(0,0,0,.18);display:flex;align-items:center;justify-content:center}.card:hover .cardOverlayContainer{opacity:1}.cardOverlayContainer>a{position:absolute;inset:0}.cardOverlayContainer button{position:relative;z-index:1}.cardIndicators{position:absolute;right:0;top:0;z-index:2}.countIndicator{padding:4px}.fixtureAlphabet{position:fixed;right:7px;top:25%;display:flex;flex-direction:column;gap:9px;font-size:10px;color:#777}.fixtureMenu{position:fixed;z-index:2000;top:25%;left:40%;padding:24px;background:#252525;border:1px solid #666}header button:disabled{opacity:.3}.fixtureRange{font-size:12px;padding:4px 9px;border-radius:15px;background:#303030}
-      .cardImage{height:130px;display:grid;place-items:center;background:#147d98;font-size:48px}.cardText{margin:8px 0}.readOnlyContent button{display:block;margin:10px auto;padding:12px;color:white}.visualLoginForm>h1{text-align:center}
+      .MuiMenu-paper{position:fixed;right:16px;top:56px;z-index:2000;background:#303030}.MuiMenuItem-root{display:flex;text-decoration:none;cursor:pointer}.MuiMenu-list{list-style:none;padding:8px}.emby-input{display:block;width:100%;color:inherit}.inputLabel{display:block;margin-bottom:8px}.imagePlaceHolder{position:relative}.cardImage{height:130px;display:grid;place-items:center;background:#147d98;font-size:48px}.cardText{margin:8px 0}.readOnlyContent button{display:block;margin:10px auto;padding:12px;color:white}.visualLoginForm>h1{text-align:center}
       header .MuiStack-root{min-width:0;overflow-x:auto}header .MuiStack-root>a{flex-shrink:0}.fixtureList{padding:24px 40px}.fixtureList a{display:block;padding:12px;border-bottom:1px solid #444}
       @media(max-width:600px){.fixtureRange{display:none}header .fixtureControls{gap:1px}header .fixtureControls button{padding:4px}header .MuiToolbar-root{gap:4px}}
       ${playerFixture.style}
@@ -58,6 +63,9 @@ function html(params) {
       const seriesMarkup = ${JSON.stringify(detailsFixture.markup(false))};
       const seasonMarkup = ${JSON.stringify(detailsFixture.markup(true))};
       const setupDetails = ${detailsFixture.setup.toString()};
+      const profileMarkup = ${JSON.stringify(profileFixture.markup)};
+      const profileMenu = ${JSON.stringify(profileFixture.menu)};
+      const setupProfile = ${profileFixture.setup.toString()};
       function route() {
         const page = document.querySelector('#fixturePage');
         const library = /^#\\/(tv|movies|mixed)(\\?|$)/.test(location.hash);
@@ -89,9 +97,18 @@ function html(params) {
           if (${params.get('episodesShape') === 'unknown'}) page.querySelector('.listItem')?.setAttribute('data-type','Unknown');
           setupDetails();
         }
+        else if (location.hash.startsWith('#/userprofile')) {page.innerHTML=profileMarkup;setupProfile();}
         else if (location.hash.startsWith('#/details')) page.innerHTML = '<div id="itemDetailPage"><h1>Fixture details</h1><button class="btnPlay">Play</button><a href="#home">Back to Home</a></div>';
         else if (library) page.innerHTML = libraryMarkup;
         else page.innerHTML = location.hash === '#login' ? loginMarkup : homeMarkup;
+        document.querySelector('header button[aria-label="User Menu"]')?.addEventListener('click',()=>{
+          document.querySelector('.MuiMenu-paper')?.remove();
+          const mount=document.createElement('div');mount.innerHTML=profileMenu;document.body.appendChild(mount.firstElementChild);
+          const menu=document.querySelector('[role="menu"]'), options=Array.from(menu.querySelectorAll('[role="menuitem"]'));
+          options[0].focus();
+          menu.onkeydown=event=>{if(event.key==='Escape'){menu.parentElement.remove();document.querySelector('header button[aria-label="User Menu"]').focus();}else if(['ArrowDown','ArrowUp'].includes(event.key)){event.preventDefault();const i=options.indexOf(document.activeElement);options[(i+(event.key==='ArrowDown'?1:options.length-1))%options.length].focus();}};
+          options.forEach(option=>option.onclick=()=>{menu.parentElement.remove();if(option.textContent==='Sign Out'){localStorage.removeItem('jellyfin_credentials');location.hash='#login';}});
+        });
         for (const action of ['Filter','Sort','View settings']) document.querySelector('header button[aria-label="'+action+'"]')?.addEventListener('click',()=>{
           const menu=document.createElement('div');menu.className='fixtureMenu';menu.setAttribute('role','dialog');menu.setAttribute('aria-label',action);menu.innerHTML='<p>'+action+' controls</p>'+(action==='View settings'?'<button>Grid View</button><button>List View</button>':'')+'<button>Close</button>';menu.querySelector('button:last-child').onclick=()=>menu.remove();
           if(action==='View settings') {

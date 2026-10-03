@@ -1,12 +1,12 @@
 {
   "category": "General",
-  "changelog": "Plex-style title details with smaller posters, clear gold Play actions, subdued metadata/backdrop, shared desktop library navigation, and responsive season episode thumbnails. Preserves native detail/episode actions and lazy artwork; adds a default-enabled Appearance opt-out and conservative TV/unknown-structure fallbacks. Fixes remaining blue player slider thumbs, volume/settings bars and React accents, and prevents the volume slider collapsing. Honors the configured accent color and global-theme opt-out.",
+  "changelog": "Compact profile and user menu with native account controls and an Appearance opt-out. Cancels stale hero data/artwork after account or server changes, scopes repeat history and Play intent to each account/server, and prevents foreign-origin credentials being used. Explicit library names never fall back to unrelated libraries; blank selection uses available movie/TV views. Missing views, failed enumeration, or all excluded titles retain native Home without repeated requests.",
   "description": "A unified cinematic Jellyfin Web customization with a profile-forward login screen, Plex-inspired theme, and rotating library-driven home hero.",
   "guid": "e4c17f1b-c451-4a31-b98c-5d0ef44f9a21",
   "name": "Cinematic UI",
   "overview": "Cinematic login and home experience for Jellyfin Web",
   "owner": "Donaven Guardipee",
   "targetAbi": "12.1.0.0",
-  "timestamp": "2026-10-03T04:56:55Z",
-  "version": "0.1.10.0"
+  "timestamp": "2026-10-03T14:46:43Z",
+  "version": "0.1.11.0"
 }

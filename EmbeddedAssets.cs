@@ -41,6 +41,7 @@ internal static class EmbeddedAssets
                 enableLibraryLayout = cfg?.EnableLibraryLayout ?? true,
                 enablePlayerLayout = cfg?.EnablePlayerLayout ?? true,
                 enableDetailsLayout = cfg?.EnableDetailsLayout ?? true,
+                enableProfileLayout = cfg?.EnableProfileLayout ?? true,
                 enableLoginExperience = cfg?.EnableLoginExperience ?? true,
                 enableHomeHero = cfg?.EnableHomeHero ?? true,
                 hideMyMediaRow = cfg?.HideMyMediaRow ?? true,

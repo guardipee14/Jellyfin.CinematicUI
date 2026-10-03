@@ -42,6 +42,10 @@ v0.1.10 completes the player accent treatment: native seek/volume/settings slide
 
 ## Manual TrueNAS fallback and rollback
 
+v0.1.11 adds a compact profile and account menu while retaining native password, image, navigation, and sign-out controls. **Use clean profile and user menu** under Appearance offers an opt-out. Hero requests and artwork are cancelled when the account, server, or Home page changes. History and Play intent are scoped to the current account/server; credentials from another origin are never used.
+
+Hero library names are explicit: partial matches use only matching available libraries, and no matches retain native Home. Leave the field blank to use all available movie/TV libraries. Failed view enumeration, empty selections, and all played/keyword-excluded items also retain native Home without repeated requests on every DOM change. Jellyfin library permissions continue to control access.
+
 The normal catalog install requires no shell work. If needed, build from a complete source checkout using:
 
 ```bash
