@@ -8,6 +8,14 @@
     "category": "General",
     "versions": [
       {
+        "version": "0.1.8.0",
+        "changelog": "Plex-inspired library layout for Jellyfin 12.1: desktop sidebar using existing profile-visible navigation, active library heading, a search pill, smaller spaced posters, left-aligned transparent captions, and quieter toolbar and count badges. Smaller screens retain native navigation. Filter, sort, grid/list view, details, and playback remain Jellyfin controls. Adds an appearance opt-out while preserving existing settings and the catalog update pipeline.",
+        "targetAbi": "12.1.0.0",
+        "timestamp": "2026-10-03T02:32:53Z",
+        "sourceUrl": "https://github.com/guardipee14/Jellyfin.CinematicUI/releases/download/v0.1.8/CinematicUI-v0.1.8-jf12.1.zip",
+        "checksum": "9c8ff3fd3c4b6da7bfa4d7f97d38d606"
+      },
+      {
         "version": "0.1.7.0",
         "changelog": "UI hardening: preserve keyboard focus on hero indicators, expose the current title to assistive technology, add explicit Pause/Resume rotation, pause for keyboard focus and reduced motion, enlarge and scroll indicator hit areas, and retain artwork during rapid title changes. Support Jellyfin 12.1 React headers for login branding and cosmetic navigation hiding, and keep profile and recovery controls scrollable on small screens. Retains the catalog update pipeline, plugin identity, and existing settings.",
         "targetAbi": "12.1.0.0",
