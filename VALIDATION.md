@@ -119,10 +119,16 @@ The [release workflow](https://github.com/guardipee14/Jellyfin.CinematicUI/actio
 
 v0.1.9 can be activated through Update Plugins, a TrueNAS Apps restart, and a hard browser refresh. The player layout defaults on and can be disabled under Appearance. The agent did not deploy this release to production. Profile/library-selection reliability remains next.
 
-## v0.1.11 profile and library-selection candidate
+## v0.1.11 profile and library-selection release
 
 Read-only inspection of Jellyfin 12.1's native Profile page and React account menu informed the guarded selectors. Original controls, handlers, file input, and menu destinations remain in place. No production password, avatar, policy, installation, or lifecycle was changed. The owner reported v0.1.10 updated and looking good.
 
 The local .NET build passed with zero warnings/errors, including compiled identity/resource and legacy profile-setting defaults, and all 24 tooling tests passed. All existing 66 browser checks plus 20 new profile/library-selection checks passed on desktop and phone. Two additional checks confirmed hero Play reaches the native handler and cancels pending playback after an account switch. Fixtures use synthetic credentials/media and preserve native-shaped handlers; they do not claim a production password change or full native menu accessibility audit. CI and public install/update validation are required before publication.
 
 Fallback is explicit: named libraries use only available matches, no matches retain native Home, and blank configuration selects available movie/TV views. View enumeration failure never causes root-library queries. Played/keyword filters apply to every fallback query. One request attempt per Home/account context prevents observer retry storms. Pending requests and object URLs are cancelled/cleaned after account, token, server, logout, or route changes; history and Play intent are scoped to account/server. Foreign-origin credentials never leave the browser.
+
+The [candidate CI run](https://github.com/guardipee14/Jellyfin.CinematicUI/actions/runs/37131362951), [merged main CI run](https://github.com/guardipee14/Jellyfin.CinematicUI/actions/runs/37131634279), and [release workflow](https://github.com/guardipee14/Jellyfin.CinematicUI/actions/runs/37131967801) all passed. Each ran all 88 browser checks, 24 tooling tests, build/contracts and candidate Jellyfin install/update checks. The immutable source tag is `467c02da8b4e35c25afe94c9c00eebf0341a9cbc`.
+
+Publication then passed clean public catalog installation and the actual published v0.1.10-to-v0.1.11 scheduled update with byte-for-byte settings/XML preservation, one active plugin and intact current injection. Independent unauthenticated checks verified all seven released ZIPs and unchanged historical entries. The catalog commit is `7739b9b3009a850ad4aff51dd2eb23b2fbd792f7`, and v0.1.11's ZIP MD5 is `39ed3fdfefbc44712ddbf9d023d326d8`. A manual read-only synthetic preview confirmed the compact profile card and reachable form; no production credentials were entered.
+
+v0.1.11 is available through the existing catalog. Activate it with Update Plugins, a TrueNAS Apps restart, and a hard browser refresh. The agent did not install or restart production.

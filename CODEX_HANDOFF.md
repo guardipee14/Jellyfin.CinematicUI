@@ -35,7 +35,7 @@ Hard-refresh Jellyfin Web after activation. On TrueNAS, use **Apps → Jellyfin 
 
 ## Release procedure and recovery
 
-Follow [PUBLISH-GITHUB.md](PUBLISH-GITHUB.md). For the next release, update the project/metadata versions to a new four-part value such as `0.1.11.0`, update the changelog, timestamp, and displayed settings version, land the source on main, wait for CI, then push the matching `v0.1.11` tag.
+Follow [PUBLISH-GITHUB.md](PUBLISH-GITHUB.md). For the next release, update the project/metadata versions to a new four-part value such as `0.1.12.0`, update the changelog, timestamp, and displayed settings version, land the source on main, wait for CI, then push the matching `v0.1.12` tag.
 
 The release workflow restores/builds with warnings treated as errors, checks compiled assembly identity and exact embedded resources, validates metadata/tag/checksums, and runs tooling and real Jellyfin integration tests. After verification, it uses the built-in `GITHUB_TOKEN` with `contents: write` to stage and verify a draft release, publish its assets, check unauthenticated downloads, and advance the stable manifest. A final test installs from the public GitHub URL and upgrades an actual prior published ZIP when one exists.
 
@@ -76,3 +76,11 @@ Read-only production series/season DOM inspection informed selectors and returne
 - Restart through the TrueNAS Apps UI.
 
 See [INSTALL-TRUENAS.md](INSTALL-TRUENAS.md) for the manual fallback and rollback. Keep credentials out of source, workflow files, and release assets.
+
+## Published v0.1.11 profiles and selection reliability
+
+Completed October 3, 2026. Immutable source tag `467c02da8b4e35c25afe94c9c00eebf0341a9cbc` implements compact native profile/account-menu styling, request/artwork cancellation across account/token/server/page changes, account/server-scoped repeat history and Play intent, and origin-bound credential selection. Explicit library names never fall back to unrelated libraries: no matches or failed enumeration keeps native Home, and blank selection uses permitted movie/TV views. Played/keyword filters apply across every query attempt. One attempt per Home/account context prevents observer retry storms. The new profile Appearance option defaults on for legacy XML and retains native controls.
+
+All 88 browser and 24 tooling checks, build/contracts and real Jellyfin integration passed CI. Public clean install and the actual v0.1.10-to-v0.1.11 normal update passed with settings/XML preserved. All seven public ZIPs and immutable history were independently verified. Catalog commit `7739b9b3009a850ad4aff51dd2eb23b2fbd792f7`; ZIP MD5 `39ed3fdfefbc44712ddbf9d023d326d8`. The owner reported v0.1.10 installed and looking good; the agent did not deploy v0.1.11 to production.
+
+The owner also requested a separate trusted-device PIN/passkey plugin. Its independent candidate lives at `C:\Dev\Jellyfin.LoginAccess` and in the private `guardipee14/Jellyfin.LoginAccess` repository. Do not mix authentication into Cinematic UI. Passkeys and public remote access require the owner's future HTTPS hostname; no domain or DuckDNS name has been chosen. The owner is considering a central authenticated dashboard with per-user services. No dashboard project, public DNS, router rules, or production authentication changes have been made. See the login repository's handoff for current validation and remaining work.

@@ -40,11 +40,11 @@ v0.1.9 adds a Plex-style video player: a thin timeline above compact bottom cont
 
 v0.1.10 completes the player accent treatment: native seek/volume/settings slider thumbs and bars, React accents, and focus states follow the configured color (gold by default). It also fixes the collapsed volume slider. The new title/details layout uses smaller posters, a clear Play button, quieter metadata over a dimmed backdrop, full-width sections below the poster, and a responsive season episode grid. Native actions, metadata, lazy artwork, and playback remain intact. **Use Plex-style title details** under Appearance offers an opt-out; the desktop sidebar follows the existing library-layout setting. TV, unsupported detail structures, and unknown episode rows retain native layouts. The global-theme opt-out restores Jellyfin's native accent colors.
 
-## Manual TrueNAS fallback and rollback
-
 v0.1.11 adds a compact profile and account menu while retaining native password, image, navigation, and sign-out controls. **Use clean profile and user menu** under Appearance offers an opt-out. Hero requests and artwork are cancelled when the account, server, or Home page changes. History and Play intent are scoped to the current account/server; credentials from another origin are never used.
 
 Hero library names are explicit: partial matches use only matching available libraries, and no matches retain native Home. Leave the field blank to use all available movie/TV libraries. Failed view enumeration, empty selections, and all played/keyword-excluded items also retain native Home without repeated requests on every DOM change. Jellyfin library permissions continue to control access.
+
+## Manual TrueNAS fallback and rollback
 
 The normal catalog install requires no shell work. If needed, build from a complete source checkout using:
 
