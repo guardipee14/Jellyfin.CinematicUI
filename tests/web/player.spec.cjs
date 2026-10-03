@@ -1,10 +1,44 @@
 const { test, expect } = require('@playwright/test');
+const {PNG}=require('pngjs');
+
+async function expectThumbColor(slider,rgb) {
+  // Chromium does not expose range-thumb computed styles. Check actual pixels
+  // above/below the 3px track so a correctly colored bar cannot mask a blue thumb.
+  const png=PNG.sync.read(await slider.screenshot());
+  let matching=0;
+  for(let y=0;y<png.height;y++)for(let x=0;x<png.width;x++) {
+    if(Math.abs(y-png.height/2)<3)continue;
+    const i=(y*png.width+x)*4;
+    if(rgb.every((v,c)=>Math.abs(png.data[i+c]-v)<4))matching++;
+  }
+  expect(matching).toBeGreaterThan(2);
+}
 
 async function player(page, query='') {
   await page.goto('/'+query+'#/video');
   await expect(page.locator('body')).toHaveClass(/cinematic-player/);
   await expect.poll(()=>page.locator('video').evaluate(v=>v.readyState)).toBeGreaterThanOrEqual(1);
 }
+
+test('native slider thumbs, volume and React accent controls use configured Plex colors',async({page},info)=>{
+  for(const [query,color,channels] of [['','rgb(229, 160, 13)','229 160 13'],['?accent=%23c078e8','rgb(192, 120, 232)','192 120 232']]) {
+    await player(page,query);
+    await expect(page.locator('.osdPositionSlider')).toHaveCSS('color',color);
+    await expectThumbColor(page.locator('.osdPositionSlider'),channels.split(' ').map(Number));
+    if(info.project.name==='desktop') await expectThumbColor(page.locator('.osdVolumeSlider'),channels.split(' ').map(Number));
+    await expect(page.locator('.osdVolumeSliderContainer .mdl-slider-background-lower')).toHaveCSS('background-color',color);
+    expect(await page.locator('body').evaluate(e=>getComputedStyle(e).getPropertyValue('--jf-palette-primary-mainChannel').trim())).toBe(channels);
+    await page.goto('/'+query+'#/details?id=series');
+    await expect(page.locator('header .MuiButton-textPrimary')).toHaveCSS('color',color);
+  }
+});
+
+test('disabling global theme restores native blue slider colors',async({page})=>{
+  await page.goto('/?theme=off#/video');
+  await expect(page.locator('body')).not.toHaveClass(/cinematic-global/);
+  await expect(page.locator('.osdPositionSlider')).toHaveCSS('color','rgb(0, 164, 220)');
+  await expectThumbColor(page.locator('.osdPositionSlider'),[0,164,220]);
+});
 
 test('compact player fits the viewport and the timeline sits above native controls', async ({page},info)=>{
   await player(page);

@@ -8,6 +8,7 @@ public sealed class PluginConfiguration : BasePluginConfiguration
     public bool EnableGlobalTheme { get; set; } = true;
     public bool EnableLibraryLayout { get; set; } = true;
     public bool EnablePlayerLayout { get; set; } = true;
+    public bool EnableDetailsLayout { get; set; } = true;
     public bool EnableLoginExperience { get; set; } = true;
     public bool EnableHomeHero { get; set; } = true;
 

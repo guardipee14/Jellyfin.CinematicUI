@@ -39,10 +39,18 @@ The owner asked to continue the Plex-inspired appearance in the video player. Th
 
 Published October 2, 2026. All 48 desktop/phone browser checks and 24 tooling tests pass, along with the warning-free .NET build and compiled contracts. Eight new player cases cover geometry/transparency, real synthetic-video play/pause/seeking, native menu handlers, volume/mute, desktop fullscreen and title transitions, hidden controls, opt-out/fallback/legacy title, and route cleanup. Clean public installation and the actual published v0.1.8-to-v0.1.9 update passed with settings/XML preserved. The production dashboard showed v0.1.8 Active; the agent did not install or restart production for this milestone. See [VALIDATION.md](VALIDATION.md).
 
-## 5. Profile and library-selection reliability — next
+## 5. Player colors and Plex-inspired title details — in progress for v0.1.10
+
+The owner reported remaining default Jellyfin colors in the player and supplied series/season details screenshots. This explicitly prioritizes completing the player palette and cleaning up title details before profile-selection work.
+
+Legacy slider thumbs, seek/volume/settings bars, React palette accents, and keyboard focus follow the configured accent while the global theme is enabled. The volume slider retains a fixed usable width. Title details use smaller posters, a labeled Play action, subdued metadata/backdrop, full-width sections below the poster, and a responsive season episode grid. Existing detail actions, episode actions, lazy artwork, and playback handlers stay native. The new Appearance flag defaults on for legacy settings; the sidebar follows the library-layout setting. TV, unknown detail structures, and unknown episode rows fall back to the native layout.
+
+Local checks passed: 66 desktop/phone browser checks, 24 tooling tests, zero-warning build, and compiled identity/resource/legacy-configuration contracts. Browser tests verify actual slider-thumb pixels, custom accents, native-blue opt-out, responsive details/episode geometry, cached hidden pages, action handlers, fallback, and route cleanup. Publication and public install/update validation are pending. See [VALIDATION.md](VALIDATION.md).
+
+## 6. Profile and library-selection reliability — next
 
 Check account switching and pending artwork requests, configured library-name mismatches, view-enumeration failures, played-title/keyword exclusions, and repeat history across users. Define the expected fallback behavior explicitly before changing it. Jellyfin user library permissions remain the source of access control; navigation hiding remains cosmetic.
 
-## 6. Performance and further visual refinement — afterward
+## 7. Performance and further visual refinement — afterward
 
 Measure observer activity, request volume, object-URL lifetime, and route cleanup. Use those findings to prioritize focused refinements to login and hero layouts. Preserve the working catalog update path and settings compatibility for every release.

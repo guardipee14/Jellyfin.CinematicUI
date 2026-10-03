@@ -1,5 +1,15 @@
 # Cinematic UI validation — October 2, 2026
 
+## v0.1.10 player colors and title/details candidate
+
+The owner's Plex/Jellyfin screenshots and read-only production series/season DOM inspection informed the details layout. Inspection identified hard-coded blue legacy range thumbs/bars and Jellyfin's React palette variables that the earlier theme did not override. The native volume container's zero flex basis also collapsed it after v0.1.9 disabled flex growth; the candidate gives it an explicit 76px basis.
+
+The real plugin assets passed 66 Chromium checks across desktop and 390×844 phone projects. Nine additional cases per viewport cover actual rendered slider-thumb pixels (outside the track band), native volume/React accents, a custom purple accent, native-blue restoration when the global theme is off, compact series details, a three-column desktop/one-column phone season grid, native detail/episode action handlers, series/season/library/player/Home transitions, cached hidden detail pages, opt-outs, TV, unknown detail structures, and unknown episode rows. The 14 detail checks were rerun after the final transparent-card and cached-page assertions. All 24 tooling tests, the zero-warning .NET build, compiled identity/embedded-resource contracts, and legacy XML defaults passed locally.
+
+Visual checks use synthetic artwork/media and fixture handlers based on observed native markup. They cover the title/action layout, dim backdrop, slim gold player timeline, visible volume control, and responsive geometry. They do not claim a production streaming test, actual stream selection/PiP, Firefox/Safari, physical-device, or screen-reader testing. During this milestone, production inspection only navigated to Season 1 and returned to the original series page; no playback, settings, installation, or server lifecycle changes were made.
+
+Publication, CI integration, and actual public catalog upgrade validation remain pending for this candidate.
+
 ## Recovery and build
 
 The interrupted transfer omitted only `Web/cinematic.css` and `Web/client.js`. Both were recovered from the owner's original v0.1.5 TrueNAS installer archive. All other original archive files matched the transferred source after line-ending normalization. The recovered resources also match the production server's injected resources; their SHA-256 hashes are recorded in [RECOVERY.md](RECOVERY.md).

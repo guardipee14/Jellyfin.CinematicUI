@@ -18,7 +18,7 @@
     <div data-role="content">
         <div class="content-primary">
             <h2>Cinematic UI</h2>
-            <div class="cinematicVersion">v0.1.9 · Jellyfin 12.1</div>
+            <div class="cinematicVersion">v0.1.10 · Jellyfin 12.1</div>
             <p>One plugin for the cinematic profile login, Plex-inspired global theme, navigation cleanup, and rotating library-driven Home hero.</p>
 
             <div class="cinematicNotice">
@@ -34,6 +34,7 @@
                         <div class="checkboxContainer checkboxContainer-withDescription"><label class="emby-checkbox-label"><input id="EnableGlobalTheme" type="checkbox" is="emby-checkbox" /><span>Enable global Plex-like theme</span></label></div>
                         <div class="checkboxContainer checkboxContainer-withDescription"><label class="emby-checkbox-label"><input id="EnableLibraryLayout" type="checkbox" is="emby-checkbox" /><span>Use Plex-style library layout</span></label><div class="fieldDescription">Adds a desktop library sidebar, spaced posters, and left-aligned captions. Smaller screens keep Jellyfin navigation.</div></div>
                         <div class="checkboxContainer checkboxContainer-withDescription"><label class="emby-checkbox-label"><input id="EnablePlayerLayout" type="checkbox" is="emby-checkbox" /><span>Use Plex-style video player layout</span></label><div class="fieldDescription">Uses a slim timeline and compact controls while retaining Jellyfin playback, audio, subtitles, fullscreen, and automatic control hiding.</div></div>
+                        <div class="checkboxContainer checkboxContainer-withDescription"><label class="emby-checkbox-label"><input id="EnableDetailsLayout" type="checkbox" is="emby-checkbox" /><span>Use Plex-style title details</span></label><div class="fieldDescription">Uses smaller posters, clear Play actions, a subdued backdrop, and a season episode grid. Library navigation follows the library layout setting.</div></div>
                         <div class="inputContainer"><label class="inputLabel inputLabelUnfocused" for="AccentColor">Accent color</label><input id="AccentColor" is="emby-input" type="text" placeholder="#e5a00d" /></div>
                     </section>
 
@@ -93,7 +94,7 @@
     const pluginId = 'e4c17f1b-c451-4a31-b98c-5d0ef44f9a21';
     const page = document.querySelector('#CinematicUiConfigPage');
     const boolIds = [
-        'EnableInjection','EnableGlobalTheme','EnableLibraryLayout','EnablePlayerLayout','EnableLoginExperience','LoginHideHeaderBranding','LoginBackgroundMotion',
+        'EnableInjection','EnableGlobalTheme','EnableLibraryLayout','EnablePlayerLayout','EnableDetailsLayout','EnableLoginExperience','LoginHideHeaderBranding','LoginBackgroundMotion',
         'EnableHomeHero','HeroUseLogos','HeroPauseOnHover','HeroShowNavigationArrows','HeroShowDots','HeroExcludePlayed',
         'HideMyMediaRow','HideOtherVideosHomeRows'
     ];

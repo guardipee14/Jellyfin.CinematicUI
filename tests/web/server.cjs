@@ -3,6 +3,7 @@ const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
 const playerFixture = require('./player-fixture.cjs');
+const detailsFixture = require('./details-fixture.cjs');
 
 const root = path.resolve(__dirname, '../..');
 const items = ['Harbor Lights', 'Alpine Journey', 'City of Clouds'].map((Name, index) => ({
@@ -24,7 +25,8 @@ function html(params) {
     heroPauseOnHover: params.get('hover') !== 'off', loginHideHeaderBranding: params.get('branding') !== 'show',
     hiddenNavigationLibraryNames: params.get('hideNavigation') === 'yes' ? 'Other Videos' : '',
     enableLibraryLayout: params.get('libraryLayout') !== 'off',
-    enablePlayerLayout: params.get('playerLayout') !== 'off', enableGlobalTheme: params.get('theme') !== 'off'
+    enablePlayerLayout: params.get('playerLayout') !== 'off', enableGlobalTheme: params.get('theme') !== 'off',
+    enableDetailsLayout: params.get('detailsLayout') !== 'off', accentColor: params.get('accent') || '#e5a00d'
   };
   const profiles = Array.from({ length: params.get('profiles') === 'many' ? 12 : 2 }, (_, i) =>
     `<button class="card" type="button"><div class="cardImageContainer"><div class="cardImage" aria-hidden="true">●</div></div><div class="cardFooter"><div class="cardText">Guest ${i + 1}</div></div></button>`).join('');
@@ -37,6 +39,7 @@ function html(params) {
       header .MuiStack-root{min-width:0;overflow-x:auto}header .MuiStack-root>a{flex-shrink:0}.fixtureList{padding:24px 40px}.fixtureList a{display:block;padding:12px;border-bottom:1px solid #444}
       @media(max-width:600px){.fixtureRange{display:none}header .fixtureControls{gap:1px}header .fixtureControls button{padding:4px}header .MuiToolbar-root{gap:4px}}
       ${playerFixture.style}
+      ${detailsFixture.style}
     </style></head><body><div id="fixtureVideoMount"></div><div class="backgroundContainer"></div><div id="reactRoot"><div id="fixtureApp"><header class="MuiAppBar-root"></header><div id="fixtureSpacer"></div><main id="fixturePage"></main></div></div>
     <script>
       const loginMarkup = '<div id="loginPage"><div class="padded-left padded-right padded-bottom-page"><div class="visualLoginForm"><h1>Please sign in</h1><div id="divUsers">${profiles}</div></div><div class="readOnlyContent"><button class="btnManual"><span>Manual login</span></button><button>Use Quick Connect</button><button>Forgot Password</button></div></div></div>';
@@ -52,15 +55,23 @@ function html(params) {
       window.CinematicUIConfig = ${JSON.stringify(config)};
       const playerMarkup = ${JSON.stringify(playerFixture.markup)};
       const setupPlayer = ${playerFixture.setup.toString()};
+      const seriesMarkup = ${JSON.stringify(detailsFixture.markup(false))};
+      const seasonMarkup = ${JSON.stringify(detailsFixture.markup(true))};
+      const setupDetails = ${detailsFixture.setup.toString()};
       function route() {
         const page = document.querySelector('#fixturePage');
         const library = /^#\\/(tv|movies|mixed)(\\?|$)/.test(location.hash);
         const player = location.hash.startsWith('#/video');
+        const details = location.hash.startsWith('#/details?id=series') || location.hash.startsWith('#/details?id=season');
         document.querySelector('video')?.pause();
         document.querySelector('#fixtureVideoMount').innerHTML = player ? '<div class="videoPlayerContainer"><video class="htmlvideoplayer" src="/fixture.webm" poster="/fixture-frame.svg" preload="metadata" playsinline></video></div>' : '';
         document.querySelector('.backgroundContainer').classList.toggle('backgroundContainer-transparent',player);
         document.body.classList.toggle('playerFixture',player);
         document.body.classList.toggle('libraryFixture', library);
+        document.body.classList.toggle('detailsFixture', details);
+        document.querySelector('.backgroundContainer').classList.toggle('withBackdrop',details);
+        document.querySelector('.backdropContainer')?.remove();
+        if(details){const backdrop=document.createElement('div');backdrop.className='backdropContainer';backdrop.innerHTML='<div class="backdropImage"></div>';document.body.prepend(backdrop);}
         document.querySelector('header').className='MuiAppBar-root';
         document.querySelector('header').innerHTML = '<div class="MuiToolbar-root"><div class="MuiStack-root">'+links+'</div><div class="fixtureHeaderActions"><button aria-label="Cast to Device">'+icon+'</button><a href="#/search" aria-label="Search">'+icon+'</a></div><button aria-label="User Menu">●</button></div>' + (library ? '<div class="MuiToolbar-root"><button aria-label="Shows">Shows ▾</button><span class="fixtureRange">1–24 of 24</span><div class="fixtureControls"><button>Play All</button><button aria-label="Shuffle">⇄</button><button aria-label="Filter">Filter</button><button aria-label="Sort">A–Z</button><button aria-label="View settings">▦</button><button aria-label="Previous" disabled>‹</button><button aria-label="Next">›</button></div></div>' : '');
         if (player) {
@@ -70,6 +81,13 @@ function html(params) {
           if (${params.get('playerShape') === 'unknown'}) page.querySelector('.osdPositionSlider').className='unknownPosition';
           if (${params.get('playerTitle') === 'legacy'}) {page.querySelector('.osdTitle').textContent='Legacy native title';document.querySelector('.videoOsd-appBar>p').remove();}
           if (${params.get('playerShape') !== 'unknown'}) setupPlayer();
+        }
+        else if (details) {
+          page.innerHTML=location.hash.includes('id=season')?seasonMarkup:seriesMarkup;
+          document.querySelector('header a[href*="topParentId=anime"]').classList.add('MuiButton-textPrimary');
+          if (${params.get('detailsShape') === 'unknown'}) page.querySelector('.detailRibbon').className='unknownDetailRibbon';
+          if (${params.get('episodesShape') === 'unknown'}) page.querySelector('.listItem')?.setAttribute('data-type','Unknown');
+          setupDetails();
         }
         else if (location.hash.startsWith('#/details')) page.innerHTML = '<div id="itemDetailPage"><h1>Fixture details</h1><button class="btnPlay">Play</button><a href="#home">Back to Home</a></div>';
         else if (library) page.innerHTML = libraryMarkup;

@@ -37,6 +37,18 @@ body.cinematic-login #loginPage .btnQuick,body.cinematic-login #loginPage .btnFo
 @keyframes cinematicLoginScroll{0%{transform:scale(1.25) translate3d(-5%,-3%,0)}25%{transform:scale(1.27) translate3d(-1%,-5%,0)}50%{transform:scale(1.26) translate3d(4%,-2%,0)}75%{transform:scale(1.28) translate3d(3%,4%,0)}100%{transform:scale(1.25) translate3d(-4%,3%,0)}}
 
 /* GLOBAL PLEX-LIKE THEME */
+body.cinematic-global{--jf-palette-primary-main:var(--cinematic-accent);--jf-palette-primary-light:color-mix(in srgb,var(--cinematic-accent) 80%,white);--jf-palette-primary-dark:color-mix(in srgb,var(--cinematic-accent) 80%,black);--jf-palette-primary-mainChannel:var(--cinematic-accent-channels,229 160 13);--jf-palette-primary-lightChannel:var(--cinematic-accent-channels,229 160 13);--jf-palette-primary-darkChannel:var(--cinematic-accent-channels,229 160 13);--jf-palette-secondary-main:var(--cinematic-accent);--jf-palette-secondary-mainChannel:var(--cinematic-accent-channels,229 160 13)}
+/* Jellyfin loads legacy slider rules after injection; cover both engines and
+   native volume/settings sliders, including the thumb and keyboard focus. */
+body.cinematic-global .mdl-slider{color:var(--cinematic-accent)!important;accent-color:var(--cinematic-accent)}
+body.cinematic-global .mdl-slider::-webkit-slider-thumb{background:var(--cinematic-accent)!important}
+body.cinematic-global .mdl-slider::-moz-range-thumb{background:var(--cinematic-accent)!important;border-color:var(--cinematic-accent)!important}
+body.cinematic-global .mdl-slider-background-lower:not(.mdl-slider-background-lower-clear){background:var(--cinematic-accent)!important}
+body.cinematic-global .mdl-slider:focus-visible{outline:2px solid var(--cinematic-accent);outline-offset:3px}
+body.cinematic-global .paper-icon-button-light:hover:not(:disabled){color:var(--cinematic-accent)!important;background:rgba(255,255,255,.08)!important}
+body.cinematic-global .paper-icon-button-light.show-focus{color:var(--cinematic-accent)!important;background:rgba(255,255,255,.08)!important}
+body.cinematic-global .paper-icon-button-light:focus-visible{outline:2px solid var(--cinematic-accent);outline-offset:2px}
+body.cinematic-global .MuiSlider-root,body.cinematic-global .MuiButton-textPrimary,body.cinematic-global .MuiIconButton-colorPrimary{color:var(--cinematic-accent)!important}
 body.cinematic-global .backgroundContainer,body.cinematic-global .mainAnimatedPages{background:var(--cinematic-bg)!important}
 /* Native playback transparency must win over the global browsing background. */
 body.cinematic-global .backgroundContainer.backgroundContainer-transparent,body.cinematic-global .mainAnimatedPages:has(#videoOsdPage:not(.hide)){background:transparent!important}
@@ -123,6 +135,99 @@ body.cinematic-library .portraitCard .playedIndicator svg{color:var(--cinematic-
 }
 @media(max-width:600px){body.cinematic-library .itemsContainer.vertical-wrap>.portraitCard{width:calc((100% - 18px)/2)!important;flex-basis:calc((100% - 18px)/2)}}
 
+/* TITLE DETAILS — preserve native nodes, metadata, actions, and lazy artwork. */
+body.cinematic-details{--cinematic-library-sidebar:260px;--cinematic-library-top:56px;--cinematic-detail-poster:250px}
+body.cinematic-details .backgroundContainer.withBackdrop{background:linear-gradient(180deg,rgba(22,26,28,.66),rgba(22,24,26,.84))!important}
+body.cinematic-details .mainAnimatedPages,body.cinematic-details .cinematicLibraryShell{background:transparent!important}
+body.cinematic-details .backdropImage{filter:brightness(.85) saturate(.8)}
+body.cinematic-details .cinematicDetailPage>#itemBackdrop,body.cinematic-details .cinematicDetailPage>.detailLogo{display:none!important}
+body.cinematic-details .cinematicDetailPage .detailPageWrapperContainer{display:block!important;background:transparent!important;margin:0!important;padding:56px 40px 64px!important;box-sizing:border-box}
+body.cinematic-details .cinematicDetailPage .detailPagePrimaryContainer{display:grid;grid-template-columns:var(--cinematic-detail-poster) minmax(0,1fr);column-gap:48px;row-gap:18px;align-items:start}
+body.cinematic-details .cinematicDetailPage .detailPagePrimaryContainer>.detailImageContainer{grid-column:1;grid-row:1/span 3;min-width:0}
+body.cinematic-details .cinematicDetailPage .detailImageContainer .card{float:none!important;position:relative!important;inset:auto!important;margin:0!important;width:100%!important;max-width:none!important;max-height:none!important;transform:none!important}
+body.cinematic-details .cinematicDetailPage .detailImageContainer .cardImageContainer{border-radius:4px!important;box-shadow:0 4px 16px #0006}
+body.cinematic-details .cinematicDetailPage .detailRibbon{grid-column:2;grid-row:1;display:block!important;height:auto!important;margin:0!important;padding:0!important;background:transparent!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+body.cinematic-details .cinematicDetailPage .detailRibbon .detailImageContainer{display:none!important}
+body.cinematic-details .cinematicDetailPage .nameContainer{padding:0!important;margin:0!important}
+body.cinematic-details .cinematicDetailPage .itemName{margin:0 0 6px!important;font-size:32px;line-height:1.2;font-weight:600;letter-spacing:-.025em}
+body.cinematic-details .cinematicDetailPage .itemName:not(h1){font-size:18px;line-height:1.4;font-weight:500;color:rgba(255,255,255,.64)}
+body.cinematic-details .cinematicDetailPage .itemName a{color:inherit!important;text-decoration:none}
+body.cinematic-details .cinematicDetailPage .itemName a:hover{color:var(--cinematic-accent)!important}
+body.cinematic-details .cinematicDetailPage .itemMiscInfo{font-size:13px;color:rgba(255,255,255,.65);margin-top:16px}
+body.cinematic-details .cinematicDetailPage .mainDetailButtons{justify-content:flex-start!important;flex-wrap:wrap;gap:12px;margin:24px 0 0!important;width:auto!important}
+body.cinematic-details .cinematicDetailPage .mainDetailButtons .detailButton{min-width:40px;min-height:40px;padding:8px!important;margin:0!important;border-radius:4px!important;background:transparent!important;color:rgba(255,255,255,.8)!important}
+body.cinematic-details .cinematicDetailPage .mainDetailButtons .detailButton:hover{background:rgba(255,255,255,.08)!important;color:#fff!important}
+body.cinematic-details .cinematicDetailPage .mainDetailButtons .detailButton:focus-visible{outline:2px solid var(--cinematic-accent);outline-offset:3px}
+body.cinematic-details .cinematicDetailPage .mainDetailButtons .btnPlay{background:var(--cinematic-accent)!important;color:#151515!important;padding:8px 18px!important;font-size:14px;font-weight:600}
+body.cinematic-details .cinematicDetailPage .mainDetailButtons .btnPlay:hover{background:color-mix(in srgb,var(--cinematic-accent) 85%,white)!important}
+body.cinematic-details .cinematicDetailPage .detailButton-content{display:flex;align-items:center;justify-content:center;gap:8px}
+body.cinematic-details .cinematicDetailPage .detailButton-icon{font-size:22px;width:22px;height:22px}
+body.cinematic-details .cinematicDetailPage .detailPagePrimaryContent,body.cinematic-details .cinematicDetailPage .detailPagePrimaryContent>.detailSection{display:contents}
+body.cinematic-details .cinematicDetailPage .detailSection>*{grid-column:2;min-width:0}
+body.cinematic-details .cinematicDetailPage .detailSectionContent{grid-row:2;font-size:14px;line-height:1.55;max-width:850px}
+body.cinematic-details .cinematicDetailPage .detailSectionContent .overview{margin:0 0 14px!important;line-height:1.55}
+body.cinematic-details .cinematicDetailPage .detailSectionContent .overview p{margin:0}
+body.cinematic-details .cinematicDetailPage .detailSectionContent .itemGenres:empty{display:none}
+body.cinematic-details .cinematicDetailPage .itemDetailsGroup{grid-row:3;font-size:13px;line-height:1.7;color:rgba(255,255,255,.5);margin:0!important}
+body.cinematic-details .cinematicDetailPage .itemTags,body.cinematic-details .cinematicDetailPage .itemExternalLinks{font-size:12px!important;color:rgba(255,255,255,.46)}
+body.cinematic-details .cinematicDetailPage .button-link{color:rgba(255,255,255,.6)!important;font-weight:400!important}
+body.cinematic-details .cinematicDetailPage .button-link:hover{color:var(--cinematic-accent)!important}
+body.cinematic-details .cinematicDetailPage .detailSection>.verticalSection,body.cinematic-details .cinematicDetailPage .detailSection>.collectionItems{grid-column:1/-1;margin:20px 0 0!important;min-width:0}
+body.cinematic-details .cinematicDetailPage .detailPageSecondaryContainer{padding:20px 0 0!important}
+body.cinematic-details .cinematicDetailPage .sectionTitle,.cinematicDetailEpisodesHeading{font-size:20px;font-weight:600;margin:0 0 24px;line-height:1.4}
+body.cinematic-details .cinematicDetailPage .itemsContainer{padding-left:0!important;padding-right:0!important}
+body.cinematic-details .cinematicDetailPage .card{transform:none!important}
+body.cinematic-details .cinematicDetailPage .cardBox{background:transparent!important;box-shadow:none!important}
+body.cinematic-details .cinematicDetailPage .cardFooter{background:transparent!important;text-align:left!important}
+body.cinematic-details .cinematicDetailPage .cardText{text-align:left!important;font-size:13px}
+body.cinematic-details .cinematicDetailPage .cardText-secondary{font-size:12px}
+.cinematicDetailEpisodes{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:30px;align-items:start}
+.cinematicDetailEpisodes>.listItem{display:block!important;padding:0!important;margin:0!important;min-width:0;background:transparent!important}
+.cinematicDetailEpisodes .listItem-content{display:block!important;position:relative}
+.cinematicDetailEpisodes .listItemImage{display:block!important;width:100%!important;height:auto!important;aspect-ratio:16/9;margin:0!important;border-radius:4px;background-size:cover;background-position:center}
+.cinematicDetailEpisodes .listItemImageButton{color:#fff!important;background:transparent!important;border-radius:4px!important;opacity:0;min-width:44px;min-height:44px}
+.cinematicDetailEpisodes .listItem:hover .listItemImageButton,.cinematicDetailEpisodes .listItem:focus-within .listItemImageButton{opacity:1;background:#0004!important}
+.cinematicDetailEpisodes .listItemBody{padding:10px 3px 0!important;margin:0!important;min-width:0;font-size:13px;line-height:1.5}
+.cinematicDetailEpisodes .listItemBodyText{margin:0!important;white-space:normal!important}
+.cinematicDetailEpisodes .listItemBody>.listItemBodyText:first-child{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;overflow-wrap:anywhere}
+.cinematicDetailEpisodes .listItemMediaInfo{font-size:12px;color:rgba(255,255,255,.5);gap:8px}
+.cinematicDetailEpisodes .listItem-overview{display:-webkit-box!important;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;font-size:12px;color:rgba(255,255,255,.45);margin-top:6px!important}
+.cinematicDetailEpisodes .listItem-overview p{margin:0}
+.cinematicDetailEpisodes .listItem-bottomoverview{display:none!important}
+.cinematicDetailEpisodes .listViewUserDataButtons{display:flex!important;justify-content:flex-end;gap:2px;margin:6px 0 0;opacity:0}
+.cinematicDetailEpisodes .listItem:hover .listViewUserDataButtons,.cinematicDetailEpisodes .listItem:focus-within .listViewUserDataButtons{opacity:1}
+.cinematicDetailEpisodes .listItemButton{width:32px;height:32px;padding:6px;color:rgba(255,255,255,.5)}
+@media(hover:none){.cinematicDetailEpisodes .listViewUserDataButtons{opacity:1}}
+@media(min-width:1100px){
+ body.cinematic-details-sidebar .cinematicLibraryTop{height:56px;min-height:56px!important;padding:0 24px!important;background:#101010}
+ body.cinematic-details-sidebar .cinematicLibrarySpacer{height:56px!important;min-height:56px!important}
+ body.cinematic-details-sidebar .cinematicLibraryShell{margin-left:260px!important;width:calc(100% - 260px)!important;height:calc(100dvh - 56px)!important}
+ body.cinematic-details-sidebar [data-cinematic-library-nav]{display:none!important}
+ body.cinematic-details-sidebar .cinematicLibrarySearch{order:-1;margin:0 auto 0 24px;width:min(28vw,440px);height:34px;border-radius:999px;background:#282828;color:rgba(255,255,255,.7);padding:0 14px;justify-content:flex-start;gap:12px}
+ body.cinematic-details-sidebar .cinematicLibrarySearch::after{content:'Search';font-size:13px}
+}
+@media(max-width:1099px){
+ body.cinematic-details{--cinematic-detail-poster:190px}
+ body.cinematic-details .cinematicDetailPage .detailPageWrapperContainer{padding:36px 28px 48px!important}
+ body.cinematic-details .cinematicDetailPage .detailPagePrimaryContainer{column-gap:28px}
+ .cinematicDetailEpisodes{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+}
+@media(max-width:600px){
+ body.cinematic-details{--cinematic-detail-poster:110px}
+ body.cinematic-details .cinematicDetailPage .detailPageWrapperContainer{padding:28px 18px 40px!important}
+ body.cinematic-details .cinematicDetailPage .detailPagePrimaryContainer{column-gap:20px;row-gap:20px}
+ body.cinematic-details .cinematicDetailPage .detailPagePrimaryContainer>.detailImageContainer{display:block!important;grid-row:1}
+ body.cinematic-details .cinematicDetailPage .itemName{font-size:24px;overflow-wrap:anywhere}
+ body.cinematic-details .cinematicDetailPage .itemName:not(h1){font-size:15px}
+ body.cinematic-details .cinematicDetailPage .mainDetailButtons{gap:4px;margin-top:16px!important}
+ body.cinematic-details .cinematicDetailPage .mainDetailButtons .detailButton{min-width:44px;min-height:44px}
+ body.cinematic-details .cinematicDetailPage .detailSection>*{grid-column:1/-1}
+ body.cinematic-details .cinematicDetailPage .detailSectionContent,body.cinematic-details .cinematicDetailPage .itemDetailsGroup{grid-row:auto}
+ .cinematicDetailEpisodes{grid-template-columns:minmax(0,1fr);gap:24px}
+ body.cinematic-details .cinematicDetailPage .sectionTitle,.cinematicDetailEpisodesHeading{font-size:18px;margin-bottom:18px}
+ .cinematicDetailEpisodes .listItemButton{width:44px;height:44px}
+}
+
 /* VIDEO PLAYER — presentation only; Jellyfin owns controls, visibility, and media state */
 body.cinematic-player .skinHeader.osdHeader{height:48px!important;min-height:48px!important;background:rgba(12,12,12,.5)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;box-shadow:none!important}
 body.cinematic-player .videoOsd-appBar{min-height:48px;padding:0 16px}
@@ -147,7 +252,7 @@ body.cinematic-player .videoOsdBottom-maincontrols{padding-top:32px!important;pa
 .cinematicPlayerButtons .material-icons{font-size:22px}
 .cinematicPlayerButtons .btnPause{width:44px;height:44px;min-width:44px;background:rgba(0,0,0,.35);color:#fff}
 .cinematicPlayerButtons .volumeButtons{margin:0 4px;gap:2px}
-.cinematicPlayerButtons .osdVolumeSliderContainer{width:76px;flex-grow:0}
+.cinematicPlayerButtons .osdVolumeSliderContainer{width:76px;flex:0 0 76px;min-width:76px}
 .cinematicPlayerTransport{position:absolute;left:50%;top:35px;transform:translateX(-50%);display:flex;align-items:center;justify-content:center;gap:4px}
 .cinematicPlayerButtons .osdTimeText{position:absolute;bottom:0;left:50%;transform:translateX(-50%);margin:0;font-size:10px;line-height:14px;color:rgba(255,255,255,.5);white-space:nowrap}
 @media(min-width:1300px){body.cinematic-player .cinematicPlayerHeaderTitle{display:none}.cinematicPlayerControls .osdMainTextContainer{max-width:32vw}}
