@@ -42,7 +42,9 @@
     let heroIndex = 0;
     let lastHeroUserId = null;
     let heroLoading = false;
-    let heroPaused = false;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let heroPaused = reducedMotion.matches;
+    let heroHovered = false;
     let currentBgObjectUrl = null;
     let currentLogoObjectUrl = null;
     let activeBgLayer = 0;
@@ -76,7 +78,10 @@
 
         login.dataset.cinematicUi = 'active';
         const visual = login.querySelector('.visualLoginForm');
-        if (visual) visual.setAttribute('data-cinematic-title', cfg.serverTitle || 'JELLYFIN');
+        if (visual) {
+            visual.setAttribute('data-cinematic-title', cfg.serverTitle || 'JELLYFIN');
+            visual.querySelector('h1')?.setAttribute('aria-label', "Who's watching?");
+        }
 
         const manual = login.querySelector('.btnManual');
         if (manual && !manual.dataset.cinematicRenamed) {
@@ -116,7 +121,7 @@
 
     function applyNavigationVisibility() {
         const hiddenNames = new Set(configuredNavigationHiddenNames());
-        const roots = document.querySelectorAll('.skinHeader, .headerTop, .mainDrawer');
+        const roots = document.querySelectorAll('.skinHeader, .headerTop, .mainDrawer, header.MuiAppBar-root');
         for (const root of roots) {
             const candidates = root.querySelectorAll('a, button, .emby-tab-button, .navMenuOption, .headerButton');
             for (const element of candidates) {
@@ -473,15 +478,19 @@
         hero.id = 'cinematicHero';
         hero.dataset.ready = '0';
         hero.tabIndex = 0;
+        hero.setAttribute('role', 'region');
+        hero.setAttribute('aria-label', 'Featured titles');
+        hero.setAttribute('aria-roledescription', 'carousel');
         hero.innerHTML = `
+            <button type="button" class="cinematicHeroRotation">Pause rotation</button>
             <div class="cinematicHeroVisual" aria-hidden="true">
                 <div class="cinematicHeroBlur"></div>
                 <div class="cinematicHeroBg cinematicHeroBgA active"></div>
                 <div class="cinematicHeroBg cinematicHeroBgB"></div>
             </div>
-            <div class="cinematicHeroContent">
+            <div class="cinematicHeroContent" role="group" aria-roledescription="slide" aria-labelledby="cinematicHeroTitle">
                 <div class="cinematicHeroLogoWrap"><img class="cinematicHeroLogo" alt="" /></div>
-                <h1 class="cinematicHeroTitle"></h1>
+                <h1 id="cinematicHeroTitle" class="cinematicHeroTitle"></h1>
                 <div class="cinematicHeroMeta"></div>
                 <div class="cinematicHeroOverview"></div>
                 <div class="cinematicHeroActions">
@@ -493,27 +502,35 @@
                 <button type="button" class="cinematicHeroPrev" aria-label="Previous featured title">‹</button>
                 <button type="button" class="cinematicHeroNext" aria-label="Next featured title">›</button>
             </div>
-            <div class="cinematicHeroDots"></div>`;
+            <div class="cinematicHeroDots" role="group" aria-label="Choose a featured title"></div>`;
 
         const nav = hero.querySelector('.cinematicHeroNav');
         nav.hidden = !cfg.heroShowNavigationArrows || heroItems.length < 2;
 
+        const rotation = hero.querySelector('.cinematicHeroRotation');
+        let pausedBeforePointerFocus = heroPaused;
+        rotation.addEventListener('pointerdown', () => { pausedBeforePointerFocus = heroPaused; });
+        rotation.onclick = event => {
+            // Pointer focus pauses before click. Preserve the action the pointer actually selected.
+            heroPaused = !(event.detail > 0 ? pausedBeforePointerFocus : heroPaused);
+            const credentials = getCredentials();
+            if (credentials) restartHeroTimer(credentials);
+        };
+
+        // Keyboard focus latches a pause until the user explicitly resumes rotation.
+        hero.addEventListener('focusin', () => {
+            heroPaused = true;
+            const credentials = getCredentials();
+            if (credentials) restartHeroTimer(credentials);
+        });
         if (cfg.heroPauseOnHover) {
             hero.addEventListener('mouseenter', () => {
-                heroPaused = true;
-                if (heroTimer) { clearInterval(heroTimer); heroTimer = null; }
-            });
-            hero.addEventListener('mouseleave', () => {
-                heroPaused = false;
+                heroHovered = true;
                 const credentials = getCredentials();
                 if (credentials) restartHeroTimer(credentials);
             });
-            hero.addEventListener('focusin', () => {
-                heroPaused = true;
-                if (heroTimer) { clearInterval(heroTimer); heroTimer = null; }
-            });
-            hero.addEventListener('focusout', () => {
-                heroPaused = false;
+            hero.addEventListener('mouseleave', () => {
+                heroHovered = false;
                 const credentials = getCredentials();
                 if (credentials) restartHeroTimer(credentials);
             });
@@ -551,20 +568,31 @@
         const nav = hero.querySelector('.cinematicHeroNav');
         if (nav) nav.hidden = !cfg.heroShowNavigationArrows || heroItems.length < 2;
         dots.hidden = !cfg.heroShowDots || heroItems.length < 2;
-        dots.innerHTML = '';
-        if (!cfg.heroShowDots || heroItems.length < 2) return;
+        if (dots.hidden) return;
+        // Reconcile only when the item set changes; replacing buttons on every slide loses focus.
+        const existing = Array.from(dots.children);
+        const sameItems = existing.length === heroItems.length && existing.every((button, index) => button.dataset.itemId === heroItems[index].Id);
+        if (!sameItems) dots.replaceChildren();
         heroItems.forEach((item, index) => {
-            const dot = document.createElement('button');
-            dot.className = 'cinematicHeroDot' + (index === heroIndex ? ' active' : '');
-            dot.type = 'button';
-            dot.title = item?.Name || `Featured item ${index + 1}`;
-            dot.setAttribute('aria-label', `Show ${item?.Name || `featured item ${index + 1}`}`);
-            dot.onclick = () => {
-                heroIndex = index;
-                void renderHero(heroItems[heroIndex], credentials).catch(error => warn('hero render failed', error));
-                restartHeroTimer(credentials);
-            };
-            dots.appendChild(dot);
+            const dot = sameItems ? existing[index] : document.createElement('button');
+            if (!sameItems) {
+                dot.className = 'cinematicHeroDot';
+                dot.type = 'button';
+                dot.dataset.itemId = item.Id;
+                dot.title = item?.Name || `Featured item ${index + 1}`;
+                dot.setAttribute('aria-label', `Show ${item?.Name || `featured item ${index + 1}`}`);
+                dot.onclick = () => {
+                    if (index === heroIndex) return;
+                    heroIndex = index;
+                    void renderHero(heroItems[heroIndex], credentials).catch(error => warn('hero render failed', error));
+                    restartHeroTimer(credentials);
+                };
+                dots.appendChild(dot);
+            }
+            const selected = index === heroIndex;
+            dot.classList.toggle('active', selected);
+            dot.setAttribute('aria-current', String(selected));
+            dot.setAttribute('aria-disabled', String(selected));
         });
     }
 
@@ -638,15 +666,23 @@
         rememberHeroId(item.Id);
 
         requestAnimationFrame(() => {
+            if (renderToken !== heroRenderToken) {
+                URL.revokeObjectURL(backgroundUrl);
+                return;
+            }
             hero.dataset.ready = '1';
             nextLayer.classList.add('active');
             oldLayer.classList.remove('active');
             activeBgLayer = nextLayerIndex;
             currentBgObjectUrl = backgroundUrl;
 
+            const inactiveBackground = oldLayer.style.backgroundImage;
             setTimeout(() => {
-                oldLayer.style.backgroundImage = 'none';
-                if (previousBgUrl && previousBgUrl !== backgroundUrl) URL.revokeObjectURL(previousBgUrl);
+                // Rapid navigation can reuse this layer before its earlier fade finishes.
+                if (!oldLayer.classList.contains('active') && oldLayer.style.backgroundImage === inactiveBackground) {
+                    oldLayer.style.backgroundImage = 'none';
+                }
+                if (previousBgUrl && previousBgUrl !== currentBgObjectUrl) URL.revokeObjectURL(previousBgUrl);
             }, 950);
         });
     }
@@ -654,9 +690,15 @@
     function restartHeroTimer(credentials) {
         if (heroTimer) clearInterval(heroTimer);
         heroTimer = null;
-        if (heroItems.length < 2 || heroPaused || document.hidden || !document.body.classList.contains('cinematic-home')) return;
+        const rotation = document.querySelector('#cinematicHero .cinematicHeroRotation');
+        if (rotation) {
+            const label = heroPaused ? 'Resume rotation' : 'Pause rotation';
+            if (rotation.textContent !== label) rotation.textContent = label;
+            rotation.hidden = heroItems.length < 2;
+        }
+        if (heroItems.length < 2 || heroPaused || heroHovered || document.hidden || !document.body.classList.contains('cinematic-home')) return;
         heroTimer = setInterval(() => {
-            if (heroPaused) return;
+            if (heroPaused || heroHovered) return;
             heroIndex = (heroIndex + 1) % heroItems.length;
             void renderHero(heroItems[heroIndex], credentials).catch(error => warn('hero rotation failed', error));
         }, Math.max(5, cfg.heroRotationSeconds || 12) * 1000);
@@ -675,8 +717,8 @@
             if (!document.querySelector('#cinematicHero')) {
                 createHero(home);
                 await renderHero(heroItems[heroIndex] || heroItems[0], credentials);
-                restartHeroTimer(credentials);
             }
+            if (!heroTimer) restartHeroTimer(credentials);
             return;
         }
 
@@ -720,7 +762,7 @@
         document.body.classList.toggle('cinematic-home', active);
         if (!active) {
             if (heroTimer) { clearInterval(heroTimer); heroTimer = null; }
-            heroPaused = false;
+            heroHovered = false;
             return;
         }
 
@@ -749,6 +791,11 @@
 
     window.addEventListener('hashchange', schedule);
     window.addEventListener('popstate', schedule);
+    reducedMotion.addEventListener('change', () => {
+        if (reducedMotion.matches) heroPaused = true;
+        const credentials = getCredentials();
+        if (credentials) restartHeroTimer(credentials);
+    });
     document.addEventListener('viewshow', schedule, true);
     document.addEventListener('visibilitychange', () => {
         if (document.hidden) {

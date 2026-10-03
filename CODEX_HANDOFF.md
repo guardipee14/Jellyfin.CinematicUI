@@ -4,7 +4,7 @@
 
 Completed October 2, 2026. The interrupted source transfer is repaired, v0.1.5 builds cleanly in CI, and both v0.1.5 and the maintenance v0.1.6 release are published. Clean installation from the public GitHub catalog and the actual published v0.1.5-to-v0.1.6 upgrade through Jellyfin's normal Update Plugins task both passed. [VALIDATION.md](VALIDATION.md) records the evidence and production scope.
 
-The missing `Web/cinematic.css` and `Web/client.js` were recovered exactly from the owner's working v0.1.5 TrueNAS installer archive. Every other original archive file matched the transferred source after normalizing line endings. Both recovered asset hashes match the resources served by the production plugin. No new UI features were added. [RECOVERY.md](RECOVERY.md) records provenance; [README.md](README.md) describes the retained login, hero, theme, and navigation behavior.
+The missing `Web/cinematic.css` and `Web/client.js` were recovered exactly from the owner's working v0.1.5 TrueNAS installer archive. Every other original archive file matched the transferred source after normalizing line endings. Both recovered asset hashes match the resources served by the production v0.1.6 plugin. No new UI features were added during the repository-management milestone. [RECOVERY.md](RECOVERY.md) records provenance; [README.md](README.md) describes login, hero, theme, and navigation behavior.
 
 ## Stable catalog and identity
 
@@ -45,9 +45,11 @@ Publication is serialized. The publisher waits for newly created drafts to appea
 
 See [VALIDATION.md](VALIDATION.md) for run links and exact scope. CI runs disposable Jellyfin 12.1 containers to test catalog installation, manual migration, ABI filtering, the scheduled Update Plugins task, one active identity after restart, unchanged settings/XML, and intact UI injection after a cache-bypassing request. Candidate checks use a synthetic prior version; public release checks use actual prior published packages when available.
 
-The production TrueNAS server was inspected read-only and remains on Jellyfin `12.1.0.0` with Cinematic UI `0.1.5.0`, the expected GUID, and automatic updates enabled. Its container is `ix-jellyfin-jellyfin-1`, with persistent `/config` at `/mnt/New NAS/Apps/jellyfin`. The original manual plugin folder is `/config/plugins/Cinematic UI`.
+After the owner updated/restarted the TrueNAS app, read-only checks confirmed Jellyfin `12.1.0.0` and Cinematic UI `0.1.6.0` loaded and active, the expected GUID, automatic updates enabled, the catalog repository enabled, the settings file present, and one intact UI injection. The current plugin folder is `/config/plugins/Cinematic UI_0.1.6.0`. Its container is `ix-jellyfin-jellyfin-1`, with persistent `/config` at `/mnt/New NAS/Apps/jellyfin`.
 
-Production repositories, files, configuration, and container lifecycle were not changed. No production upgrade/restart or browser visual walkthrough is claimed. The served production resources and recovered source assets match byte-for-byte.
+The agent did not modify production repositories, files, configuration, or container lifecycle. The owner performed the production update/restart. Subsequent browser checks verified the rendered login and hero, More Info navigation, and return to one Home hero. The v0.1.6 production resources match the recovered baseline; no byte-for-byte comparison of pre/post production settings or production playback test is claimed.
+
+The next milestone is existing UI reliability/accessibility in v0.1.7. [ROADMAP.md](ROADMAP.md) records its confirmed issues, acceptance criteria, and the following work. Browser regression fixtures use the real plugin assets with synthetic media and do not require production credentials.
 
 ## TrueNAS fallback constraints
 

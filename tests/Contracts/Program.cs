@@ -20,6 +20,6 @@ foreach (var asset in new[] { "Web/cinematic.css", "Web/client.js", "Configurati
     Require(resource is not null, $"Missing embedded resource {name}");
     using var bytes = new MemoryStream();
     resource!.CopyTo(bytes);
-    Require(bytes.ToArray().SequenceEqual(File.ReadAllBytes(Path.Combine(root, asset))), $"Embedded {asset} differs from recovered source");
+    Require(bytes.ToArray().SequenceEqual(File.ReadAllBytes(Path.Combine(root, asset))), $"Embedded {asset} differs from source");
 }
 Console.WriteLine($"Verified assembly identity, version {metadata.Version}, update metadata, and all embedded resources.");

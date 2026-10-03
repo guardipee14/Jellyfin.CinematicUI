@@ -45,6 +45,24 @@ jobs:
           dotnet restore Jellyfin.Plugin.CinematicUI.csproj
           dotnet build Jellyfin.Plugin.CinematicUI.csproj -c Release --no-restore -warnaserror
           dotnet run --project tests/Contracts/Contracts.csproj -c Release -- .
+      - name: Test desktop and phone browser behavior
+        run: |
+          # Preserve retries of immutable releases that predate the browser suite.
+          if [ "$RELEASE_TAG" = 'v0.1.5' ] || [ "$RELEASE_TAG" = 'v0.1.6' ]; then
+            echo 'Historical release predates browser regression fixtures.'
+            exit 0
+          fi
+          npm ci --ignore-scripts --no-audit --no-fund
+          npx playwright install --with-deps chromium
+          npm run test:browser
+      - name: Preserve failed browser test traces
+        if: failure()
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: browser-failures
+          path: test-results/
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Package and validate runtime artifacts
         run: python scripts/release.py package --tag "$RELEASE_TAG"
       - name: Test catalog install and normal Update Plugins task

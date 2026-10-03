@@ -1,0 +1,11 @@
+{
+  "name": "cinematic-ui-browser-tests",
+  "private": true,
+  "scripts": {
+    "test:browser": "playwright test",
+    "preview:browser": "node tests/web/server.cjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0"
+  }
+}
