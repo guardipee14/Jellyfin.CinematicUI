@@ -35,7 +35,7 @@ Hard-refresh Jellyfin Web after activation. On TrueNAS, use **Apps → Jellyfin 
 
 ## Release procedure and recovery
 
-Follow [PUBLISH-GITHUB.md](PUBLISH-GITHUB.md). For the next release, update the project/metadata versions to a new four-part value such as `0.1.10.0`, update the changelog, timestamp, and displayed settings version, land the source on main, wait for CI, then push the matching `v0.1.10` tag.
+Follow [PUBLISH-GITHUB.md](PUBLISH-GITHUB.md). For the next release, update the project/metadata versions to a new four-part value such as `0.1.11.0`, update the changelog, timestamp, and displayed settings version, land the source on main, wait for CI, then push the matching `v0.1.11` tag.
 
 The release workflow restores/builds with warnings treated as errors, checks compiled assembly identity and exact embedded resources, validates metadata/tag/checksums, and runs tooling and real Jellyfin integration tests. After verification, it uses the built-in `GITHUB_TOKEN` with `contents: write` to stage and verify a draft release, publish its assets, check unauthenticated downloads, and advance the stable manifest. A final test installs from the public GitHub URL and upgrades an actual prior published ZIP when one exists.
 
@@ -59,11 +59,13 @@ During the player milestone, the owner's plugin dashboard reported v0.1.8 Active
 
 After these visual milestones, profile and library-selection reliability remains next. [ROADMAP.md](ROADMAP.md) records account switching/pending requests, configured library-name mismatches, view-enumeration failures, played/keyword exclusions, and repeat history across users. Define fallback behavior before changing it. Browser regression fixtures use the real plugin assets with synthetic media and do not require production credentials.
 
-## v0.1.10 player colors and details candidate
+## Published v0.1.10 player colors and title details
 
-The owner next prioritized remaining blue player accents and cleaner title/details pages using Plex screenshots. The candidate fixes native slider thumb/bar and React palette colors, including custom configured accents and the global-theme opt-out, and the previously collapsed volume slider. It adds smaller posters, clear Play labels, subdued metadata/backdrop, full-width content sections, shared library navigation, and a responsive season episode grid. `EnableDetailsLayout` defaults true for legacy XML and appears under Appearance. Native nodes/handlers, metadata, and lazy artwork remain in place; TV, unknown details, and unknown episode rows fall back.
+The owner next prioritized remaining blue player accents and cleaner title/details pages using Plex screenshots. Published v0.1.10 has immutable source tag `2a53f92589edfc2813fe56de677e8b36cb213be8`. It fixes native slider thumb/bar and React palette colors, including custom configured accents and the global-theme opt-out, and the previously collapsed volume slider. It adds smaller posters, clear Play labels, subdued metadata/backdrop, full-width content sections, shared library navigation, and a responsive season episode grid with two-line long-title captions. `EnableDetailsLayout` defaults true for legacy XML and appears under Appearance. Native nodes/handlers, metadata, and lazy artwork remain in place; TV, unknown details, and unknown episode rows fall back.
 
-Local validation passed all 66 browser checks, 24 tooling tests, the zero-warning build, and compiled contracts. Read-only production series/season DOM inspection informed selectors and returned to the original series page; no media was started and no production configuration or lifecycle was changed during this milestone. Publication and real public install/update validation are pending. See [VALIDATION.md](VALIDATION.md). Profile/library-selection reliability follows this user-prioritized visual milestone.
+All 66 browser checks, 24 tooling tests, the zero-warning build, compiled contracts, and real Jellyfin checks passed CI. The public release run passed clean catalog installation and the actual published v0.1.9-to-v0.1.10 update with settings/XML preserved and one active identity. All six public ZIPs and immutable historical entries verified independently. The manifest commit is `142af8b2dd8c4162877680a59f1d2fcf74a1b987`; v0.1.10's MD5 is `fb09c1a29ff51009272f75384cbac33a`.
+
+Read-only production series/season DOM inspection informed selectors and returned to the original series page. The dashboard confirmed v0.1.9 Active. No media was started and no production configuration, installation, or lifecycle was changed during this milestone. The owner can run Update Plugins, restart through TrueNAS Apps, and hard-refresh to activate v0.1.10. See [VALIDATION.md](VALIDATION.md). Profile/library-selection reliability follows this user-prioritized visual milestone.
 
 ## TrueNAS fallback constraints
 

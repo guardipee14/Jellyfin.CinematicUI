@@ -1,6 +1,6 @@
 # Cinematic UI validation — October 2, 2026
 
-## v0.1.10 player colors and title/details candidate
+## v0.1.10 player colors and title/details publication
 
 The owner's Plex/Jellyfin screenshots and read-only production series/season DOM inspection informed the details layout. Inspection identified hard-coded blue legacy range thumbs/bars and Jellyfin's React palette variables that the earlier theme did not override. The native volume container's zero flex basis also collapsed it after v0.1.9 disabled flex growth; the candidate gives it an explicit 76px basis.
 
@@ -8,7 +8,11 @@ The real plugin assets passed 66 Chromium checks across desktop and 390×844 pho
 
 Visual checks use synthetic artwork/media and fixture handlers based on observed native markup. They cover the title/action layout, dim backdrop, slim gold player timeline, visible volume control, and responsive geometry. They do not claim a production streaming test, actual stream selection/PiP, Firefox/Safari, physical-device, or screen-reader testing. During this milestone, production inspection only navigated to Season 1 and returned to the original series page; no playback, settings, installation, or server lifecycle changes were made.
 
-Publication, CI integration, and actual public catalog upgrade validation remain pending for this candidate.
+The final [source CI](https://github.com/guardipee14/Jellyfin.CinematicUI/actions/runs/37098874044) and [merged main CI](https://github.com/guardipee14/Jellyfin.CinematicUI/actions/runs/37099054338) passed all 66 browser checks, 24 tooling tests, warning-free build/contracts, packaging, and real Jellyfin candidate installation/update checks. The immutable source tag is `2a53f92589edfc2813fe56de677e8b36cb213be8`.
+
+The [publication run](https://github.com/guardipee14/Jellyfin.CinematicUI/actions/runs/37099208924) passed all verification and publication steps. Its public test logged `Testing upgrade from actual published version 0.1.9.0`, followed by successful clean installation and migration/compatible scheduled update, one active plugin, unchanged settings/XML, and intact injection after a hard refresh. An independent unauthenticated fetch verified the exact stable URL, all six ZIPs, checksums/layout/metadata, and unchanged prior entries. The new checksum is `fb09c1a29ff51009272f75384cbac33a`; the stable manifest commit is `142af8b2dd8c4162877680a59f1d2fcf74a1b987`.
+
+The production dashboard reported v0.1.9.0 Active during read-only inspection. The agent did not install or restart production for this milestone. Run the normal Update Plugins task, restart Jellyfin through TrueNAS Apps, then hard-refresh the browser to activate v0.1.10. The details flag defaults on; its Appearance opt-out and the existing player/library/global-theme toggles remain available.
 
 ## Recovery and build
 
@@ -28,6 +32,8 @@ The recovered v0.1.5 source restores and builds for `net10.0` against Jellyfin 1
 - v0.1.8 [publication and published-version upgrade run](https://github.com/guardipee14/Jellyfin.CinematicUI/actions/runs/37091023578): passed, including 32 desktop/phone browser checks, clean public installation, and the actual published v0.1.7-to-v0.1.8 update.
 - [v0.1.9](https://github.com/guardipee14/Jellyfin.CinematicUI/releases/tag/v0.1.9): immutable source tag `d7bac76bcfc052d356953afd4e1fcd3f801925de`.
 - v0.1.9 [publication and published-version upgrade run](https://github.com/guardipee14/Jellyfin.CinematicUI/actions/runs/37094297497): passed, including all 48 browser checks, clean public installation, and the actual published v0.1.8-to-v0.1.9 update.
+- [v0.1.10](https://github.com/guardipee14/Jellyfin.CinematicUI/releases/tag/v0.1.10): immutable source tag `2a53f92589edfc2813fe56de677e8b36cb213be8`.
+- v0.1.10 [publication and published-version upgrade run](https://github.com/guardipee14/Jellyfin.CinematicUI/actions/runs/37099208924): passed, including all 66 browser checks, clean public installation, and the actual published v0.1.9-to-v0.1.10 update.
 
 Stable catalog URL:
 
@@ -37,10 +43,11 @@ https://raw.githubusercontent.com/guardipee14/Jellyfin.CinematicUI/repository/ma
 
 Each runtime ZIP contains only `Jellyfin.Plugin.CinematicUI.dll` and `meta.json` at its root. Jellyfin's required MD5 checksum is computed from the exact ZIP bytes. Publication downloads and verifies the staged ZIP, then checks public package downloads before advancing the cumulative manifest. The GUID remains `e4c17f1b-c451-4a31-b98c-5d0ef44f9a21`, with target ABI `12.1.0.0`.
 
-The exact stable URL was also fetched independently without authentication after publication. The latest manifest retains all five versions in descending order, and all public ZIP downloads passed checksum, contents, and metadata validation. Every prior version entry remains exactly unchanged:
+The exact stable URL was also fetched independently without authentication after publication. The latest manifest retains all six versions in descending order, and all public ZIP downloads passed checksum, contents, and metadata validation. Every prior version entry remains exactly unchanged:
 
 | Version | Jellyfin MD5 checksum |
 | --- | --- |
+| `0.1.10.0` | `fb09c1a29ff51009272f75384cbac33a` |
 | `0.1.9.0` | `709239d9277faaa2e77774d5d6fae7ef` |
 | `0.1.8.0` | `9c8ff3fd3c4b6da7bfa4d7f97d38d606` |
 | `0.1.7.0` | `3253d018513ddcff00cbf6b95ef8b2fd` |
