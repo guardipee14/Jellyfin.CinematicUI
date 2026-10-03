@@ -18,7 +18,7 @@
     <div data-role="content">
         <div class="content-primary">
             <h2>Cinematic UI</h2>
-            <div class="cinematicVersion">v0.1.10 · Jellyfin 12.1</div>
+            <div class="cinematicVersion">v0.1.11 · Jellyfin 12.1</div>
             <p>One plugin for the cinematic profile login, Plex-inspired global theme, navigation cleanup, and rotating library-driven Home hero.</p>
 
             <div class="cinematicNotice">
@@ -36,6 +36,7 @@
                         <div class="checkboxContainer checkboxContainer-withDescription"><label class="emby-checkbox-label"><input id="EnablePlayerLayout" type="checkbox" is="emby-checkbox" /><span>Use Plex-style video player layout</span></label><div class="fieldDescription">Uses a slim timeline and compact controls while retaining Jellyfin playback, audio, subtitles, fullscreen, and automatic control hiding.</div></div>
                         <div class="checkboxContainer checkboxContainer-withDescription"><label class="emby-checkbox-label"><input id="EnableDetailsLayout" type="checkbox" is="emby-checkbox" /><span>Use Plex-style title details</span></label><div class="fieldDescription">Uses smaller posters, clear Play actions, a subdued backdrop, and a season episode grid. Library navigation follows the library layout setting.</div></div>
                         <div class="inputContainer"><label class="inputLabel inputLabelUnfocused" for="AccentColor">Accent color</label><input id="AccentColor" is="emby-input" type="text" placeholder="#e5a00d" /></div>
+                        <div class="checkboxContainer checkboxContainer-withDescription"><label class="emby-checkbox-label"><input id="EnableProfileLayout" type="checkbox" is="emby-checkbox" /><span>Use clean profile and user menu</span></label><div class="fieldDescription">Keeps Jellyfin account and sign-out controls with compact spacing and the configured accent.</div></div>
                     </section>
 
                     <section class="cinematicSettingsGroup">
@@ -59,7 +60,7 @@
                         <div class="checkboxContainer checkboxContainer-withDescription"><label class="emby-checkbox-label"><input id="HeroShowNavigationArrows" type="checkbox" is="emby-checkbox" /><span>Show Previous / Next controls</span></label></div>
                         <div class="checkboxContainer checkboxContainer-withDescription"><label class="emby-checkbox-label"><input id="HeroShowDots" type="checkbox" is="emby-checkbox" /><span>Show carousel dots</span></label></div>
                         <div class="checkboxContainer checkboxContainer-withDescription"><label class="emby-checkbox-label"><input id="HeroExcludePlayed" type="checkbox" is="emby-checkbox" /><span>Exclude fully played titles from the hero</span></label></div>
-                        <div class="inputContainer"><label class="inputLabel inputLabelUnfocused" for="HeroLibraryNames">Hero source libraries (comma-separated)</label><input id="HeroLibraryNames" is="emby-input" type="text" placeholder="Anime,Movies,TV Shows" /><div class="fieldDescription">If these user-visible libraries are found, the hero stays inside them and does not fall back to unrelated libraries.</div></div>
+                        <div class="inputContainer"><label class="inputLabel inputLabelUnfocused" for="HeroLibraryNames">Hero source libraries (comma-separated)</label><input id="HeroLibraryNames" is="emby-input" type="text" placeholder="Anime,Movies,TV Shows" /><div class="fieldDescription">Named libraries must match libraries available to the current user. No matches keeps the native Home page. Leave blank to use all available movie and TV libraries.</div></div>
                         <div class="inputContainer"><label class="inputLabel inputLabelUnfocused" for="HeroExcludedTitleKeywords">Exclude hero titles containing (comma-separated)</label><input id="HeroExcludedTitleKeywords" is="emby-input" type="text" placeholder="example title, another title" /><div class="fieldDescription">Optional. Matching is case-insensitive and only affects the hero carousel.</div></div>
                         <div class="inputContainer"><label class="inputLabel inputLabelUnfocused" for="HeroRotationSeconds">Rotation seconds</label><input id="HeroRotationSeconds" is="emby-input" type="number" min="5" max="120" /></div>
                         <div class="inputContainer"><label class="inputLabel inputLabelUnfocused" for="HeroMaxItems">Featured item count</label><input id="HeroMaxItems" is="emby-input" type="number" min="3" max="30" /></div>
@@ -94,7 +95,7 @@
     const pluginId = 'e4c17f1b-c451-4a31-b98c-5d0ef44f9a21';
     const page = document.querySelector('#CinematicUiConfigPage');
     const boolIds = [
-        'EnableInjection','EnableGlobalTheme','EnableLibraryLayout','EnablePlayerLayout','EnableDetailsLayout','EnableLoginExperience','LoginHideHeaderBranding','LoginBackgroundMotion',
+        'EnableInjection','EnableGlobalTheme','EnableLibraryLayout','EnablePlayerLayout','EnableDetailsLayout','EnableProfileLayout','EnableLoginExperience','LoginHideHeaderBranding','LoginBackgroundMotion',
         'EnableHomeHero','HeroUseLogos','HeroPauseOnHover','HeroShowNavigationArrows','HeroShowDots','HeroExcludePlayed',
         'HideMyMediaRow','HideOtherVideosHomeRows'
     ];
@@ -122,7 +123,7 @@
             boolIds.forEach(function (id) { cfg[id] = page.querySelector('#' + id).checked; });
             cfg.ServerTitle = page.querySelector('#ServerTitle').value || "DONAVEN'S JELLYFIN";
             cfg.AccentColor = page.querySelector('#AccentColor').value || '#e5a00d';
-            cfg.HeroLibraryNames = page.querySelector('#HeroLibraryNames').value || 'Anime,Movies,TV Shows';
+            cfg.HeroLibraryNames = page.querySelector('#HeroLibraryNames').value.trim();
             cfg.HeroExcludedTitleKeywords = page.querySelector('#HeroExcludedTitleKeywords').value || '';
             cfg.HiddenNavigationLibraryNames = page.querySelector('#HiddenNavigationLibraryNames').value || '';
             cfg.HeroRotationSeconds = parseInt(page.querySelector('#HeroRotationSeconds').value || '12', 10);

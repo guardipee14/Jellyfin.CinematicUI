@@ -26,6 +26,8 @@ Require(restored.EnablePlayerLayout, "Legacy XML must default the player appeara
 Require(configJson.RootElement.GetProperty("enablePlayerLayout").GetBoolean(), "Player appearance flag is missing from injected configuration");
 Require(restored.EnableDetailsLayout, "Legacy XML must default the details appearance flag on");
 Require(configJson.RootElement.GetProperty("enableDetailsLayout").GetBoolean(), "Details appearance flag is missing from injected configuration");
+Require(restored.EnableProfileLayout, "Legacy XML must default the profile appearance flag on");
+Require(configJson.RootElement.GetProperty("enableProfileLayout").GetBoolean(), "Profile appearance flag is missing from injected configuration");
 foreach (var asset in new[] { "Web/cinematic.css", "Web/client.js", "Configuration/configPage.html" })
 {
     var name = "Jellyfin.Plugin.CinematicUI." + asset.Replace('/', '.');

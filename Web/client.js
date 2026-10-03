@@ -6,6 +6,7 @@
         enableLibraryLayout: true,
         enablePlayerLayout: true,
         enableDetailsLayout: true,
+        enableProfileLayout: true,
         enableLoginExperience: true,
         enableHomeHero: true,
         hideMyMediaRow: true,
@@ -54,8 +55,7 @@
     let heroTimer = null;
     let heroItems = [];
     let heroIndex = 0;
-    let lastHeroUserId = null;
-    let heroLoading = false;
+    let heroContext = null;
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     let heroPaused = reducedMotion.matches;
     let heroHovered = false;
@@ -63,6 +63,7 @@
     let currentLogoObjectUrl = null;
     let activeBgLayer = 0;
     let heroRenderToken = 0;
+    const heroObjectUrls = new Set();
 
     function log(...args) {
         console.debug('[Cinematic UI]', ...args);
@@ -103,6 +104,30 @@
             if (span) span.textContent = 'Sign in with another account';
             else manual.textContent = 'Sign in with another account';
             manual.dataset.cinematicRenamed = '1';
+        }
+    }
+
+    function applyProfileLayout() {
+        const enabled = !!(cfg.enableGlobalTheme && cfg.enableProfileLayout && !document.documentElement.classList.contains('layout-tv'));
+        const page = Array.from(document.querySelectorAll('#userProfilePage')).find(visible);
+        const known = !!(enabled && page?.querySelector('.imagePlaceHolder') && page.querySelector('.updatePasswordForm'));
+        document.querySelectorAll('.cinematicProfilePage').forEach(element => {
+            if (!known || element !== page) element.classList.remove('cinematicProfilePage');
+        });
+        if (known && !page.classList.contains('cinematicProfilePage')) page.classList.add('cinematicProfilePage');
+        document.querySelectorAll('.cinematicProfileHeading').forEach(element => {
+            if (!known || !page.contains(element)) element.remove();
+        });
+        if (known && !page.querySelector('.cinematicProfileHeading')) {
+            const heading = document.createElement('h1');
+            heading.className = 'cinematicProfileHeading';
+            heading.textContent = page.dataset.title || 'Profile';
+            page.firstElementChild.prepend(heading);
+        }
+        for (const menu of document.querySelectorAll('.MuiMenu-list[role="menu"]')) {
+            const knownMenu = enabled && !!menu.querySelector('a[role="menuitem"][href^="#/userprofile?"]') && !!menu.querySelector('a[href="#/mypreferencesmenu"]');
+            const paper = menu.closest('.MuiMenu-paper');
+            if (paper && paper.classList.contains('cinematicUserMenu') !== knownMenu) paper.classList.toggle('cinematicUserMenu', knownMenu);
         }
     }
 
@@ -367,9 +392,14 @@
                 });
             });
 
-            const pool = matching.length ? matching : servers;
-            pool.sort((a, b) => Number(b.DateLastAccessed || 0) - Number(a.DateLastAccessed || 0));
+            // Never send a credential saved for another server to this origin.
+            if (!matching.length) return null;
+            const routeServer = new URLSearchParams(location.hash.split('?')[1] || '').get('serverId');
+            const pool = routeServer ? matching.filter(server => server.Id === routeServer) : matching;
+            const accessed = server => Number(server.DateLastAccessed) || Date.parse(server.DateLastAccessed) || 0;
+            pool.sort((a, b) => accessed(b) - accessed(a));
             const server = pool[0];
+            if (!server) return null;
             return {
                 token: server.AccessToken,
                 userId: server.UserId,
@@ -392,7 +422,8 @@
         const response = await fetch(path, {
             credentials: 'same-origin',
             cache: 'no-store',
-            headers: authHeaders(credentials)
+            headers: authHeaders(credentials),
+            signal: credentials.signal
         });
         if (!response.ok) throw new Error(`${path} -> HTTP ${response.status}`);
         return response.json();
@@ -451,8 +482,7 @@
         });
 
         if (requested.length) {
-            const exact = usable.filter(view => requested.includes(String(view.Name || '').trim().toLowerCase()));
-            if (exact.length) return exact;
+            return usable.filter(view => requested.includes(String(view.Name || '').trim().toLowerCase()));
         }
 
         return usable.filter(view => {
@@ -515,21 +545,25 @@
         });
     }
 
-    function loadRecentHeroIds() {
+    function historyKey(credentials) {
+        return `cinematic-ui-hero-history:${encodeURIComponent(credentials.serverId)}:${encodeURIComponent(credentials.userId)}`;
+    }
+
+    function loadRecentHeroIds(credentials) {
         try {
-            const value = JSON.parse(localStorage.getItem('cinematic-ui-hero-history') || '[]');
-            return Array.isArray(value) ? value.filter(Boolean) : [];
+            const value = JSON.parse(localStorage.getItem(historyKey(credentials)) || '[]');
+            return Array.isArray(value) ? value.filter(id => typeof id === 'string' && id).slice(0, 30) : [];
         } catch (_) {
             return [];
         }
     }
 
-    function rememberHeroId(id) {
+    function rememberHeroId(id, credentials) {
         if (!id) return;
         const max = Math.max(0, Math.min(30, cfg.heroAvoidRepeatCount || 0));
         if (!max) return;
-        const next = [id].concat(loadRecentHeroIds().filter(value => value !== id)).slice(0, max);
-        try { localStorage.setItem('cinematic-ui-hero-history', JSON.stringify(next)); } catch (_) { }
+        const next = [id].concat(loadRecentHeroIds(credentials).filter(value => value !== id)).slice(0, max);
+        try { localStorage.setItem(historyKey(credentials), JSON.stringify(next)); } catch (_) { }
     }
 
     function heroScore(item, recentIds) {
@@ -544,8 +578,8 @@
         return score;
     }
 
-    function rankHeroItems(items) {
-        const recentIds = new Set(loadRecentHeroIds().slice(0, Math.max(0, cfg.heroAvoidRepeatCount || 0)));
+    function rankHeroItems(items, credentials) {
+        const recentIds = new Set(loadRecentHeroIds(credentials).slice(0, Math.max(0, cfg.heroAvoidRepeatCount || 0)));
         const excludedKeywords = configuredHeroExcludedKeywords();
         return uniqueById(items)
             .filter(item => item && item.Id && item.Name && hasUsefulImage(item))
@@ -568,8 +602,12 @@
             views = chooseHeroViews(await getUserViews(credentials));
             if (views.length) log('hero source libraries:', views.map(v => v.Name).join(', '));
         } catch (error) {
-            warn('could not enumerate hero source libraries; using global fallback', error);
+            if (error.name === 'AbortError') throw error;
+            throw new Error('Hero source libraries could not be read; retaining native Home', { cause: error });
         }
+        // A typo, empty allowed view set, or unsupported library must not widen the
+        // selection to unrelated libraries. Normal Jellyfin Home is the fallback.
+        if (!views.length) return [];
 
         const perViewAttempts = async (sortBy, requireBackdrop) => {
             for (const view of views) {
@@ -578,6 +616,7 @@
                     collected = uniqueById(collected.concat(result));
                     log(`hero ${sortBy} query for ${view.Name} returned ${result.length}`);
                 } catch (error) {
+                    if (error.name === 'AbortError') throw error;
                     lastError = error;
                     warn(`hero query for ${view.Name} failed`, error);
                 }
@@ -588,35 +627,17 @@
             // Stay inside the selected libraries. This intentionally avoids a root-level
             // fallback so a private/Other Videos library cannot leak into the hero.
             await perViewAttempts('Random', true);
-            if (collected.length < 6) await perViewAttempts('DateCreated', true);
-            if (collected.length < 6) await perViewAttempts('DateCreated', false);
-            if (collected.length < 3) {
+            if (rankHeroItems(collected, credentials).length < 6) await perViewAttempts('DateCreated', true);
+            if (rankHeroItems(collected, credentials).length < 6) await perViewAttempts('DateCreated', false);
+            if (rankHeroItems(collected, credentials).length < 3) {
                 for (const view of views) {
                     try { collected = uniqueById(collected.concat(await queryLatest(credentials, view.Id))); }
-                    catch (error) { lastError = error; }
-                }
-            }
-        } else {
-            // Only use a root-level fallback when no eligible user view could be resolved.
-            const attempts = [
-                () => queryItems(credentials, 'Random', true, null),
-                () => queryItems(credentials, 'DateCreated', true, null),
-                () => queryItems(credentials, 'DateCreated', false, null),
-                () => queryLatest(credentials, null)
-            ];
-
-            for (let i = 0; i < attempts.length; i += 1) {
-                try {
-                    const result = await attempts[i]();
-                    collected = uniqueById(collected.concat(result));
-                    if (collected.length >= 6) break;
-                } catch (error) {
-                    lastError = error;
+                    catch (error) { if (error.name === 'AbortError') throw error; lastError = error; }
                 }
             }
         }
 
-        const ranked = rankHeroItems(collected);
+        const ranked = rankHeroItems(collected, credentials);
         if (!ranked.length && lastError) throw lastError;
         return ranked.slice(0, Math.max(3, Math.min(30, cfg.heroMaxItems || 12)));
     }
@@ -648,11 +669,16 @@
         const response = await fetch(path, {
             credentials: 'same-origin',
             cache: cacheMode || 'force-cache',
-            headers: authHeaders(credentials)
+            headers: authHeaders(credentials),
+            signal: credentials.signal
         });
         if (!response.ok) throw new Error(`${path} -> HTTP ${response.status}`);
-        return URL.createObjectURL(await response.blob());
+        const url = URL.createObjectURL(await response.blob());
+        heroObjectUrls.add(url);
+        return url;
     }
+
+    function releaseHeroUrl(url) { URL.revokeObjectURL(url); heroObjectUrls.delete(url); }
 
     function formatRuntime(ticks) {
         if (!ticks) return '';
@@ -803,16 +829,17 @@
     }
 
     async function renderHero(item, credentials) {
-        if (!item) return;
+        if (!item || !sameCredentials(credentials, heroContext?.credentials)) return;
+        credentials = heroContext.credentials;
         const renderToken = ++heroRenderToken;
         const hero = document.querySelector('#cinematicHero');
-        if (!hero) return;
+        if (!hero || !ownsHero(credentials, hero)) return;
 
         const backgroundRequest = heroImageRequest(item);
         if (!backgroundRequest) throw new Error('No usable hero artwork');
         const backgroundUrl = await objectUrl(backgroundRequest, credentials, 'force-cache');
-        if (renderToken !== heroRenderToken) {
-            URL.revokeObjectURL(backgroundUrl);
+        if (renderToken !== heroRenderToken || !ownsHero(credentials, hero)) {
+            releaseHeroUrl(backgroundUrl);
             return;
         }
 
@@ -837,7 +864,7 @@
         logo.removeAttribute('src');
 
         if (currentLogoObjectUrl) {
-            URL.revokeObjectURL(currentLogoObjectUrl);
+            releaseHeroUrl(currentLogoObjectUrl);
             currentLogoObjectUrl = null;
         }
 
@@ -846,8 +873,9 @@
             if (logoRequest) {
                 try {
                     const logoUrl = await objectUrl(logoRequest, credentials, 'force-cache');
-                    if (renderToken !== heroRenderToken) {
-                        URL.revokeObjectURL(logoUrl);
+                    if (renderToken !== heroRenderToken || !ownsHero(credentials, hero)) {
+                        releaseHeroUrl(logoUrl);
+                        releaseHeroUrl(backgroundUrl);
                         return;
                     }
                     currentLogoObjectUrl = logoUrl;
@@ -861,19 +889,21 @@
             }
         }
 
-        const open = () => { location.hash = detailsUrl(item, credentials); };
+        if (!ownsHero(credentials, hero)) { releaseHeroUrl(backgroundUrl); return; }
+        const open = () => { if (ownsHero(credentials, hero)) location.hash = detailsUrl(item, credentials); };
         hero.querySelector('.cinematicHeroMore').onclick = open;
         hero.querySelector('.cinematicHeroPlay').onclick = function () {
-            sessionStorage.setItem('cinematic-ui-autoplay-id', item.Id);
+            if (!ownsHero(credentials, hero)) return;
+            sessionStorage.setItem('cinematic-ui-autoplay-id', JSON.stringify({ id: item.Id, userId: credentials.userId, serverId: credentials.serverId }));
             open();
         };
 
         updateDots(hero, credentials);
-        rememberHeroId(item.Id);
+        rememberHeroId(item.Id, credentials);
 
         requestAnimationFrame(() => {
-            if (renderToken !== heroRenderToken) {
-                URL.revokeObjectURL(backgroundUrl);
+            if (renderToken !== heroRenderToken || !ownsHero(credentials, hero)) {
+                releaseHeroUrl(backgroundUrl);
                 return;
             }
             hero.dataset.ready = '1';
@@ -888,12 +918,14 @@
                 if (!oldLayer.classList.contains('active') && oldLayer.style.backgroundImage === inactiveBackground) {
                     oldLayer.style.backgroundImage = 'none';
                 }
-                if (previousBgUrl && previousBgUrl !== currentBgObjectUrl) URL.revokeObjectURL(previousBgUrl);
+                if (previousBgUrl && previousBgUrl !== currentBgObjectUrl) releaseHeroUrl(previousBgUrl);
             }, 950);
         });
     }
 
     function restartHeroTimer(credentials) {
+        if (!sameCredentials(credentials, heroContext?.credentials)) return;
+        credentials = heroContext.credentials;
         if (heroTimer) clearInterval(heroTimer);
         heroTimer = null;
         const rotation = document.querySelector('#cinematicHero .cinematicHeroRotation');
@@ -904,33 +936,54 @@
         }
         if (heroItems.length < 2 || heroPaused || heroHovered || document.hidden || !document.body.classList.contains('cinematic-home')) return;
         heroTimer = setInterval(() => {
+            if (!ownsHero(credentials, document.querySelector('#cinematicHero'))) { schedule(); return; }
             if (heroPaused || heroHovered) return;
             heroIndex = (heroIndex + 1) % heroItems.length;
             void renderHero(heroItems[heroIndex], credentials).catch(error => warn('hero rotation failed', error));
         }, Math.max(5, cfg.heroRotationSeconds || 12) * 1000);
     }
 
+    function sameCredentials(a, b) {
+        return !!(a && b && a.userId === b.userId && a.serverId === b.serverId && a.token === b.token);
+    }
+
+    function ownsHero(credentials, hero) {
+        return !!(heroContext && credentials === heroContext.credentials && !credentials.signal.aborted &&
+            sameCredentials(credentials, getCredentials()) && heroContext.home.isConnected && visible(heroContext.home) &&
+            hero?.isConnected && heroContext.home.contains(hero));
+    }
+
+    function clearHero() {
+        heroContext?.controller.abort();
+        heroContext = null;
+        ++heroRenderToken;
+        if (heroTimer) clearInterval(heroTimer);
+        heroTimer = null;
+        heroItems = [];
+        heroIndex = 0;
+        activeBgLayer = 0;
+        heroHovered = false;
+        heroPaused = reducedMotion.matches;
+        for (const url of heroObjectUrls) releaseHeroUrl(url);
+        currentBgObjectUrl = currentLogoObjectUrl = null;
+        document.querySelector('#cinematicHero')?.remove();
+    }
+
     async function ensureHero(home) {
-        if (!cfg.enableHomeHero) {
-            document.querySelector('#cinematicHero')?.remove();
-            return;
+        const current = getCredentials();
+        if (!cfg.enableHomeHero || !current) { if (heroContext || document.querySelector('#cinematicHero')) clearHero(); return; }
+        if (!heroContext || heroContext.home !== home || !sameCredentials(current, heroContext.credentials)) {
+            clearHero();
+            const controller = new AbortController();
+            heroContext = { home, controller, credentials: { ...current, signal: controller.signal }, attempted: false };
         }
-
-        const credentials = getCredentials();
-        if (!credentials || heroLoading) return;
-
-        if (credentials.userId === lastHeroUserId && heroItems.length) {
-            if (!document.querySelector('#cinematicHero')) {
-                createHero(home);
-                await renderHero(heroItems[heroIndex] || heroItems[0], credentials);
-            }
-            if (!heroTimer) restartHeroTimer(credentials);
-            return;
-        }
-
-        heroLoading = true;
+        const context = heroContext;
+        const credentials = context.credentials;
+        if (context.attempted) { if (!heroTimer && heroItems.length) restartHeroTimer(credentials); return; }
+        context.attempted = true;
         try {
             const items = await fetchHeroItems(credentials);
+            if (heroContext !== context || !sameCredentials(credentials, getCredentials()) || !home.isConnected || !visible(home)) return;
             if (!items.length) {
                 document.querySelector('#cinematicHero')?.remove();
                 warn('no usable movie/series items found for the hero');
@@ -939,26 +992,31 @@
 
             heroItems = items;
             heroIndex = 0;
-            lastHeroUserId = credentials.userId;
             createHero(home);
             await renderHero(heroItems[0], credentials);
             restartHeroTimer(credentials);
             log(`hero ready with ${heroItems.length} items`);
         } catch (error) {
+            if (heroContext !== context || error.name === 'AbortError') return;
             document.querySelector('#cinematicHero')?.remove();
             warn('hero load failed; keeping the normal Jellyfin home instead', error);
-        } finally {
-            heroLoading = false;
         }
     }
 
     function maybeAutoplayDetails() {
-        const requested = sessionStorage.getItem('cinematic-ui-autoplay-id');
-        if (!requested || !location.hash.includes(`id=${requested}`)) return;
+        let requested;
+        try { requested = JSON.parse(sessionStorage.getItem('cinematic-ui-autoplay-id') || 'null'); } catch (_) { sessionStorage.removeItem('cinematic-ui-autoplay-id'); return; }
+        if (!requested) return;
+        const credentials = getCredentials();
+        if (!credentials || requested.userId !== credentials.userId || requested.serverId !== credentials.serverId) {
+            sessionStorage.removeItem('cinematic-ui-autoplay-id');
+            return;
+        }
+        if (new URLSearchParams(location.hash.split('?')[1] || '').get('id') !== requested.id) return;
         const play = document.querySelector('#itemDetailPage:not(.hide) .btnPlay, #itemDetailPage:not(.hide) button[title="Play"], #itemDetailPage:not(.hide) button[aria-label="Play"]');
         if (play) {
             sessionStorage.removeItem('cinematic-ui-autoplay-id');
-            setTimeout(() => play.click(), 150);
+            setTimeout(() => { if (sameCredentials(credentials, getCredentials()) && play.isConnected && visible(play)) play.click(); }, 150);
         }
     }
 
@@ -967,8 +1025,7 @@
         const active = !!(home && visible(home));
         document.body.classList.toggle('cinematic-home', active);
         if (!active) {
-            if (heroTimer) { clearInterval(heroTimer); heroTimer = null; }
-            heroHovered = false;
+            if (heroContext || document.querySelector('#cinematicHero')) clearHero();
             return;
         }
 
@@ -981,6 +1038,7 @@
         try { applyGlobalTheme(); } catch (error) { warn('global theme apply failed', error); }
         try { applyNavigationVisibility(); } catch (error) { warn('navigation apply failed', error); }
         try { applyLogin(); } catch (error) { warn('login apply failed', error); }
+        try { applyProfileLayout(); } catch (error) { warn('profile layout apply failed', error); }
         try { applyDetailsLayout(); } catch (error) { warn('details layout apply failed', error); }
         try { applyLibraryLayout(); } catch (error) { warn('library layout apply failed', error); }
         try { applyPlayerLayout(); } catch (error) { warn('player layout apply failed', error); }
@@ -1000,6 +1058,7 @@
 
     window.addEventListener('hashchange', schedule);
     window.addEventListener('popstate', schedule);
+    window.addEventListener('storage', event => { if (event.key === 'jellyfin_credentials') { clearHero(); schedule(); } });
     reducedMotion.addEventListener('change', () => {
         if (reducedMotion.matches) heroPaused = true;
         const credentials = getCredentials();

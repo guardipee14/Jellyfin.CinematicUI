@@ -322,3 +322,26 @@ body.cinematic-home #homeTab .cardText-secondary{font-size:.82rem!important;colo
 @media(max-width:800px){#cinematicHero[data-ready="1"]{min-height:470px}#cinematicHero .cinematicHeroContent{width:auto;right:1.4rem;left:1.4rem;bottom:2.3rem}#cinematicHero .cinematicHeroLogo{max-width:min(420px,72vw);max-height:125px}#cinematicHero .cinematicHeroTitle{font-size:clamp(2rem,8vw,3.35rem)}#cinematicHero .cinematicHeroOverview{-webkit-line-clamp:2}#cinematicHero .cinematicHeroNav{right:.8rem;top:1rem;transform:none;flex-direction:row}#cinematicHero .cinematicHeroNav button{width:40px;height:40px;min-height:40px;font-size:1.65rem}#cinematicHero .cinematicHeroDots{right:1rem;bottom:.8rem}body.cinematic-home #homeTab .portraitCard{width:9.6em!important}}
 @media(max-width:560px){#cinematicHero[data-ready="1"]{min-height:430px;border-radius:0 0 12px 12px}#cinematicHero .cinematicHeroContent{left:1rem;right:1rem;bottom:2.5rem}#cinematicHero .cinematicHeroLogo{max-width:72vw;max-height:100px}#cinematicHero .cinematicHeroMeta{font-size:.88rem}#cinematicHero .cinematicHeroOverview{display:none}#cinematicHero .cinematicHeroActions{margin-top:.9rem}#cinematicHero button{min-height:2.65rem;padding:0 1rem}#cinematicHero .cinematicHeroDots{max-width:70vw;overflow-x:auto}body.cinematic-login #loginPage>.padded-left.padded-right.padded-bottom-page{padding:4rem 1rem 2rem!important}body.cinematic-login #loginPage #divUsers{gap:1rem}body.cinematic-login #loginPage #divUsers .card{width:min(31vw,130px)!important}}
 @media(prefers-reduced-motion:reduce){body.cinematic-login.cinematic-login-motion #loginPage::after{animation:none!important}.card{transition:none!important}.card:hover{transform:none!important}#cinematicHero .cinematicHeroBg{transition:none!important;transform:scale(var(--cinematic-hero-zoom,1.08))!important}}
+
+/* Native profile controls and React account menu, scoped to recognized structures. */
+body.cinematic-global .cinematicUserMenu.MuiMenu-paper{min-width:240px;max-width:calc(100vw - 24px);background:#252525!important;background-image:none!important;border:1px solid rgba(255,255,255,.1);border-radius:8px!important;box-shadow:0 12px 40px rgba(0,0,0,.4)!important}
+body.cinematic-global .cinematicUserMenu .MuiMenu-list{padding:8px}
+body.cinematic-global .cinematicUserMenu .MuiMenuItem-root{min-height:44px;border-radius:4px;padding:10px 14px;color:#eee;font-size:14px}
+body.cinematic-global .cinematicUserMenu .MuiListItemIcon-root{min-width:36px;color:#aaa}
+body.cinematic-global .cinematicUserMenu .MuiMenuItem-root:hover,body.cinematic-global .cinematicUserMenu .MuiMenuItem-root.Mui-focusVisible,body.cinematic-global .cinematicUserMenu .MuiMenuItem-root:focus-visible{background:rgba(255,255,255,.07)!important;color:var(--cinematic-accent)!important;outline:2px solid var(--cinematic-accent);outline-offset:-2px}
+body.cinematic-global .cinematicUserMenu .MuiMenuItem-root:hover .MuiListItemIcon-root,body.cinematic-global .cinematicUserMenu .MuiMenuItem-root:focus-visible .MuiListItemIcon-root{color:inherit}
+body.cinematic-global .cinematicUserMenu .MuiDivider-root{margin:8px 6px;border-color:rgba(255,255,255,.09)}
+body.cinematic-global .cinematicProfilePage>.padded-left{max-width:720px;margin:auto;padding:44px 28px 64px}
+body.cinematic-global .cinematicProfilePage .cinematicProfileHeading{font-size:28px;font-weight:600;margin:0 0 28px}
+body.cinematic-global .cinematicProfilePage .readOnlyContent{max-width:none!important;padding:24px!important;margin:0 0 24px!important;background:#202020;border:1px solid rgba(255,255,255,.08);border-radius:8px;gap:24px}
+body.cinematic-global .cinematicProfilePage .imagePlaceHolder{flex:0 0 112px;max-width:112px!important}
+body.cinematic-global .cinematicProfilePage #image{width:112px!important;height:112px!important}
+body.cinematic-global .cinematicProfilePage .imagePlaceHolder+div{margin:0!important;align-items:flex-start!important;min-width:0}
+body.cinematic-global .cinematicProfilePage .username{font-size:24px!important;overflow-wrap:anywhere}
+body.cinematic-global .cinematicProfilePage .updatePasswordForm{max-width:none!important;padding:28px;background:#202020;border:1px solid rgba(255,255,255,.08);border-radius:8px}
+body.cinematic-global .cinematicProfilePage .updatePasswordForm .detailSection{max-width:420px}
+body.cinematic-global .cinematicProfilePage .inputContainer{margin-bottom:22px}
+body.cinematic-global .cinematicProfilePage .inputLabel{font-size:13px;color:#bbb}
+body.cinematic-global .cinematicProfilePage .emby-input{min-height:44px;background:#151515;border:1px solid #444;border-radius:4px}
+body.cinematic-global .cinematicProfilePage .emby-input:focus{border-color:var(--cinematic-accent);outline:2px solid var(--cinematic-accent);outline-offset:2px}
+@media(max-width:600px){body.cinematic-global .cinematicProfilePage>.padded-left{padding:24px 16px 48px}body.cinematic-global .cinematicProfilePage .readOnlyContent{padding:20px!important;gap:18px}body.cinematic-global .cinematicProfilePage .imagePlaceHolder{flex-basis:80px;max-width:80px!important}body.cinematic-global .cinematicProfilePage #image{width:80px!important;height:80px!important}body.cinematic-global .cinematicProfilePage .username{font-size:21px!important}body.cinematic-global .cinematicProfilePage .updatePasswordForm{padding:20px}}
