@@ -4,7 +4,7 @@
 
 Completed October 2, 2026. The interrupted source transfer is repaired, v0.1.5 builds cleanly in CI, and both v0.1.5 and the maintenance v0.1.6 release are published. Clean installation from the public GitHub catalog and the actual published v0.1.5-to-v0.1.6 upgrade through Jellyfin's normal Update Plugins task both passed. [VALIDATION.md](VALIDATION.md) records the evidence and production scope.
 
-The missing `Web/cinematic.css` and `Web/client.js` were recovered exactly from the owner's working v0.1.5 TrueNAS installer archive. Every other original archive file matched the transferred source after normalizing line endings. Both recovered asset hashes match the resources served by the production plugin. No new UI features were added. [RECOVERY.md](RECOVERY.md) records provenance; [README.md](README.md) describes the retained login, hero, theme, and navigation behavior.
+The missing `Web/cinematic.css` and `Web/client.js` were recovered exactly from the owner's working v0.1.5 TrueNAS installer archive. Every other original archive file matched the transferred source after normalizing line endings. Both recovered asset hashes match the resources served by the production v0.1.6 plugin. No new UI features were added during the repository-management milestone. [RECOVERY.md](RECOVERY.md) records provenance; [README.md](README.md) describes login, hero, theme, and navigation behavior.
 
 ## Stable catalog and identity
 

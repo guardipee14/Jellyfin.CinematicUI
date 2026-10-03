@@ -32,7 +32,7 @@ Settings remain in `/config/plugins/configurations/Jellyfin.Plugin.CinematicUI.x
 - Theme: dark interface with gold accent, card hover/focus, progress indicators, dialogs, inputs, detail styling, optional My Media and Other Videos row hiding.
 - Navigation hiding is cosmetic. Actual library permissions remain under **Dashboard → Users → Library Access**.
 
-The missing v0.1.5 Web resources were restored from the original working installer archive. v0.1.5/v0.1.6 preserve that baseline. v0.1.7 adds keyboard-safe hero indicators, explicit Pause/Resume rotation, reduced-motion defaults, scrollable profile choices, and support for Jellyfin 12.1's React header in existing branding/navigation settings. See [RECOVERY.md](RECOVERY.md) for provenance and [ROADMAP.md](ROADMAP.md) for milestone order.
+The missing v0.1.5 Web resources were restored from the original working installer archive. v0.1.5/v0.1.6 preserve that baseline. v0.1.7 adds keyboard-safe hero indicators, explicit Pause/Resume rotation, reduced-motion defaults, stable artwork during rapid title changes, scrollable profile choices, and support for Jellyfin 12.1's React header in existing branding/navigation settings. See [RECOVERY.md](RECOVERY.md) for provenance and [ROADMAP.md](ROADMAP.md) for milestone order.
 
 ## Manual TrueNAS fallback and rollback
 

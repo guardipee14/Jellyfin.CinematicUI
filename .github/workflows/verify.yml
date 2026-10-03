@@ -47,6 +47,11 @@ jobs:
           dotnet run --project tests/Contracts/Contracts.csproj -c Release -- .
       - name: Test desktop and phone browser behavior
         run: |
+          # Preserve retries of immutable releases that predate the browser suite.
+          if [ "$RELEASE_TAG" = 'v0.1.5' ] || [ "$RELEASE_TAG" = 'v0.1.6' ]; then
+            echo 'Historical release predates browser regression fixtures.'
+            exit 0
+          fi
           npm ci --ignore-scripts --no-audit --no-fund
           npx playwright install --with-deps chromium
           npm run test:browser
