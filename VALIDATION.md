@@ -1,4 +1,4 @@
-# Repository-management validation — October 2, 2026
+# Cinematic UI validation — October 2, 2026
 
 ## Recovery and build
 
@@ -12,6 +12,8 @@ The recovered v0.1.5 source restores and builds for `net10.0` against Jellyfin 1
 - v0.1.5 [full publication and public-installation run](https://github.com/guardipee14/Jellyfin.CinematicUI/actions/runs/37065683431): passed.
 - [v0.1.6](https://github.com/guardipee14/Jellyfin.CinematicUI/releases/tag/v0.1.6): immutable source tag `ff70995a0b6d08780fecc8c43b587d8f5dc4d645`.
 - v0.1.6 [publication and published-version upgrade run](https://github.com/guardipee14/Jellyfin.CinematicUI/actions/runs/37066806686): passed, including clean public catalog installation and an actual published v0.1.5-to-v0.1.6 upgrade.
+- [v0.1.7](https://github.com/guardipee14/Jellyfin.CinematicUI/releases/tag/v0.1.7): immutable source tag `325a1ca333fac68a6021c04ed2138bc1c2477d80`.
+- v0.1.7 [publication and published-version upgrade run](https://github.com/guardipee14/Jellyfin.CinematicUI/actions/runs/37081323629): passed, including 18 desktop/phone browser checks, clean public catalog installation, and an actual published v0.1.6-to-v0.1.7 upgrade.
 
 Stable catalog URL:
 
@@ -21,10 +23,11 @@ https://raw.githubusercontent.com/guardipee14/Jellyfin.CinematicUI/repository/ma
 
 Each runtime ZIP contains only `Jellyfin.Plugin.CinematicUI.dll` and `meta.json` at its root. Jellyfin's required MD5 checksum is computed from the exact ZIP bytes. Publication downloads and verifies the staged ZIP, then checks public package downloads before advancing the cumulative manifest. The GUID remains `e4c17f1b-c451-4a31-b98c-5d0ef44f9a21`, with target ABI `12.1.0.0`.
 
-The exact stable URL was also fetched independently without authentication after publication. Its manifest retains both versions in descending order, and both public ZIP downloads passed checksum, contents, and metadata validation:
+The exact stable URL was also fetched independently without authentication after publication. The latest manifest retains all three versions in descending order, and all public ZIP downloads passed checksum, contents, and metadata validation. The historical v0.1.5/v0.1.6 entries remain exactly unchanged:
 
 | Version | Jellyfin MD5 checksum |
 | --- | --- |
+| `0.1.7.0` | `3253d018513ddcff00cbf6b95ef8b2fd` |
 | `0.1.6.0` | `f112e1d6d5646c091dcae30772fb6502` |
 | `0.1.5.0` | `5be5e3fb96934ef4a153c0d33d2591ea` |
 
@@ -53,10 +56,14 @@ The owner subsequently updated/restarted the TrueNAS app. Read-only checks confi
 
 Subsequent live browser checks verified login/profile rendering, hero artwork and rotation, More Info navigation, and restoration of one hero on returning Home. Those checks reproduced lost indicator focus and the login branding flag missing Jellyfin 12.1's React header, which define the next UI reliability milestone in [ROADMAP.md](ROADMAP.md).
 
-## v0.1.7 UI reliability candidate
+## v0.1.7 UI reliability and publication
 
 The [candidate CI run](https://github.com/guardipee14/Jellyfin.CinematicUI/actions/runs/37080678635) passed the .NET build with warnings treated as errors, compiled identity/resource contracts, all 24 Python tooling tests, and 18 Chromium browser checks across desktop and phone projects. Packaging and real Jellyfin catalog installation/update checks also passed. Browser coverage includes retained indicator focus and selected state, keyboard-triggered rotation pause independent of hover, explicit pointer/keyboard Resume, reduced-motion defaults, artwork retention after rapid title changes, detail/Home navigation, modern header branding/navigation settings, and long profile lists on small screens.
 
 The first browser run passed 14 checks but two profile checks could not find an exact accessible name: a decorative fixture avatar symbol was included in that name. Marking that fixture-only decoration `aria-hidden` resolved the mismatch; the subsequent 16-check run passed. Manual visual testing then reproduced a separate artwork race when changing titles before the previous fade timer finished. The cleanup now checks layer ownership and active state, with two additional passing browser regressions.
 
 Manual candidate browser checks used the real CSS/JavaScript with synthetic media on localhost. They confirmed retained selected-indicator focus, pointer Pause/Resume behavior, current artwork after rapid navigation, and scrolling from 12 profile choices to recovery controls at 390×600. Desktop and 390×844 phone screenshots were saved during the walkthrough. These fixtures do not claim a full screen-reader audit, physical-device testing, or production playback validation. Browser dependencies stay outside the runtime ZIP. Immutable v0.1.5/v0.1.6 workflow retries retain their original scope because those source tags predate the browser suite; newer candidates require the locked browser dependencies and tests.
+
+The [final PR revision](https://github.com/guardipee14/Jellyfin.CinematicUI/actions/runs/37080929012) and [merged main commit](https://github.com/guardipee14/Jellyfin.CinematicUI/actions/runs/37081129575) passed CI before the immutable v0.1.7 tag was pushed. The release workflow repeated all 18 browser and 24 Python tests, the clean build/contracts, packaging, and candidate Jellyfin checks. Publication then downloaded the actual released v0.1.6 ZIP and updated it through the public catalog and normal Update Plugins task. Clean catalog installation, intact current UI injection, one active plugin, retained settings, and byte-for-byte XML preservation passed. An independent unauthenticated fetch verified the exact stable URL, all three ZIPs, and unchanged historical entries. The published manifest commit is `b290256c10b2556812faf1dba10fb9abc2f3db63`.
+
+Production was last confirmed on the owner's v0.1.6 installation. The v0.1.7 release is available through the existing enabled catalog; the agent did not update or restart production during this milestone. [ROADMAP.md](ROADMAP.md) marks UI reliability complete and profile/library-selection reliability next.
