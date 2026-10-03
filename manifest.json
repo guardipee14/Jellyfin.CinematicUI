@@ -8,6 +8,14 @@
     "category": "General",
     "versions": [
       {
+        "version": "0.1.10.0",
+        "changelog": "Plex-style title details with smaller posters, clear gold Play actions, subdued metadata/backdrop, shared desktop library navigation, and responsive season episode thumbnails. Preserves native detail/episode actions and lazy artwork; adds a default-enabled Appearance opt-out and conservative TV/unknown-structure fallbacks. Fixes remaining blue player slider thumbs, volume/settings bars and React accents, and prevents the volume slider collapsing. Honors the configured accent color and global-theme opt-out.",
+        "targetAbi": "12.1.0.0",
+        "timestamp": "2026-10-03T04:56:55Z",
+        "sourceUrl": "https://github.com/guardipee14/Jellyfin.CinematicUI/releases/download/v0.1.10/CinematicUI-v0.1.10-jf12.1.zip",
+        "checksum": "fb09c1a29ff51009272f75384cbac33a"
+      },
+      {
         "version": "0.1.9.0",
         "changelog": "Plex-inspired Jellyfin Web video player: slim timeline, compact bottom controls, footer title, centered transport on wide screens, and responsive controls on smaller screens. Retains native playback, seeking, volume, audio/subtitle/settings menus, fullscreen, episode transitions, and control visibility. Adds a default-enabled Appearance opt-out and preserves legacy settings. Fixes the global theme overriding Jellyfin's transparent playback background. TV and unrecognized player structures retain their native layout.",
         "targetAbi": "12.1.0.0",
