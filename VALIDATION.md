@@ -16,6 +16,8 @@ The recovered v0.1.5 source restores and builds for `net10.0` against Jellyfin 1
 - v0.1.7 [publication and published-version upgrade run](https://github.com/guardipee14/Jellyfin.CinematicUI/actions/runs/37081323629): passed, including 18 desktop/phone browser checks, clean public catalog installation, and an actual published v0.1.6-to-v0.1.7 upgrade.
 - [v0.1.8](https://github.com/guardipee14/Jellyfin.CinematicUI/releases/tag/v0.1.8): immutable source tag `3c2e3c5a1c1369f7cc0aaa6785f53a73947b1ca7`.
 - v0.1.8 [publication and published-version upgrade run](https://github.com/guardipee14/Jellyfin.CinematicUI/actions/runs/37091023578): passed, including 32 desktop/phone browser checks, clean public installation, and the actual published v0.1.7-to-v0.1.8 update.
+- [v0.1.9](https://github.com/guardipee14/Jellyfin.CinematicUI/releases/tag/v0.1.9): immutable source tag `d7bac76bcfc052d356953afd4e1fcd3f801925de`.
+- v0.1.9 [publication and published-version upgrade run](https://github.com/guardipee14/Jellyfin.CinematicUI/actions/runs/37094297497): passed, including all 48 browser checks, clean public installation, and the actual published v0.1.8-to-v0.1.9 update.
 
 Stable catalog URL:
 
@@ -25,10 +27,11 @@ https://raw.githubusercontent.com/guardipee14/Jellyfin.CinematicUI/repository/ma
 
 Each runtime ZIP contains only `Jellyfin.Plugin.CinematicUI.dll` and `meta.json` at its root. Jellyfin's required MD5 checksum is computed from the exact ZIP bytes. Publication downloads and verifies the staged ZIP, then checks public package downloads before advancing the cumulative manifest. The GUID remains `e4c17f1b-c451-4a31-b98c-5d0ef44f9a21`, with target ABI `12.1.0.0`.
 
-The exact stable URL was also fetched independently without authentication after publication. The latest manifest retains all four versions in descending order, and all public ZIP downloads passed checksum, contents, and metadata validation. The historical v0.1.5/v0.1.6/v0.1.7 entries remain exactly unchanged:
+The exact stable URL was also fetched independently without authentication after publication. The latest manifest retains all five versions in descending order, and all public ZIP downloads passed checksum, contents, and metadata validation. Every prior version entry remains exactly unchanged:
 
 | Version | Jellyfin MD5 checksum |
 | --- | --- |
+| `0.1.9.0` | `709239d9277faaa2e77774d5d6fae7ef` |
 | `0.1.8.0` | `9c8ff3fd3c4b6da7bfa4d7f97d38d606` |
 | `0.1.7.0` | `3253d018513ddcff00cbf6b95ef8b2fd` |
 | `0.1.6.0` | `f112e1d6d5646c091dcae30772fb6502` |
@@ -82,3 +85,19 @@ Manual synthetic previews confirmed a 260px sidebar and seven 166px posters acro
 The [release workflow](https://github.com/guardipee14/Jellyfin.CinematicUI/actions/runs/37091023578) repeated all required checks, published v0.1.8, and installed it from the unauthenticated public GitHub catalog. It downloaded the actual released v0.1.7 ZIP, migrated/updated it through Jellyfin's normal Update Plugins task, and confirmed one active plugin, intact current injection, preserved settings, and byte-for-byte XML preservation. Independent unauthenticated checks verified all four public ZIPs and exact retention of every older manifest entry. The catalog commit is `46aaa9c98e9ac15a0ae3dca46aeca154ccd8a69f`.
 
 v0.1.8 is available through the existing catalog. Activate it with Update Plugins, restart through TrueNAS Apps, and hard-refresh Jellyfin Web. The library appearance option defaults on; it can be disabled under Cinematic UI's Appearance settings. Profile/library-selection reliability remains the next milestone.
+
+## v0.1.9 Plex-inspired video player
+
+Live inspection of the owner's existing Plex and Jellyfin players supplied the control proportions and Jellyfin DOM shape. The implementation was checked against the [official Jellyfin Web v12.1 video controller](https://github.com/jellyfin/jellyfin-web/blob/v12.1/src/apps/legacy/controllers/playback/video/index.js) and [overlay styles](https://github.com/jellyfin/jellyfin-web/blob/v12.1/src/styles/videoosd.scss). Native control nodes, handlers, visibility classes, playback engine, and menus remain owned by Jellyfin. The theme now allows native transparent playback backgrounds instead of placing the browsing background over video.
+
+The [candidate CI run](https://github.com/guardipee14/Jellyfin.CinematicUI/actions/runs/37093833981) and [merged source CI run](https://github.com/guardipee14/Jellyfin.CinematicUI/actions/runs/37094083598) passed before pushing the immutable source tag `d7bac76bcfc052d356953afd4e1fcd3f801925de`. All 48 desktop/phone browser checks, 24 tooling tests, the zero-warning/error build, compiled identity/resource/legacy XML contracts, packaging, and real Jellyfin candidate install/update checks passed.
+
+Eight new player cases run on desktop and phone. They cover geometry and video transparency; real video play/pause and keyboard seeking; subtitle/audio/settings menu handler preservation; desktop volume/mute and native phone visibility; real desktop fullscreen and title transitions; hidden controls; appearance opt-out/global theme opt-out/TV/unrecognized structure/legacy title fallbacks; and cleanup when returning Home and libraries. The 3,308-byte silent solid-color VP9 clip is generated solely for tests and served with byte ranges so Chromium can seek. Menus use synthetic fixture handlers. PiP button visibility is covered; actual PiP and streaming track selection are not claimed. Test dependencies/media are excluded from the runtime ZIP.
+
+Manual synthetic previews at 1864×949 showed the thin timeline, footer title on the left, centered transport, and playback options on the right. At 390×844, controls wrapped inside the viewport and the video retained its native letterboxing. Desktop/phone screenshots were saved, and temporary viewport overrides and the local preview server were cleaned up.
+
+The production plugin dashboard showed Cinematic UI v0.1.8 Active. Inspecting the live player resumed the existing episode, which was then stopped through Back; a subsequent check confirmed zero playing video elements. The agent did not change production configuration, plugin installation, server files, or lifecycle. No full production playback, physical-device, actual PiP, or streaming audio/subtitle test is claimed.
+
+The [release workflow](https://github.com/guardipee14/Jellyfin.CinematicUI/actions/runs/37094297497) repeated all required checks and published v0.1.9. Clean public catalog installation passed. It then downloaded the actual released v0.1.8 ZIP, upgraded through the public repository and Jellyfin's normal Update Plugins task, and confirmed unchanged settings/XML, one active plugin, and intact current injection. Independent unauthenticated checks verified the exact stable catalog, all five public ZIPs, and every unchanged older version entry. The published manifest commit is `1e0d4c7fa0ae66cb1aa8f02755b16eb2a8aad42b`.
+
+v0.1.9 can be activated through Update Plugins, a TrueNAS Apps restart, and a hard browser refresh. The player layout defaults on and can be disabled under Appearance. The agent did not deploy this release to production. Profile/library-selection reliability remains next.
