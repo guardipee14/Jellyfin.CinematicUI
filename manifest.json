@@ -8,6 +8,14 @@
     "category": "General",
     "versions": [
       {
+        "version": "0.1.7.0",
+        "changelog": "UI hardening: preserve keyboard focus on hero indicators, expose the current title to assistive technology, add explicit Pause/Resume rotation, pause for keyboard focus and reduced motion, enlarge and scroll indicator hit areas, and retain artwork during rapid title changes. Support Jellyfin 12.1 React headers for login branding and cosmetic navigation hiding, and keep profile and recovery controls scrollable on small screens. Retains the catalog update pipeline, plugin identity, and existing settings.",
+        "targetAbi": "12.1.0.0",
+        "timestamp": "2026-10-02T23:53:23Z",
+        "sourceUrl": "https://github.com/guardipee14/Jellyfin.CinematicUI/releases/download/v0.1.7/CinematicUI-v0.1.7-jf12.1.zip",
+        "checksum": "3253d018513ddcff00cbf6b95ef8b2fd"
+      },
+      {
         "version": "0.1.6.0",
         "changelog": "Repository-management release: verified catalog installation and normal Jellyfin Update Plugins upgrades from v0.1.5, a stable cumulative GitHub manifest, immutable runtime packages, retained configuration, and safe TrueNAS rollback backups. Preserves the original v0.1.5 login, theme, and hero assets; no new UI features.",
         "targetAbi": "12.1.0.0",
