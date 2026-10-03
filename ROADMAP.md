@@ -47,9 +47,9 @@ Legacy slider thumbs, seek/volume/settings bars, React palette accents, and keyb
 
 Published October 2, 2026. All 66 desktop/phone browser checks, 24 tooling tests, zero-warning build, and compiled identity/resource/legacy-configuration contracts passed CI. Browser tests verify actual slider-thumb pixels, custom accents, native-blue opt-out, responsive details/episode geometry, long native titles, cached hidden pages, action handlers, fallback, and route cleanup. Clean public installation and the actual published v0.1.9-to-v0.1.10 Update Plugins path passed with settings/XML preserved and one active identity. All six public packages and unchanged prior entries verified independently. See [VALIDATION.md](VALIDATION.md).
 
-## 6. Profile and library-selection reliability — v0.1.11 candidate
+## 6. Profile and library-selection reliability — complete in v0.1.11
 
-Implemented account/server switching with pending request cancellation, explicit configured-library fallback, native Home on view-enumeration failure, played/keyword exclusions across query attempts, and account/server-scoped history and Play intent. Compact profile/account-menu styling retains native controls and offers an Appearance opt-out. Local build/contracts, 24 tooling tests, and 88 desktop/phone browser checks passed; CI and public install/update checks remain required before publication. Jellyfin user library permissions remain the source of access control; navigation hiding remains cosmetic.
+Implemented account/server switching with pending request cancellation, explicit configured-library fallback, native Home on view-enumeration failure, played/keyword exclusions across query attempts, and account/server-scoped history and Play intent. Compact profile/account-menu styling retains native controls and offers an Appearance opt-out. Published October 3, 2026. All 88 desktop/phone browser checks, 24 tooling tests, warning-free build/contracts, and real Jellyfin checks passed CI. Clean public catalog installation and the actual published v0.1.10-to-v0.1.11 Update Plugins path preserved settings/XML and one active identity. See [VALIDATION.md](VALIDATION.md). Jellyfin user library permissions remain the source of access control; navigation hiding remains cosmetic.
 
 ## 7. Performance and further visual refinement — afterward
 
