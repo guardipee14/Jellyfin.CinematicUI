@@ -189,6 +189,7 @@ body.cinematic-details .cinematicDetailPage .cardText-secondary{font-size:12px}
 .cinematicDetailEpisodes .listItem:hover .listItemImageButton,.cinematicDetailEpisodes .listItem:focus-within .listItemImageButton{opacity:1;background:#0004!important}
 .cinematicDetailEpisodes .listItemBody{padding:10px 3px 0!important;margin:0!important;min-width:0;font-size:13px;line-height:1.5}
 .cinematicDetailEpisodes .listItemBodyText{margin:0!important;white-space:normal!important}
+.cinematicDetailEpisodes .listItemBody>.listItemBodyText:first-child{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;overflow-wrap:anywhere}
 .cinematicDetailEpisodes .listItemMediaInfo{font-size:12px;color:rgba(255,255,255,.5);gap:8px}
 .cinematicDetailEpisodes .listItem-overview{display:-webkit-box!important;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;font-size:12px;color:rgba(255,255,255,.45);margin-top:6px!important}
 .cinematicDetailEpisodes .listItem-overview p{margin:0}

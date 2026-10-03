@@ -39,6 +39,9 @@ test('season episodes use a responsive thumbnail grid and retain native actions'
   await details(page,'season');
   await expect(page.getByRole('heading',{name:'6 Episodes',exact:true})).toBeVisible();
   await expect(page.locator('.cinematicDetailEpisodes>.listItem')).toHaveCount(6);
+  const longTitle=page.locator('.cinematicDetailEpisodes .listItemBody>.listItemBodyText:first-child').last();
+  expect((await longTitle.boundingBox()).height).toBeLessThanOrEqual(40);
+  expect(await longTitle.textContent()).toContain('A long native title remains available through Info.');
   const geometry=await page.locator('.cinematicDetailEpisodes>.listItem').evaluateAll(items=>items.slice(0,4).map(e=>{const r=e.getBoundingClientRect();return{x:r.x,y:r.y,width:r.width}}));
   if(info.project.name==='desktop') {expect(geometry[0].y).toBe(geometry[2].y);expect(geometry[3].y).toBeGreaterThan(geometry[0].y);}
   else expect(geometry[1].y).toBeGreaterThan(geometry[0].y);
