@@ -38,6 +38,8 @@ v0.1.8 brings the library closer to the owner's Plex reference: a desktop sideba
 
 v0.1.9 adds a Plex-style video player: a thin timeline above compact bottom controls, a footer title, centered transport controls on wide screens, and wrapped controls on smaller screens. **Use Plex-style video player layout** under Appearance switches this off. Native playback, seeking, volume, audio/subtitle/settings menus, fullscreen, episode navigation, and auto-hide remain Jellyfin behavior; the plugin does not replace the video element or playback engine. TV layout and unrecognized player structures retain the original layout. The global theme now respects Jellyfin's transparent playback background, including when the player layout option is off.
 
+v0.1.10 completes the player accent treatment: native seek/volume/settings slider thumbs and bars, React accents, and focus states follow the configured color (gold by default). It also fixes the collapsed volume slider. The new title/details layout uses smaller posters, a clear Play button, quieter metadata over a dimmed backdrop, full-width sections below the poster, and a responsive season episode grid. Native actions, metadata, lazy artwork, and playback remain intact. **Use Plex-style title details** under Appearance offers an opt-out; the desktop sidebar follows the existing library-layout setting. TV, unsupported detail structures, and unknown episode rows retain native layouts. The global-theme opt-out restores Jellyfin's native accent colors.
+
 ## Manual TrueNAS fallback and rollback
 
 The normal catalog install requires no shell work. If needed, build from a complete source checkout using:
@@ -64,6 +66,6 @@ python3 scripts/integration.py
 
 On Windows: `./build.ps1 -Python python`.
 
-Update the version/changelog, push the code, and push a matching new tag such as `v0.1.10`. The workflow validates the candidate, publishes an immutable GitHub release ZIP and manifest snapshot, then updates the cumulative `repository` branch only after checking public downloads. See [PUBLISH-GITHUB.md](PUBLISH-GITHUB.md) for release and retry details, and [VALIDATION.md](VALIDATION.md) for the completed milestone's evidence.
+Update the version/changelog, push the code, and push a matching new tag such as `v0.1.11`. The workflow validates the candidate, publishes an immutable GitHub release ZIP and manifest snapshot, then updates the cumulative `repository` branch only after checking public downloads. See [PUBLISH-GITHUB.md](PUBLISH-GITHUB.md) for release and retry details, and [VALIDATION.md](VALIDATION.md) for the completed milestone's evidence.
 
 Compatibility: Jellyfin Server 12.1, target ABI `12.1.0.0`, .NET 10. Developer: Donaven Guardipee ([guardipee14](https://github.com/guardipee14)).

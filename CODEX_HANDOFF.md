@@ -59,6 +59,12 @@ During the player milestone, the owner's plugin dashboard reported v0.1.8 Active
 
 After these visual milestones, profile and library-selection reliability remains next. [ROADMAP.md](ROADMAP.md) records account switching/pending requests, configured library-name mismatches, view-enumeration failures, played/keyword exclusions, and repeat history across users. Define fallback behavior before changing it. Browser regression fixtures use the real plugin assets with synthetic media and do not require production credentials.
 
+## v0.1.10 player colors and details candidate
+
+The owner next prioritized remaining blue player accents and cleaner title/details pages using Plex screenshots. The candidate fixes native slider thumb/bar and React palette colors, including custom configured accents and the global-theme opt-out, and the previously collapsed volume slider. It adds smaller posters, clear Play labels, subdued metadata/backdrop, full-width content sections, shared library navigation, and a responsive season episode grid. `EnableDetailsLayout` defaults true for legacy XML and appears under Appearance. Native nodes/handlers, metadata, and lazy artwork remain in place; TV, unknown details, and unknown episode rows fall back.
+
+Local validation passed all 66 browser checks, 24 tooling tests, the zero-warning build, and compiled contracts. Read-only production series/season DOM inspection informed selectors and returned to the original series page; no media was started and no production configuration or lifecycle was changed during this milestone. Publication and real public install/update validation are pending. See [VALIDATION.md](VALIDATION.md). Profile/library-selection reliability follows this user-prioritized visual milestone.
+
 ## TrueNAS fallback constraints
 
 - Build with the official .NET 10 SDK Docker image; do not install development packages in the TrueNAS base OS.

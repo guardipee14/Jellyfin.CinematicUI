@@ -24,6 +24,8 @@ using var configJson = JsonDocument.Parse((string)embeddedType.GetProperty("Conf
 Require(configJson.RootElement.GetProperty("enableLibraryLayout").GetBoolean(), "Library appearance flag is missing from injected configuration");
 Require(restored.EnablePlayerLayout, "Legacy XML must default the player appearance flag on");
 Require(configJson.RootElement.GetProperty("enablePlayerLayout").GetBoolean(), "Player appearance flag is missing from injected configuration");
+Require(restored.EnableDetailsLayout, "Legacy XML must default the details appearance flag on");
+Require(configJson.RootElement.GetProperty("enableDetailsLayout").GetBoolean(), "Details appearance flag is missing from injected configuration");
 foreach (var asset in new[] { "Web/cinematic.css", "Web/client.js", "Configuration/configPage.html" })
 {
     var name = "Jellyfin.Plugin.CinematicUI." + asset.Replace('/', '.');

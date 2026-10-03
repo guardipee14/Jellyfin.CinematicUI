@@ -6,6 +6,7 @@
     "preview:browser": "node tests/web/server.cjs"
   },
   "devDependencies": {
-    "@playwright/test": "1.63.0"
+    "@playwright/test": "1.63.0",
+    "pngjs": "7.0.0"
   }
 }

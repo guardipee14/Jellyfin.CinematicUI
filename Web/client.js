@@ -5,6 +5,7 @@
         enableGlobalTheme: true,
         enableLibraryLayout: true,
         enablePlayerLayout: true,
+        enableDetailsLayout: true,
         enableLoginExperience: true,
         enableHomeHero: true,
         hideMyMediaRow: true,
@@ -33,6 +34,17 @@
     }, window.CinematicUIConfig || {});
 
     document.documentElement.style.setProperty('--cinematic-accent', cfg.accentColor || '#e5a00d');
+    // React uses space-separated RGB channels for translucent accent states. Resolve
+    // the configured CSS color once, without changing Jellyfin's saved theme.
+    const accentCanvas = document.createElement('canvas');
+    accentCanvas.width = accentCanvas.height = 1;
+    const accentContext = accentCanvas.getContext('2d');
+    if (accentContext) {
+        accentContext.fillStyle = '#e5a00d';
+        accentContext.fillStyle = cfg.accentColor || '#e5a00d';
+        accentContext.fillRect(0, 0, 1, 1);
+        document.documentElement.style.setProperty('--cinematic-accent-channels', Array.from(accentContext.getImageData(0, 0, 1, 1).data).slice(0, 3).join(' '));
+    }
     document.documentElement.style.setProperty('--cinematic-login-motion', `${Math.max(15, cfg.loginBackgroundMotionSeconds || 65)}s`);
     document.documentElement.style.setProperty('--cinematic-hero-zoom', String(1 + Math.max(0, Math.min(20, cfg.heroArtworkZoomPercent || 8)) / 100));
     document.documentElement.style.setProperty('--cinematic-hero-overview-lines', String(Math.max(1, Math.min(5, cfg.heroOverviewLines || 3))));
@@ -148,16 +160,19 @@
     }
 
     function applyLibraryLayout() {
-        const page = Array.from(document.querySelectorAll('.libraryPage')).find(element => visible(element) && element.querySelector('.itemsContainer'));
+        const details = document.body.classList.contains('cinematic-details');
+        const page = Array.from(document.querySelectorAll('.libraryPage')).find(element => visible(element) &&
+            (details ? element.classList.contains('cinematicDetailPage') : element.id !== 'itemDetailPage' && element.querySelector('.itemsContainer')));
         const header = document.querySelector('header.MuiAppBar-root');
         const toolbars = header ? Array.from(header.children).filter(element => element.classList.contains('MuiToolbar-root')) : [];
         const main = page?.closest('main');
         const spacer = main?.previousElementSibling;
-        const active = !!(cfg.enableGlobalTheme && cfg.enableLibraryLayout && page && toolbars.length >= 2 && spacer?.tagName === 'DIV' && !spacer.childElementCount && !document.documentElement.classList.contains('layout-tv'));
+        const active = !!(cfg.enableGlobalTheme && cfg.enableLibraryLayout && page && toolbars.length >= (details ? 1 : 2) && spacer?.tagName === 'DIV' && !spacer.childElementCount && !document.documentElement.classList.contains('layout-tv'));
         const toggle = (element, name, value) => {
             if (element && element.classList.contains(name) !== value) element.classList.toggle(name, value);
         };
-        toggle(document.body, 'cinematic-library', active);
+        toggle(document.body, 'cinematic-library', active && !details);
+        toggle(document.body, 'cinematic-details-sidebar', active && details);
         if (!active) {
             document.querySelector('#cinematicLibraryNav')?.remove();
             document.querySelector('.cinematicLibraryHeading')?.remove();
@@ -172,7 +187,7 @@
         toggle(main, 'cinematicLibraryShell', true);
         toggle(spacer, 'cinematicLibrarySpacer', true);
         toggle(top, 'cinematicLibraryTop', true);
-        toggle(toolbar, 'cinematicLibraryToolbar', true);
+        toggle(toolbar, 'cinematicLibraryToolbar', !details);
         toggle(top.querySelector('a[href^="#/search"]'), 'cinematicLibrarySearch', true);
         const hiddenNames = new Set(configuredNavigationHiddenNames());
         const sources = Array.from(top.querySelectorAll('a[href]')).filter(link => link.getAttribute('href').startsWith('#/') && link.textContent.trim());
@@ -182,7 +197,7 @@
         }).filter(entry => !hiddenNames.has(entry.source.textContent.trim().toLowerCase()));
         const parentId = hash => new URLSearchParams(hash.split('?')[1] || '').get('topParentId');
         const currentId = parentId(location.hash);
-        const selected = entries.find(entry => currentId ? parentId(entry.href) === currentId : entry.href === location.hash);
+        const selected = entries.find(entry => details ? entry.source.classList.contains('MuiButton-textPrimary') : currentId ? parentId(entry.href) === currentId : entry.href === location.hash);
         const signature = JSON.stringify(entries.map(entry => [entry.href, entry.label]));
         let nav = document.querySelector('#cinematicLibraryNav');
         if (!nav) {
@@ -229,6 +244,10 @@
             if (current && link.getAttribute('aria-current') !== 'page') link.setAttribute('aria-current', 'page');
             else if (!current && link.hasAttribute('aria-current')) link.removeAttribute('aria-current');
         }
+        if (details) {
+            document.querySelector('.cinematicLibraryHeading')?.remove();
+            return;
+        }
         let heading = toolbar.querySelector('.cinematicLibraryHeading');
         if (!heading) {
             heading = document.createElement('div');
@@ -242,6 +261,53 @@
         }
         const title = selected?.label || toolbar.querySelector('button')?.textContent.trim() || 'Library';
         if (heading.firstElementChild.textContent !== title) heading.firstElementChild.textContent = title;
+    }
+
+    function applyDetailsLayout() {
+        const page = Array.from(document.querySelectorAll('#itemDetailPage')).find(visible);
+        const primary = page?.querySelector('.detailPagePrimaryContainer');
+        const play = primary?.querySelector('.mainDetailButtons .btnPlay');
+        const active = !!(cfg.enableGlobalTheme && cfg.enableDetailsLayout && page && primary &&
+            primary.querySelector(':scope > .detailImageContainer .portraitCard') &&
+            primary.querySelector(':scope > .detailRibbon .nameContainer') &&
+            primary.querySelector(':scope > .detailPagePrimaryContent > .detailSection') &&
+            visible(play) && play.querySelector('.detailButton-content') && !document.documentElement.classList.contains('layout-tv'));
+        const toggle = (element, name, value) => {
+            if (element && element.classList.contains(name) !== value) element.classList.toggle(name, value);
+        };
+        toggle(document.body, 'cinematic-details', active);
+        document.querySelectorAll('.cinematicDetailPage').forEach(element => toggle(element, 'cinematicDetailPage', active && element === page));
+        document.querySelectorAll('.cinematicDetailPlayLabel,.cinematicDetailEpisodesHeading').forEach(element => {
+            if (!active || !page.contains(element)) element.remove();
+        });
+        document.querySelectorAll('.cinematicDetailEpisodes').forEach(element => {
+            if (!active || !page.contains(element)) toggle(element, 'cinematicDetailEpisodes', false);
+        });
+        if (!active) return;
+        toggle(page, 'cinematicDetailPage', true);
+        let label = play.querySelector('.cinematicDetailPlayLabel');
+        if (!label) {
+            label = document.createElement('span');
+            label.className = 'cinematicDetailPlayLabel';
+            label.setAttribute('aria-hidden', 'true');
+            play.querySelector('.detailButton-content')?.appendChild(label);
+        }
+        const text = play.title || play.getAttribute('aria-label') || 'Play';
+        if (label.textContent !== text) label.textContent = text;
+        const episodes = page.querySelector('#childrenContent .itemsContainer.vertical-list');
+        const cards = episodes ? Array.from(episodes.children) : [];
+        const known = cards.length && cards.every(card => card.matches('.listItem[data-type="Episode"]') && card.querySelector('.listItem-content > .listItemImage') && card.querySelector('.listItemBody'));
+        toggle(episodes, 'cinematicDetailEpisodes', !!known);
+        let heading = page.querySelector('.cinematicDetailEpisodesHeading');
+        if (known && episodes.closest('.verticalSection')?.querySelector('.sectionTitle.hide')) {
+            if (!heading) {
+                heading = document.createElement('h2');
+                heading.className = 'cinematicDetailEpisodesHeading';
+                episodes.parentElement.prepend(heading);
+            }
+            const text = `${cards.length} Episodes`;
+            if (heading.textContent !== text) heading.textContent = text;
+        } else heading?.remove();
     }
 
     function applyPlayerLayout() {
@@ -915,6 +981,7 @@
         try { applyGlobalTheme(); } catch (error) { warn('global theme apply failed', error); }
         try { applyNavigationVisibility(); } catch (error) { warn('navigation apply failed', error); }
         try { applyLogin(); } catch (error) { warn('login apply failed', error); }
+        try { applyDetailsLayout(); } catch (error) { warn('details layout apply failed', error); }
         try { applyLibraryLayout(); } catch (error) { warn('library layout apply failed', error); }
         try { applyPlayerLayout(); } catch (error) { warn('player layout apply failed', error); }
         try { applyHome(); } catch (error) { warn('home apply failed', error); }
