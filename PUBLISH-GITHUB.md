@@ -2,14 +2,14 @@
 
 ## Normal release procedure
 
-1. Update `Version`, `AssemblyVersion`, and `FileVersion` in `Jellyfin.Plugin.CinematicUI.csproj`, and `version`, `changelog`, and UTC `timestamp` in `meta.json`. Update the version displayed in `Configuration/configPage.html`. Use four-part plugin versions such as `0.1.8.0`. Keep the assembly name and plugin GUID unchanged.
+1. Update `Version`, `AssemblyVersion`, and `FileVersion` in `Jellyfin.Plugin.CinematicUI.csproj`, and `version`, `changelog`, and UTC `timestamp` in `meta.json`. Update the version displayed in `Configuration/configPage.html`. Use four-part plugin versions such as `0.1.9.0`. Keep the assembly name and plugin GUID unchanged.
 2. If changing the Jellyfin API baseline, update both Jellyfin package references and `targetAbi` together. Confirm the real server compatibility with the Docker integration test before releasing.
 3. Commit and push to `main`. Wait for CI to pass.
 4. Tag that commit and push the tag:
 
 ```bash
-git tag v0.1.8
-git push origin v0.1.8
+git tag v0.1.9
+git push origin v0.1.9
 ```
 
 The tag must exactly match the source version. Tags such as `v0.1.8-beta` and version overrides are rejected.

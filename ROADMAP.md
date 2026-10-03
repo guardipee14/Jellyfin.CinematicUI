@@ -25,13 +25,13 @@ Acceptance criteria:
 
 The browser fixtures use real plugin CSS/JavaScript with synthetic media and credentials. They do not claim a full screen-reader audit, physical-device testing, or production playback validation.
 
-## 3. Plex-inspired library layout — v0.1.8
+## 3. Plex-inspired library layout — complete in v0.1.8
 
 The owner supplied Plex and Jellyfin library screenshots and asked to prioritize a similar library layout. This explicitly moves visual library work ahead of the previously planned selection-reliability milestone.
 
 The layout uses existing profile-visible header links and icons in a desktop sidebar, a current-library heading, a search pill, smaller spaced posters, left-aligned transparent captions, and subdued toolbar/count badges. It retains native filter/sort, grid/list view, detail navigation, and playback controls. Small screens retain native navigation, and a new Appearance setting disables the library layout. Route cleanup restores the Home, login, and detail layouts. The shell requires the observed modern header/spacer structure and falls back to the original layout when that structure is absent.
 
-Validate responsive geometry, active/keyboard library navigation, native controls and list view, configured navigation exclusions, appearance opt-out, legacy settings defaults, and route cleanup before publication. Preview media is synthetic; no production metadata or media files are copied into fixtures.
+Published October 2, 2026. Responsive geometry, active/keyboard library navigation, native controls and list view, configured navigation exclusions, appearance opt-out, legacy settings defaults, and route cleanup passed CI: all 32 browser checks, 24 tooling tests, compiled build/resource contracts, and real Jellyfin install/update checks. Clean public installation and the actual published v0.1.7-to-v0.1.8 update passed with settings/XML preserved. Preview media is synthetic; no production metadata or media files are copied into fixtures. See [VALIDATION.md](VALIDATION.md).
 
 ## 4. Profile and library-selection reliability — next
 
