@@ -73,6 +73,54 @@ body.cinematic-global ::-webkit-scrollbar-track{background:#101010}
 body.cinematic-global ::-webkit-scrollbar-thumb{background:#383838;border-radius:999px;border:2px solid #101010}
 body.cinematic-global ::-webkit-scrollbar-thumb:hover{background:var(--cinematic-accent)}
 
+/* LIBRARY — native Jellyfin controls and cards with a Plex-inspired desktop shell */
+body.cinematic-library{--cinematic-library-sidebar:260px;--cinematic-library-top:56px;--cinematic-library-header:156px;background:#1c1c1c}
+body.cinematic-library .cinematicLibraryShell,body.cinematic-library .libraryPage{background:#1c1c1c!important}
+body.cinematic-library .cinematicLibraryTop{min-height:var(--cinematic-library-top)!important;height:var(--cinematic-library-top);padding:0 24px!important;background:#101010}
+body.cinematic-library .cinematicLibraryToolbar{min-height:100px!important;padding:8px 40px 12px!important;flex-wrap:wrap;gap:4px 8px;background:linear-gradient(180deg,#232323,#1c1c1c)}
+.cinematicLibraryHeading{flex:0 0 100%;display:flex;align-items:center;justify-content:space-between;min-height:40px;gap:16px}
+.cinematicLibraryHeading h1{margin:0;font-size:19px;line-height:1.4;font-weight:500;letter-spacing:0}
+.cinematicLibrarySection{color:var(--cinematic-accent);font-size:13px;font-weight:600;border-bottom:2px solid var(--cinematic-accent);padding:8px 16px;min-width:80px;text-align:center;box-sizing:border-box;margin-right:calc(50% - 40px)}
+body.cinematic-library .cinematicLibraryToolbar button{background:transparent!important;box-shadow:none!important;color:rgba(255,255,255,.72)!important;border-color:rgba(255,255,255,.1)!important;border-radius:4px!important;font-size:13px;min-height:32px}
+body.cinematic-library .cinematicLibraryToolbar button:hover,body.cinematic-library .cinematicLibraryToolbar button:focus-visible{background:rgba(255,255,255,.07)!important;color:#fff!important}
+body.cinematic-library .cinematicLibraryToolbar button:disabled{opacity:.35}
+#cinematicLibraryNav{display:none}
+body.cinematic-library .itemsContainer.vertical-wrap:has(>.portraitCard){display:flex!important;flex-wrap:wrap!important;gap:32px 30px;padding:24px 60px 36px 40px!important;align-items:flex-start}
+body.cinematic-library .itemsContainer.vertical-wrap>.portraitCard{width:166px!important;flex:0 0 166px;margin:0!important;padding:0!important;transform:none!important}
+body.cinematic-library .portraitCard .cardBox{margin:0!important;background:transparent!important;box-shadow:none!important}
+body.cinematic-library .portraitCard .cardImageContainer{border-radius:4px!important;box-shadow:0 2px 7px rgba(0,0,0,.25)}
+body.cinematic-library .portraitCard .cardFooter{padding:9px 3px 0!important;background:transparent!important}
+body.cinematic-library .portraitCard .cardText{text-align:left!important;font-size:13px!important;line-height:20px;font-weight:500;margin:0!important;padding:0!important}
+body.cinematic-library .portraitCard .cardText-secondary{color:rgba(255,255,255,.48)!important;font-size:12px!important;font-weight:400}
+body.cinematic-library .portraitCard:focus-within .cardImageContainer{outline:2px solid var(--cinematic-accent);outline-offset:2px}
+body.cinematic-library .portraitCard:focus-within .cardOverlayContainer{opacity:1!important}
+body.cinematic-library .portraitCard .countIndicator,body.cinematic-library .portraitCard .playedIndicator{background:rgba(8,8,8,.8)!important;color:#eee!important;border-radius:0 4px 0 4px!important;font-size:12px;font-weight:600;min-width:24px;min-height:24px;margin:0!important;box-shadow:none}
+body.cinematic-library .portraitCard .playedIndicator svg{color:var(--cinematic-accent)}
+@media(min-width:1100px){
+ body.cinematic-library .cinematicLibrarySpacer{height:var(--cinematic-library-header)!important;min-height:var(--cinematic-library-header)!important}
+ body.cinematic-library .cinematicLibraryShell{margin-left:var(--cinematic-library-sidebar)!important;width:calc(100% - var(--cinematic-library-sidebar))!important;height:calc(100dvh - var(--cinematic-library-header))!important}
+ body.cinematic-library .cinematicLibraryToolbar{margin-left:var(--cinematic-library-sidebar);width:calc(100% - var(--cinematic-library-sidebar));box-sizing:border-box}
+ body.cinematic-library [data-cinematic-library-nav]{display:none!important}
+ body.cinematic-library .cinematicLibrarySearch{order:-1;margin:0 auto 0 24px;width:min(28vw,440px);height:34px;border-radius:999px;background:#282828;color:rgba(255,255,255,.7);padding:0 14px;justify-content:flex-start;gap:12px}
+ body.cinematic-library .cinematicLibrarySearch::after{content:'Search';font-size:13px;font-weight:400}
+ #cinematicLibraryNav{position:fixed;display:flex;flex-direction:column;gap:4px;left:0;top:var(--cinematic-library-top);bottom:0;width:var(--cinematic-library-sidebar);z-index:1000;box-sizing:border-box;padding:20px 0;overflow-y:auto;background:linear-gradient(180deg,#202020,#181818 45%);border-right:1px solid rgba(255,255,255,.04)}
+ .cinematicLibraryNavLabel{padding:20px 24px 8px;color:rgba(255,255,255,.35);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+ .cinematicLibraryLink{display:flex;align-items:center;gap:16px;min-height:46px;padding:0 24px;border-left:2px solid transparent;color:rgba(255,255,255,.67);text-decoration:none;font-size:14px;box-sizing:border-box;flex-shrink:0}
+ .cinematicLibraryLink span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+ .cinematicLibraryLink svg{width:21px;height:21px;flex:0 0 21px;fill:currentColor;color:inherit}
+ .cinematicLibraryLink:hover{background:rgba(255,255,255,.035);color:#fff}
+ .cinematicLibraryLink[aria-current=page]{border-left-color:var(--cinematic-accent);color:var(--cinematic-accent);background:rgba(255,255,255,.025)}
+ .cinematicLibraryLink:focus-visible{outline:2px solid var(--cinematic-accent);outline-offset:-4px;color:#fff}
+}
+@media(max-width:1099px){
+ body.cinematic-library .cinematicLibraryTop{height:auto;min-height:48px!important;padding:0 16px!important}
+ body.cinematic-library .cinematicLibraryToolbar{min-height:48px!important;padding:0 16px!important;flex-wrap:nowrap}
+ body.cinematic-library .cinematicLibraryHeading{display:none}
+ body.cinematic-library .itemsContainer.vertical-wrap:has(>.portraitCard){gap:24px 18px;padding:20px 40px 30px 20px!important}
+ body.cinematic-library .itemsContainer.vertical-wrap>.portraitCard{width:calc((100% - 54px)/4)!important;flex-basis:calc((100% - 54px)/4)}
+}
+@media(max-width:600px){body.cinematic-library .itemsContainer.vertical-wrap>.portraitCard{width:calc((100% - 18px)/2)!important;flex-basis:calc((100% - 18px)/2)}}
+
 /* HOME HERO */
 #cinematicHero{position:relative;min-height:0;margin:0;overflow:hidden;border-radius:0 0 16px 16px;background:#0a0a0b;isolation:isolate;opacity:0;visibility:hidden;max-height:0;transition:opacity .4s ease}
 #cinematicHero[data-ready="1"]{opacity:1;visibility:visible;max-height:none;min-height:clamp(420px,48vw,650px);margin-bottom:2rem}

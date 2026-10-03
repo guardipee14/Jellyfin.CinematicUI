@@ -25,10 +25,18 @@ Acceptance criteria:
 
 The browser fixtures use real plugin CSS/JavaScript with synthetic media and credentials. They do not claim a full screen-reader audit, physical-device testing, or production playback validation.
 
-## 3. Profile and library-selection reliability — next
+## 3. Plex-inspired library layout — v0.1.8
+
+The owner supplied Plex and Jellyfin library screenshots and asked to prioritize a similar library layout. This explicitly moves visual library work ahead of the previously planned selection-reliability milestone.
+
+The layout uses existing profile-visible header links and icons in a desktop sidebar, a current-library heading, a search pill, smaller spaced posters, left-aligned transparent captions, and subdued toolbar/count badges. It retains native filter/sort, grid/list view, detail navigation, and playback controls. Small screens retain native navigation, and a new Appearance setting disables the library layout. Route cleanup restores the Home, login, and detail layouts. The shell requires the observed modern header/spacer structure and falls back to the original layout when that structure is absent.
+
+Validate responsive geometry, active/keyboard library navigation, native controls and list view, configured navigation exclusions, appearance opt-out, legacy settings defaults, and route cleanup before publication. Preview media is synthetic; no production metadata or media files are copied into fixtures.
+
+## 4. Profile and library-selection reliability — next
 
 Check account switching and pending artwork requests, configured library-name mismatches, view-enumeration failures, played-title/keyword exclusions, and repeat history across users. Define the expected fallback behavior explicitly before changing it. Jellyfin user library permissions remain the source of access control; navigation hiding remains cosmetic.
 
-## 4. Performance and visual refinement — afterward
+## 5. Performance and further visual refinement — afterward
 
 Measure observer activity, request volume, object-URL lifetime, and route cleanup. Use those findings to prioritize focused refinements to login and hero layouts. Preserve the working catalog update path and settings compatibility for every release.

@@ -34,6 +34,8 @@ Settings remain in `/config/plugins/configurations/Jellyfin.Plugin.CinematicUI.x
 
 The missing v0.1.5 Web resources were restored from the original working installer archive. v0.1.5/v0.1.6 preserve that baseline. v0.1.7 adds keyboard-safe hero indicators, explicit Pause/Resume rotation, reduced-motion defaults, stable artwork during rapid title changes, scrollable profile choices, and support for Jellyfin 12.1's React header in existing branding/navigation settings. See [RECOVERY.md](RECOVERY.md) for provenance and [ROADMAP.md](ROADMAP.md) for milestone order.
 
+v0.1.8 brings the library closer to the owner's Plex reference: a desktop sidebar from Jellyfin's existing navigation, a library heading/search pill, 166px posters with more space, transparent left-aligned captions, and subdued toolbar/count badges. Native filter/sort, grid/list view, detail navigation, and playback remain in Jellyfin. Small screens keep native navigation; **Use Plex-style library layout** under Appearance restores the original library layout when disabled. This shell targets the observed Jellyfin 12.1 React structure and leaves other page structures intact.
+
 ## Manual TrueNAS fallback and rollback
 
 The normal catalog install requires no shell work. If needed, build from a complete source checkout using:

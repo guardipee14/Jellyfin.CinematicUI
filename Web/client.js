@@ -3,6 +3,7 @@
 
     const cfg = Object.assign({
         enableGlobalTheme: true,
+        enableLibraryLayout: true,
         enableLoginExperience: true,
         enableHomeHero: true,
         hideMyMediaRow: true,
@@ -143,6 +144,103 @@
                 }
             }
         }
+    }
+
+    function applyLibraryLayout() {
+        const page = Array.from(document.querySelectorAll('.libraryPage')).find(element => visible(element) && element.querySelector('.itemsContainer'));
+        const header = document.querySelector('header.MuiAppBar-root');
+        const toolbars = header ? Array.from(header.children).filter(element => element.classList.contains('MuiToolbar-root')) : [];
+        const main = page?.closest('main');
+        const spacer = main?.previousElementSibling;
+        const active = !!(cfg.enableGlobalTheme && cfg.enableLibraryLayout && page && toolbars.length >= 2 && spacer?.tagName === 'DIV' && !spacer.childElementCount && !document.documentElement.classList.contains('layout-tv'));
+        const toggle = (element, name, value) => {
+            if (element && element.classList.contains(name) !== value) element.classList.toggle(name, value);
+        };
+        toggle(document.body, 'cinematic-library', active);
+        if (!active) {
+            document.querySelector('#cinematicLibraryNav')?.remove();
+            document.querySelector('.cinematicLibraryHeading')?.remove();
+            for (const name of ['cinematicLibraryShell', 'cinematicLibrarySpacer', 'cinematicLibraryTop', 'cinematicLibraryToolbar', 'cinematicLibrarySearch']) {
+                document.querySelectorAll('.' + name).forEach(element => toggle(element, name, false));
+            }
+            document.querySelectorAll('[data-cinematic-library-nav]').forEach(element => element.removeAttribute('data-cinematic-library-nav'));
+            return;
+        }
+
+        const top = toolbars[0], toolbar = toolbars[1];
+        toggle(main, 'cinematicLibraryShell', true);
+        toggle(spacer, 'cinematicLibrarySpacer', true);
+        toggle(top, 'cinematicLibraryTop', true);
+        toggle(toolbar, 'cinematicLibraryToolbar', true);
+        toggle(top.querySelector('a[href^="#/search"]'), 'cinematicLibrarySearch', true);
+        const hiddenNames = new Set(configuredNavigationHiddenNames());
+        const sources = Array.from(top.querySelectorAll('a[href]')).filter(link => link.getAttribute('href').startsWith('#/') && link.textContent.trim());
+        const entries = sources.map((source, index) => {
+            if (index && !source.hasAttribute('data-cinematic-library-nav')) source.setAttribute('data-cinematic-library-nav', '1');
+            return { source, href: source.getAttribute('href'), label: index ? source.textContent.trim() : 'Home' };
+        }).filter(entry => !hiddenNames.has(entry.source.textContent.trim().toLowerCase()));
+        const parentId = hash => new URLSearchParams(hash.split('?')[1] || '').get('topParentId');
+        const currentId = parentId(location.hash);
+        const selected = entries.find(entry => currentId ? parentId(entry.href) === currentId : entry.href === location.hash);
+        const signature = JSON.stringify(entries.map(entry => [entry.href, entry.label]));
+        let nav = document.querySelector('#cinematicLibraryNav');
+        if (!nav) {
+            nav = document.createElement('nav');
+            nav.id = 'cinematicLibraryNav';
+            nav.setAttribute('aria-label', 'Library navigation');
+            document.body.appendChild(nav);
+        }
+        if (nav.dataset.signature !== signature) {
+            nav.replaceChildren();
+            let labelledLibraries = false;
+            entries.forEach((entry, index) => {
+                if (!labelledLibraries && parentId(entry.href)) {
+                    labelledLibraries = true;
+                    const section = document.createElement('div');
+                    section.className = 'cinematicLibraryNavLabel';
+                    section.textContent = 'Libraries';
+                    nav.appendChild(section);
+                }
+                const link = document.createElement('a');
+                link.className = 'cinematicLibraryLink';
+                link.href = entry.href;
+                if (entry.label === 'Home') {
+                    const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                    icon.setAttribute('viewBox', '0 0 24 24');
+                    const path = document.createElementNS(icon.namespaceURI, 'path');
+                    path.setAttribute('d', 'M3 10 12 3l9 7v11h-6v-7H9v7H3z');
+                    icon.appendChild(path);
+                    icon.setAttribute('aria-hidden', 'true');
+                    link.appendChild(icon);
+                } else {
+                    const icon = entry.source.querySelector('svg')?.cloneNode(true);
+                    if (icon) { icon.setAttribute('aria-hidden', 'true'); link.appendChild(icon); }
+                }
+                const label = document.createElement('span');
+                label.textContent = entry.label;
+                link.appendChild(label);
+                nav.appendChild(link);
+            });
+            nav.dataset.signature = signature;
+        }
+        for (const link of nav.querySelectorAll('a')) {
+            const current = link.getAttribute('href') === selected?.href;
+            if (current && link.getAttribute('aria-current') !== 'page') link.setAttribute('aria-current', 'page');
+            else if (!current && link.hasAttribute('aria-current')) link.removeAttribute('aria-current');
+        }
+        let heading = toolbar.querySelector('.cinematicLibraryHeading');
+        if (!heading) {
+            heading = document.createElement('div');
+            heading.className = 'cinematicLibraryHeading';
+            const title = document.createElement('h1');
+            const section = document.createElement('span');
+            section.className = 'cinematicLibrarySection';
+            section.textContent = 'Library';
+            heading.append(title, section);
+            toolbar.prepend(heading);
+        }
+        const title = selected?.label || toolbar.querySelector('button')?.textContent.trim() || 'Library';
+        if (heading.firstElementChild.textContent !== title) heading.firstElementChild.textContent = title;
     }
 
     function getCredentials() {
@@ -775,6 +873,7 @@
         try { applyGlobalTheme(); } catch (error) { warn('global theme apply failed', error); }
         try { applyNavigationVisibility(); } catch (error) { warn('navigation apply failed', error); }
         try { applyLogin(); } catch (error) { warn('login apply failed', error); }
+        try { applyLibraryLayout(); } catch (error) { warn('library layout apply failed', error); }
         try { applyHome(); } catch (error) { warn('home apply failed', error); }
         try { maybeAutoplayDetails(); } catch (error) { warn('autoplay failed', error); }
     }

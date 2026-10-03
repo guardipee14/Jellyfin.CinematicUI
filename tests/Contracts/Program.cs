@@ -1,5 +1,7 @@
 using System.Text.Json;
+using System.Xml.Serialization;
 using Jellyfin.Plugin.CinematicUI;
+using Jellyfin.Plugin.CinematicUI.Configuration;
 using MediaBrowser.Common.Plugins;
 
 var root = Path.GetFullPath(args.Length > 0 ? args[0] : ".");
@@ -13,6 +15,13 @@ Require(assembly.GetName().Name == "Jellyfin.Plugin.CinematicUI", "Assembly name
 Require(assembly.GetName().Version!.ToString() == metadata.Version, "Built assembly version differs from meta.json");
 Require(Plugin.PluginId == metadata.Id, "Built GUID differs from metadata");
 Require(metadata.AutoUpdate, "Automatic updates are disabled");
+var serializer = new XmlSerializer(typeof(PluginConfiguration));
+using var legacyXml = new StringReader("<PluginConfiguration><ServerTitle>Retained title</ServerTitle><HeroRotationSeconds>23</HeroRotationSeconds></PluginConfiguration>");
+var restored = (PluginConfiguration)serializer.Deserialize(legacyXml)!;
+Require(restored.EnableLibraryLayout && restored.ServerTitle == "Retained title" && restored.HeroRotationSeconds == 23, "Legacy settings must retain values and default the new library appearance flag");
+var embeddedType = assembly.GetType("Jellyfin.Plugin.CinematicUI.EmbeddedAssets")!;
+using var configJson = JsonDocument.Parse((string)embeddedType.GetProperty("ConfigJson")!.GetValue(null)!);
+Require(configJson.RootElement.GetProperty("enableLibraryLayout").GetBoolean(), "Library appearance flag is missing from injected configuration");
 foreach (var asset in new[] { "Web/cinematic.css", "Web/client.js", "Configuration/configPage.html" })
 {
     var name = "Jellyfin.Plugin.CinematicUI." + asset.Replace('/', '.');

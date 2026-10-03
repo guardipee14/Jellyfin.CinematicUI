@@ -1,12 +1,12 @@
 {
   "category": "General",
-  "changelog": "UI hardening: preserve keyboard focus on hero indicators, expose the current title to assistive technology, add explicit Pause/Resume rotation, pause for keyboard focus and reduced motion, enlarge and scroll indicator hit areas, and retain artwork during rapid title changes. Support Jellyfin 12.1 React headers for login branding and cosmetic navigation hiding, and keep profile and recovery controls scrollable on small screens. Retains the catalog update pipeline, plugin identity, and existing settings.",
+  "changelog": "Plex-inspired library layout for Jellyfin 12.1: desktop sidebar using existing profile-visible navigation, active library heading, a search pill, smaller spaced posters, left-aligned transparent captions, and quieter toolbar and count badges. Smaller screens retain native navigation. Filter, sort, grid/list view, details, and playback remain Jellyfin controls. Adds an appearance opt-out while preserving existing settings and the catalog update pipeline.",
   "description": "A unified cinematic Jellyfin Web customization with a profile-forward login screen, Plex-inspired theme, and rotating library-driven home hero.",
   "guid": "e4c17f1b-c451-4a31-b98c-5d0ef44f9a21",
   "name": "Cinematic UI",
   "overview": "Cinematic login and home experience for Jellyfin Web",
   "owner": "Donaven Guardipee",
   "targetAbi": "12.1.0.0",
-  "timestamp": "2026-10-02T23:53:23Z",
-  "version": "0.1.7.0"
+  "timestamp": "2026-10-03T02:32:53Z",
+  "version": "0.1.8.0"
 }

@@ -38,6 +38,7 @@ internal static class EmbeddedAssets
             var safe = new
             {
                 enableGlobalTheme = cfg?.EnableGlobalTheme ?? true,
+                enableLibraryLayout = cfg?.EnableLibraryLayout ?? true,
                 enableLoginExperience = cfg?.EnableLoginExperience ?? true,
                 enableHomeHero = cfg?.EnableHomeHero ?? true,
                 hideMyMediaRow = cfg?.HideMyMediaRow ?? true,
