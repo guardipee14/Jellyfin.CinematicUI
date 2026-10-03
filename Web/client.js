@@ -666,15 +666,23 @@
         rememberHeroId(item.Id);
 
         requestAnimationFrame(() => {
+            if (renderToken !== heroRenderToken) {
+                URL.revokeObjectURL(backgroundUrl);
+                return;
+            }
             hero.dataset.ready = '1';
             nextLayer.classList.add('active');
             oldLayer.classList.remove('active');
             activeBgLayer = nextLayerIndex;
             currentBgObjectUrl = backgroundUrl;
 
+            const inactiveBackground = oldLayer.style.backgroundImage;
             setTimeout(() => {
-                oldLayer.style.backgroundImage = 'none';
-                if (previousBgUrl && previousBgUrl !== backgroundUrl) URL.revokeObjectURL(previousBgUrl);
+                // Rapid navigation can reuse this layer before its earlier fade finishes.
+                if (!oldLayer.classList.contains('active') && oldLayer.style.backgroundImage === inactiveBackground) {
+                    oldLayer.style.backgroundImage = 'none';
+                }
+                if (previousBgUrl && previousBgUrl !== currentBgObjectUrl) URL.revokeObjectURL(previousBgUrl);
             }, 950);
         });
     }

@@ -40,6 +40,21 @@ test('pointer pause/resume keeps the intended action through focus events', asyn
   await expect(page.getByRole('button', { name: 'Pause rotation', exact: true })).toBeVisible();
 });
 
+test('rapid title changes retain the current artwork after older fades finish', async ({ page }) => {
+  await page.clock.install({ time: new Date('2026-01-01T00:00:00Z') });
+  await home(page);
+  await page.getByRole('button', { name: 'Next featured title' }).focus();
+  await page.clock.pauseAt(new Date('2026-01-01T00:01:00Z'));
+  for (const title of ['Alpine Journey', 'City of Clouds']) {
+    await page.getByRole('button', { name: 'Show ' + title, exact: true }).press('Enter');
+    await expect(page.locator('.cinematicHeroTitle')).toHaveText(title);
+    await page.clock.runFor(32);
+  }
+  await page.clock.runFor(1000);
+  await expect(page.locator('.cinematicHeroTitle')).toHaveText('City of Clouds');
+  await expect.poll(() => page.locator('.cinematicHeroBg.active').evaluate(element => getComputedStyle(element).backgroundImage)).not.toBe('none');
+});
+
 test('reduced motion starts paused and allows an explicit resume', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.clock.install();

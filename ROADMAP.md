@@ -16,6 +16,7 @@ Acceptance criteria:
 - Keyboard focus pauses rotation until an explicit Resume action, independently of the hover setting.
 - A visible Pause/Resume control supports pointer and keyboard input; reduced motion starts paused.
 - Indicators have usable hit areas and remain reachable on narrow screens.
+- Rapid title changes retain current artwork after earlier fade timers finish.
 - Login branding and cosmetic navigation hiding support the observed React header while retaining legacy selectors.
 - Login profile and recovery controls remain reachable when content exceeds the viewport.
 - Desktop and phone browser regression tests pass, followed by the existing build/package and real Jellyfin install/update checks.
@@ -28,4 +29,4 @@ Check account switching and pending artwork requests, configured library-name mi
 
 ## 4. Performance and visual refinement — afterward
 
-Measure observer activity, request volume, object-URL lifetime, rapid-navigation cross-fades, and route cleanup. Use those findings to prioritize focused refinements to login and hero layouts. Preserve the working catalog update path and settings compatibility for every release.
+Measure observer activity, request volume, object-URL lifetime, and route cleanup. Use those findings to prioritize focused refinements to login and hero layouts. Preserve the working catalog update path and settings compatibility for every release.
