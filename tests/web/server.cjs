@@ -24,7 +24,7 @@ function html(params) {
     hiddenNavigationLibraryNames: params.get('hideNavigation') === 'yes' ? 'Other Videos' : ''
   };
   const profiles = Array.from({ length: params.get('profiles') === 'many' ? 12 : 2 }, (_, i) =>
-    `<button class="card" type="button"><div class="cardImageContainer"><div class="cardImage">●</div></div><div class="cardFooter"><div class="cardText">Guest ${i + 1}</div></div></button>`).join('');
+    `<button class="card" type="button"><div class="cardImageContainer"><div class="cardImage" aria-hidden="true">●</div></div><div class="cardFooter"><div class="cardText">Guest ${i + 1}</div></div></button>`).join('');
   return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Cinematic UI browser fixture</title>
     <link rel="stylesheet" href="/Web/cinematic.css"><style>
       *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Arial,sans-serif;background:#0d0d0f;color:#fff}.hide{display:none!important}
