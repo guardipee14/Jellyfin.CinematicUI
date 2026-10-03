@@ -2,21 +2,21 @@
 
 ## Normal release procedure
 
-1. Update `Version`, `AssemblyVersion`, and `FileVersion` in `Jellyfin.Plugin.CinematicUI.csproj`, and `version`, `changelog`, and UTC `timestamp` in `meta.json`. Update the version displayed in `Configuration/configPage.html`. Use four-part plugin versions such as `0.1.7.0`. Keep the assembly name and plugin GUID unchanged.
+1. Update `Version`, `AssemblyVersion`, and `FileVersion` in `Jellyfin.Plugin.CinematicUI.csproj`, and `version`, `changelog`, and UTC `timestamp` in `meta.json`. Update the version displayed in `Configuration/configPage.html`. Use four-part plugin versions such as `0.1.8.0`. Keep the assembly name and plugin GUID unchanged.
 2. If changing the Jellyfin API baseline, update both Jellyfin package references and `targetAbi` together. Confirm the real server compatibility with the Docker integration test before releasing.
 3. Commit and push to `main`. Wait for CI to pass.
 4. Tag that commit and push the tag:
 
 ```bash
-git tag v0.1.7
-git push origin v0.1.7
+git tag v0.1.8
+git push origin v0.1.8
 ```
 
-The tag must exactly match the source version. Tags such as `v0.1.7-beta` and version overrides are rejected.
+The tag must exactly match the source version. Tags such as `v0.1.8-beta` and version overrides are rejected.
 
 ## What Actions publishes
 
-The shared verification job restores and builds with .NET 10, checks the compiled assembly identity and all embedded resources, runs release-tool tests, packages only `Jellyfin.Plugin.CinematicUI.dll` and `meta.json`, and exercises a real disposable Jellyfin 12.1 server. The integration test covers catalog installation, restart, intact injection after a cache-bypassing request, migration from a manual folder, a newer compatible update through the scheduled Update Plugins task, exclusion of a future incompatible ABI, one active plugin after restart, and unchanged settings/XML.
+The shared verification job restores and builds with .NET 10, checks the compiled assembly identity and all embedded resources, runs release-tool and desktop/phone browser tests, packages only `Jellyfin.Plugin.CinematicUI.dll` and `meta.json`, and exercises a real disposable Jellyfin 12.1 server. Browser tests use locked dependencies and real plugin assets with synthetic media; test dependencies are excluded from the runtime ZIP. Retries of the immutable v0.1.5/v0.1.6 tags retain their original scope because those tags predate the browser suite. The integration test covers catalog installation, restart, intact injection after a cache-bypassing request, migration from a manual folder, a newer compatible update through the scheduled Update Plugins task, exclusion of a future incompatible ABI, one active plugin after restart, and unchanged settings/XML.
 
 After every required check passes, the publishing job uses the built-in `GITHUB_TOKEN` with `contents: write` to:
 

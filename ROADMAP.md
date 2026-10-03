@@ -6,7 +6,9 @@ The original handoff defined the repository-management milestone but no later fe
 
 v0.1.5 restored the interrupted source transfer. v0.1.6 enabled normal updates from the existing manual installation. GitHub releases, the cumulative manifest, runtime checksums, compatible version selection, and configuration preservation are validated in real Jellyfin 12.1 containers. The owner updated production to v0.1.6; subsequent read-only checks confirmed active plugin loading, the enabled catalog, automatic updates, retained settings file, and one intact UI injection. See [VALIDATION.md](VALIDATION.md).
 
-## 2. Existing UI reliability and accessibility — v0.1.7
+## 2. Existing UI reliability and accessibility — complete in v0.1.7
+
+Published October 2, 2026. All 18 desktop/phone browser checks and the existing build/package and real Jellyfin checks passed. The public release test upgraded the actual v0.1.6 package through Jellyfin's normal Update Plugins task with settings/XML preserved. See [VALIDATION.md](VALIDATION.md) for run links and scope.
 
 The live browser walkthrough confirmed functioning hero artwork, rotation, More Info, and restoration of one hero on returning Home. It also reproduced lost focus after indicator selection, missing selected-state semantics, and the login branding toggle missing Jellyfin 12.1's React header.
 

@@ -35,7 +35,7 @@ Hard-refresh Jellyfin Web after activation. On TrueNAS, use **Apps → Jellyfin 
 
 ## Release procedure and recovery
 
-Follow [PUBLISH-GITHUB.md](PUBLISH-GITHUB.md). For the next release, update the project/metadata versions to a new four-part value such as `0.1.7.0`, update the changelog, timestamp, and displayed settings version, land the source on main, wait for CI, then push the matching `v0.1.7` tag.
+Follow [PUBLISH-GITHUB.md](PUBLISH-GITHUB.md). For the next release, update the project/metadata versions to a new four-part value such as `0.1.8.0`, update the changelog, timestamp, and displayed settings version, land the source on main, wait for CI, then push the matching `v0.1.8` tag.
 
 The release workflow restores/builds with warnings treated as errors, checks compiled assembly identity and exact embedded resources, validates metadata/tag/checksums, and runs tooling and real Jellyfin integration tests. After verification, it uses the built-in `GITHUB_TOKEN` with `contents: write` to stage and verify a draft release, publish its assets, check unauthenticated downloads, and advance the stable manifest. A final test installs from the public GitHub URL and upgrades an actual prior published ZIP when one exists.
 
@@ -49,7 +49,9 @@ After the owner updated/restarted the TrueNAS app, read-only checks confirmed Je
 
 The agent did not modify production repositories, files, configuration, or container lifecycle. The owner performed the production update/restart. Subsequent browser checks verified the rendered login and hero, More Info navigation, and return to one Home hero. The v0.1.6 production resources match the recovered baseline; no byte-for-byte comparison of pre/post production settings or production playback test is claimed.
 
-The next milestone is existing UI reliability/accessibility in v0.1.7. [ROADMAP.md](ROADMAP.md) records its confirmed issues, acceptance criteria, and the following work. Browser regression fixtures use the real plugin assets with synthetic media and do not require production credentials.
+Existing UI reliability/accessibility is complete in published v0.1.7. The immutable source tag is `325a1ca333fac68a6021c04ed2138bc1c2477d80`. It fixes lost indicator focus, current-title semantics, explicit rotation pause/resume and reduced-motion behavior, the rapid-navigation artwork race, modern React header settings, and small-screen login scrolling. All 18 desktop/phone browser checks and 24 tooling tests passed, followed by clean public installation and the actual published v0.1.6-to-v0.1.7 update with settings/XML preserved. Production was last confirmed on v0.1.6; the agent did not deploy v0.1.7 there. [VALIDATION.md](VALIDATION.md) records checksums and run links.
+
+The next milestone is profile and library-selection reliability. [ROADMAP.md](ROADMAP.md) records account switching/pending requests, configured library-name mismatches, view-enumeration failures, played/keyword exclusions, and repeat history across users. Define fallback behavior before changing it. Browser regression fixtures use the real plugin assets with synthetic media and do not require production credentials.
 
 ## TrueNAS fallback constraints
 
