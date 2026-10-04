@@ -72,6 +72,6 @@ python3 scripts/integration.py
 
 On Windows: `./build.ps1 -Python python`.
 
-Update the version/changelog, push the code, and push a matching new tag such as `v0.1.11`. The workflow validates the candidate, publishes an immutable GitHub release ZIP and manifest snapshot, then updates the cumulative `repository` branch only after checking public downloads. See [PUBLISH-GITHUB.md](PUBLISH-GITHUB.md) for release and retry details, and [VALIDATION.md](VALIDATION.md) for the completed milestone's evidence.
+Update the version/changelog, push the code, and push a matching new tag such as `v0.1.13`. The workflow validates the candidate, publishes an immutable GitHub release ZIP and manifest snapshot, then updates the cumulative `repository` branch only after checking public downloads. See [PUBLISH-GITHUB.md](PUBLISH-GITHUB.md) for release and retry details, and [VALIDATION.md](VALIDATION.md) for the completed milestone's evidence.
 
 Compatibility: Jellyfin Server 12.1, target ABI `12.1.0.0`, .NET 10. Developer: Donaven Guardipee ([guardipee14](https://github.com/guardipee14)).

@@ -51,9 +51,11 @@ Published October 2, 2026. All 66 desktop/phone browser checks, 24 tooling tests
 
 Implemented account/server switching with pending request cancellation, explicit configured-library fallback, native Home on view-enumeration failure, played/keyword exclusions across query attempts, and account/server-scoped history and Play intent. Compact profile/account-menu styling retains native controls and offers an Appearance opt-out. Published October 3, 2026. All 88 desktop/phone browser checks, 24 tooling tests, warning-free build/contracts, and real Jellyfin checks passed CI. Clean public catalog installation and the actual published v0.1.10-to-v0.1.11 Update Plugins path preserved settings/XML and one active identity. See [VALIDATION.md](VALIDATION.md). Jellyfin user library permissions remain the source of access control; navigation hiding remains cosmetic.
 
-## 7. Mobile homepage reliability — v0.1.12 candidate
+## 7. Mobile homepage reliability — released in v0.1.12
 
 The owner's Android screenshot exposed indicator/action overlap and a horizontal scrollbar with the default 12 featured titles. The responsive hero now lays out its top controls, content/actions, and wrapping indicators in separate rows, with room to grow for larger text and long titles. Native Home rows and existing carousel settings/handlers remain intact. Regression cases cover 320px/390px phones, a 768px tablet, 915px landscape, the maximum 30 titles, 200% text, and hidden navigation controls. Physical Android validation follows the owner's catalog update.
+
+Published October 3, 2026. All 100 browser checks, 24 tooling tests, zero-warning build/contracts, and real Jellyfin checks passed. Clean public catalog installation and the actual published v0.1.11-to-v0.1.12 Update Plugins path preserved settings/XML and one active identity. All eight public packages and unchanged older catalog entries verified independently. See [VALIDATION.md](VALIDATION.md).
 
 ## 8. Performance and further visual refinement — afterward
 
