@@ -1,12 +1,18 @@
 # Cinematic UI validation — October 3, 2026
 
-## v0.1.12 mobile homepage candidate
+## v0.1.12 mobile homepage release
 
 The owner's Jellyfin Android screenshot showed carousel indicators covering Play/More Info and a horizontal scrollbar beneath them. The existing three-title fixtures did not cover the default 12-title or maximum 30-title carousels. New layout checks reproduced the failures before the CSS fix. The responsive hero now uses separate top-control, content/action, and indicator rows at widths up to 1000px. Indicators wrap, actions can wrap, and content grows for larger text and long titles. The wide desktop rules and native Home rows remain intact.
 
 All 100 desktop/phone Chromium checks pass locally. Twelve additional checks cover 320×740 and 390×844 phones, a 768×1024 tablet, 915×412 landscape, 12/30 titles, 200% text with long titles and no logo, hidden navigation settings, pointer selection/current state, and More Info navigation. The tests select a different title from the randomized initial slide without forcing disabled buttons. All 24 Python tooling tests pass. The v0.1.12 build has zero warnings/errors; compiled identity/resource/legacy-configuration checks and package validation pass.
 
-A manual Chrome preview at 390×844 using the real assets and synthetic artwork confirmed 12 indicators below the action row, no hero scrollbar, and functioning title selection and More Info. Screenshot: `C:\Dev\CinematicUI-Previews\v0.1.12-phone.jpg`. This is responsive browser validation, not a physical Android/WebView test. CI, real Jellyfin catalog installation/update, and publication must pass before this candidate is released. Production has not been updated or restarted for this fix.
+A manual Chrome preview at 390×844 using the real assets and synthetic artwork confirmed 12 indicators below the action row, no hero scrollbar, and functioning title selection and More Info. Screenshot: `C:\Dev\CinematicUI-Previews\v0.1.12-phone.jpg`. This is responsive browser validation, not a physical Android/WebView test. Production has not been updated or restarted for this fix.
+
+The [candidate CI](https://github.com/guardipee14/Jellyfin.CinematicUI/actions/runs/37180565354), [merged main CI](https://github.com/guardipee14/Jellyfin.CinematicUI/actions/runs/37180728481), and [release workflow](https://github.com/guardipee14/Jellyfin.CinematicUI/actions/runs/37180879379) all passed. Each checked 100 browser cases, 24 tooling tests, the zero-warning build/contracts, packaging, and real Jellyfin candidate installation/update. The immutable source tag is `be418cdc371451a6ae24a3acde4df54a85e38525`.
+
+The public release test installed from the stable GitHub catalog, then updated the actual published v0.1.11 package through Jellyfin's Update Plugins task. It confirmed one active identity, unchanged settings/XML, and intact Web injection. Independent unauthenticated checks verified the exact stable catalog URL, all eight public ZIPs, and unchanged older entries. The catalog commit is `fdd89d701146452c3020ad5b2ce09dfd547528b0`; v0.1.12's ZIP MD5 is `e6eb3628cdbe233b01870a3718ab264b`.
+
+Published October 3, 2026 (October 4 UTC). Run Update Plugins, restart Jellyfin through TrueNAS Apps, then fully close and reopen the Android app to load the new assets. The owner's physical Android confirmation remains outstanding.
 
 ## v0.1.10 player colors and title/details publication
 
