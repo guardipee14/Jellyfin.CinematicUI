@@ -8,6 +8,14 @@
     "category": "General",
     "versions": [
       {
+        "version": "0.1.12.0",
+        "changelog": "Fixes the crowded homepage hero on phones and tablets, including the Jellyfin Android app. Carousel indicators wrap below Play and More Info without a horizontal scrollbar. Rotation and arrow controls have separate space, actions wrap on narrow screens, and the hero grows for long titles and larger text. Preserves existing navigation, playback, carousel settings, and desktop layout.",
+        "targetAbi": "12.1.0.0",
+        "timestamp": "2026-10-04T05:35:20Z",
+        "sourceUrl": "https://github.com/guardipee14/Jellyfin.CinematicUI/releases/download/v0.1.12/CinematicUI-v0.1.12-jf12.1.zip",
+        "checksum": "e6eb3628cdbe233b01870a3718ab264b"
+      },
+      {
         "version": "0.1.11.0",
         "changelog": "Compact profile and user menu with native account controls and an Appearance opt-out. Cancels stale hero data/artwork after account or server changes, scopes repeat history and Play intent to each account/server, and prevents foreign-origin credentials being used. Explicit library names never fall back to unrelated libraries; blank selection uses available movie/TV views. Missing views, failed enumeration, or all excluded titles retain native Home without repeated requests.",
         "targetAbi": "12.1.0.0",
