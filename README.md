@@ -44,6 +44,8 @@ v0.1.11 adds a compact profile and account menu while retaining native password,
 
 Hero library names are explicit: partial matches use only matching available libraries, and no matches retain native Home. Leave the field blank to use all available movie/TV libraries. Failed view enumeration, empty selections, and all played/keyword-excluded items also retain native Home without repeated requests on every DOM change. Jellyfin library permissions continue to control access.
 
+v0.1.12 fixes the mobile homepage hero, including the Jellyfin Android app's WebView. Indicators wrap below Play and More Info instead of covering them or showing a horizontal scrollbar. Rotation and arrow controls occupy their own row. Long titles and larger text can expand the hero; narrow action buttons wrap. These changes apply at widths up to 1000px and retain the existing carousel settings and handlers. After updating and restarting Jellyfin, fully close and reopen the Android app to reload the embedded Web assets.
+
 ## Manual TrueNAS fallback and rollback
 
 The normal catalog install requires no shell work. If needed, build from a complete source checkout using:

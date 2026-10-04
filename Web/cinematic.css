@@ -318,9 +318,21 @@ body.cinematic-home #homeTab .cardFooter{padding-top:.55rem!important}
 body.cinematic-home #homeTab .cardText{font-size:.94rem!important;font-weight:500!important;color:rgba(255,255,255,.92)!important}
 body.cinematic-home #homeTab .cardText-secondary{font-size:.82rem!important;color:rgba(255,255,255,.52)!important}
 
-@media(max-width:1000px){#cinematicHero[data-ready="1"]{min-height:500px}#cinematicHero .cinematicHeroContent{width:min(620px,62vw)}#cinematicHero::before{background:linear-gradient(90deg,rgba(6,6,8,.97) 0%,rgba(6,6,8,.80) 35%,rgba(6,6,8,.34) 70%,rgba(6,6,8,.42) 100%)}}
-@media(max-width:800px){#cinematicHero[data-ready="1"]{min-height:470px}#cinematicHero .cinematicHeroContent{width:auto;right:1.4rem;left:1.4rem;bottom:2.3rem}#cinematicHero .cinematicHeroLogo{max-width:min(420px,72vw);max-height:125px}#cinematicHero .cinematicHeroTitle{font-size:clamp(2rem,8vw,3.35rem)}#cinematicHero .cinematicHeroOverview{-webkit-line-clamp:2}#cinematicHero .cinematicHeroNav{right:.8rem;top:1rem;transform:none;flex-direction:row}#cinematicHero .cinematicHeroNav button{width:40px;height:40px;min-height:40px;font-size:1.65rem}#cinematicHero .cinematicHeroDots{right:1rem;bottom:.8rem}body.cinematic-home #homeTab .portraitCard{width:9.6em!important}}
-@media(max-width:560px){#cinematicHero[data-ready="1"]{min-height:430px;border-radius:0 0 12px 12px}#cinematicHero .cinematicHeroContent{left:1rem;right:1rem;bottom:2.5rem}#cinematicHero .cinematicHeroLogo{max-width:72vw;max-height:100px}#cinematicHero .cinematicHeroMeta{font-size:.88rem}#cinematicHero .cinematicHeroOverview{display:none}#cinematicHero .cinematicHeroActions{margin-top:.9rem}#cinematicHero button{min-height:2.65rem;padding:0 1rem}#cinematicHero .cinematicHeroDots{max-width:70vw;overflow-x:auto}body.cinematic-login #loginPage>.padded-left.padded-right.padded-bottom-page{padding:4rem 1rem 2rem!important}body.cinematic-login #loginPage #divUsers{gap:1rem}body.cinematic-login #loginPage #divUsers .card{width:min(31vw,130px)!important}}
+/* Let the mobile hero grow with text and keep navigation outside the action row. */
+@media(max-width:1000px){
+  #cinematicHero[data-ready="1"]{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto 1fr auto;column-gap:.75rem;min-height:500px;padding:1rem;box-sizing:border-box}
+  #cinematicHero .cinematicHeroRotation{position:static;grid-area:1 / 1;justify-self:start;align-self:start;min-width:0;max-width:100%;min-height:44px;padding:.55rem .7rem;line-height:1.25;overflow-wrap:anywhere;box-sizing:border-box}
+  #cinematicHero .cinematicHeroNav{position:static;grid-area:1 / 2;align-self:start;transform:none;flex-direction:row}
+  #cinematicHero .cinematicHeroNav button{width:44px;height:44px;min-height:44px;font-size:1.65rem}
+  #cinematicHero .cinematicHeroContent{position:relative;inset:auto;grid-area:2 / 1 / 3 / -1;align-self:end;min-width:0;width:100%;padding-top:4rem;box-sizing:border-box;overflow-wrap:anywhere}
+  #cinematicHero .cinematicHeroLogo{max-width:min(420px,100%);max-height:125px}
+  #cinematicHero .cinematicHeroActions{flex-wrap:wrap}
+  #cinematicHero .cinematicHeroActions button{flex:0 1 auto;min-width:0;min-height:44px;padding:.65rem 1rem;white-space:normal;overflow-wrap:anywhere;box-sizing:border-box}
+  #cinematicHero .cinematicHeroDots{position:static;grid-area:3 / 1 / 4 / -1;justify-self:center;justify-content:center;flex-wrap:wrap;max-width:100%;margin-top:1rem;overflow:visible;box-sizing:border-box}
+  #cinematicHero::before{background:linear-gradient(90deg,rgba(6,6,8,.97) 0%,rgba(6,6,8,.80) 35%,rgba(6,6,8,.34) 70%,rgba(6,6,8,.42) 100%)}
+}
+@media(max-width:800px){#cinematicHero[data-ready="1"]{min-height:470px}#cinematicHero .cinematicHeroTitle{font-size:clamp(2rem,8vw,3.35rem)}#cinematicHero .cinematicHeroOverview{-webkit-line-clamp:2}body.cinematic-home #homeTab .portraitCard{width:9.6em!important}}
+@media(max-width:560px){#cinematicHero[data-ready="1"]{min-height:430px;border-radius:0 0 12px 12px}#cinematicHero .cinematicHeroLogo{max-height:100px}#cinematicHero .cinematicHeroMeta{font-size:.88rem}#cinematicHero .cinematicHeroOverview{display:none}#cinematicHero .cinematicHeroActions{margin-top:.9rem}#cinematicHero .cinematicHeroActions button{flex:1 1 8rem}body.cinematic-login #loginPage>.padded-left.padded-right.padded-bottom-page{padding:4rem 1rem 2rem!important}body.cinematic-login #loginPage #divUsers{gap:1rem}body.cinematic-login #loginPage #divUsers .card{width:min(31vw,130px)!important}}
 @media(prefers-reduced-motion:reduce){body.cinematic-login.cinematic-login-motion #loginPage::after{animation:none!important}.card{transition:none!important}.card:hover{transform:none!important}#cinematicHero .cinematicHeroBg{transition:none!important;transform:scale(var(--cinematic-hero-zoom,1.08))!important}}
 
 /* Native profile controls and React account menu, scoped to recognized structures. */

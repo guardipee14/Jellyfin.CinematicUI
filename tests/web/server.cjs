@@ -23,6 +23,8 @@ function image(label, logo = false) {
 function html(params) {
   const config = {
     serverTitle: 'CINEMATIC TEST SERVER', heroRotationSeconds: 5, heroAvoidRepeatCount: 0,
+    heroMaxItems: Number(params.get('heroCount') || 12),
+    heroShowDots: params.get('dots') !== 'off', heroShowNavigationArrows: params.get('arrows') !== 'off',
     heroPauseOnHover: params.get('hover') !== 'off', loginHideHeaderBranding: params.get('branding') !== 'show',
     hiddenNavigationLibraryNames: params.get('hideNavigation') === 'yes' ? 'Other Videos' : '',
     enableLibraryLayout: params.get('libraryLayout') !== 'off',
@@ -125,6 +127,12 @@ function html(params) {
 
 const server = http.createServer((request, response) => {
   const url = new URL(request.url, 'http://127.0.0.1');
+  // Each preview carries its own count; concurrent phone/desktop fixtures do not share mutable state.
+  const preview = new URL(request.headers.referer || '/', 'http://127.0.0.1');
+  const count = Math.max(3, Math.min(30, Number(preview.searchParams.get('heroCount')) || 3));
+  const previewItems = Array.from({ length: count }, (_, index) => items[index] || {
+    ...items[index % items.length], Id: `fixture-${index}`, Name: `Featured adventure ${index + 1}`
+  });
   if (url.pathname === '/fixture.webm') {
     const clip = fs.readFileSync(path.join(__dirname,'media/fixture.webm'));
     const match = request.headers.range?.match(/^bytes=(\d+)-(\d*)$/);
@@ -146,9 +154,9 @@ const server = http.createServer((request, response) => {
     body = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600"><defs><linearGradient id="p" x2="1" y2="1"><stop stop-color="${colors[i%6]}"/><stop offset="1" stop-color="#101923"/></linearGradient></defs><rect width="400" height="600" fill="url(#p)"/><circle cx="${90+i%3*80}" cy="170" r="90" fill="#ead9b5" opacity=".7"/><path d="M0 470 160 250 260 430 400 320V600H0Z" fill="#111b2b" opacity=".8"/><path d="M0 520 260 400 400 510V600H0Z" fill="#0b111b"/></svg>`;
     type = 'image/svg+xml';
   }
-  else if (url.pathname === '/Items/Latest' || url.pathname.endsWith('/Items')) body = JSON.stringify({ Items: url.searchParams.get('empty') === 'yes' ? [] : items });
+  else if (url.pathname === '/Items/Latest' || url.pathname.endsWith('/Items')) body = JSON.stringify({ Items: url.searchParams.get('empty') === 'yes' ? [] : previewItems });
   else if (url.pathname.includes('/Images/') || url.pathname === '/Branding/Splashscreen') {
-    const item = items.find(item => url.pathname.includes(item.Id)); body = image(item?.Name || 'Cinematic UI', url.pathname.includes('/Logo')); type = 'image/svg+xml';
+    const item = previewItems.find(item => url.pathname.split('/').includes(item.Id)); body = image(item?.Name || 'Cinematic UI', url.pathname.includes('/Logo')); type = 'image/svg+xml';
   } else { response.writeHead(404); response.end(); return; }
   response.writeHead(200, { 'Content-Type': type, 'Cache-Control': 'no-store' }); response.end(body);
 });

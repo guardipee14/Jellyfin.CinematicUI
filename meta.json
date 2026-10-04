@@ -1,12 +1,12 @@
 {
   "category": "General",
-  "changelog": "Compact profile and user menu with native account controls and an Appearance opt-out. Cancels stale hero data/artwork after account or server changes, scopes repeat history and Play intent to each account/server, and prevents foreign-origin credentials being used. Explicit library names never fall back to unrelated libraries; blank selection uses available movie/TV views. Missing views, failed enumeration, or all excluded titles retain native Home without repeated requests.",
+  "changelog": "Fixes the crowded homepage hero on phones and tablets, including the Jellyfin Android app. Carousel indicators wrap below Play and More Info without a horizontal scrollbar. Rotation and arrow controls have separate space, actions wrap on narrow screens, and the hero grows for long titles and larger text. Preserves existing navigation, playback, carousel settings, and desktop layout.",
   "description": "A unified cinematic Jellyfin Web customization with a profile-forward login screen, Plex-inspired theme, and rotating library-driven home hero.",
   "guid": "e4c17f1b-c451-4a31-b98c-5d0ef44f9a21",
   "name": "Cinematic UI",
   "overview": "Cinematic login and home experience for Jellyfin Web",
   "owner": "Donaven Guardipee",
   "targetAbi": "12.1.0.0",
-  "timestamp": "2026-10-03T14:46:43Z",
-  "version": "0.1.11.0"
+  "timestamp": "2026-10-04T05:35:20Z",
+  "version": "0.1.12.0"
 }
