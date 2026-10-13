@@ -8,6 +8,14 @@
     "category": "General",
     "versions": [
       {
+        "version": "0.1.13.0",
+        "changelog": "Improves homepage artwork performance and cleanup. Recently viewed artwork is reused from a small account-scoped cache, superseded image requests are cancelled, and unused fading images are released promptly. Background and logo requests run together. Hidden pages stop layout polling; leaving the page clears artwork and timers, and returning restores one hero. Preserves the mobile homepage layout, native controls, settings, identity, and normal plugin updates.",
+        "targetAbi": "12.1.0.0",
+        "timestamp": "2026-10-13T19:07:58Z",
+        "sourceUrl": "https://github.com/guardipee14/Jellyfin.CinematicUI/releases/download/v0.1.13/CinematicUI-v0.1.13-jf12.1.zip",
+        "checksum": "0d543c08c354c674c86a2d41847fd054"
+      },
+      {
         "version": "0.1.12.0",
         "changelog": "Fixes the crowded homepage hero on phones and tablets, including the Jellyfin Android app. Carousel indicators wrap below Play and More Info without a horizontal scrollbar. Rotation and arrow controls have separate space, actions wrap on narrow screens, and the hero grows for long titles and larger text. Preserves existing navigation, playback, carousel settings, and desktop layout.",
         "targetAbi": "12.1.0.0",
