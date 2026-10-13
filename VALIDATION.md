@@ -1,4 +1,12 @@
-# Cinematic UI validation — October 3, 2026
+# Cinematic UI validation — October 13, 2026
+
+## v0.1.13 homepage performance candidate
+
+The candidate preserves the current appearance, settings, plugin GUID/assembly, Jellyfin 12.1 ABI, and normal catalog updater. A six-entry/12 MiB current-context blob cache eliminates repeated fetches for recent images, parallel artwork requests reduce sequential loading, and superseded selections cancel their image requests. Unused fading-layer URLs are revoked immediately, and paint/fade work is cancelled on context teardown. Visibility/page lifecycle events stop polling and restore one hero after return.
+
+Measured with synthetic media: v0.1.12 made four artwork requests to visit all three titles, then two more when returning to the initial title. The candidate returns to that title with no additional artwork or metadata requests. Idle Home already settled in the baseline; the candidate also performs zero reconciliation frames during the sampled idle second. A separate before/after run using the immutable v0.1.12 asset measured 11 versus four peak live object URLs during the same rapid-selection sequence. Hidden-page tests use real timers, verify that the initial frame instrumentation ran, then sample three seconds: the baseline watchdog woke once, while the candidate had no watchdog ticks or layout frames. Tests also verify complete URL revocation after route/page exit, bounded cache entries/bytes, account isolation, failed-image retries, cancellation, and no URL allocation from a late image body after teardown. These are browser-fixture observations, not total-memory, network-throughput, physical Android, or production playback benchmarks.
+
+All 100 existing browser checks and all 18 performance checks passed locally. The zero-warning .NET build, compiled identity/resource/legacy-settings contracts, runtime ZIP validation, and 24 Python tooling tests passed. The initial [candidate CI](https://github.com/guardipee14/Jellyfin.CinematicUI/actions/runs/38453049949) passed the complete 118-check browser suite and real disposable Jellyfin installation/update checks. The strengthened timer tests require the final-head CI check before publication. No production installation, configuration, or lifecycle was changed.
 
 ## v0.1.12 mobile homepage release
 

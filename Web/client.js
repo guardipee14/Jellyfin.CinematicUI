@@ -64,6 +64,14 @@
     let activeBgLayer = 0;
     let heroRenderToken = 0;
     const heroObjectUrls = new Set();
+    const heroFadeTimers = new Set();
+    const heroLayerUrls = new WeakMap();
+    let heroPaintFrame = null;
+    let heroPaintUrl = null;
+    // Keep only a few recently used image blobs, scoped to the current Home/account.
+    // Object URLs still belong to the visible/fading layers and are revoked separately.
+    const artworkCacheLimit = 6;
+    const artworkCacheBytes = 12 * 1024 * 1024;
 
     function log(...args) {
         console.debug('[Cinematic UI]', ...args);
@@ -136,7 +144,7 @@
             for (const heading of home.querySelectorAll('.sectionTitle, h2, h3')) {
                 if ((heading.textContent || '').trim().toLowerCase() === 'my media') {
                     const section = heading.closest('.verticalSection') || heading.parentElement?.parentElement;
-                    if (section) section.style.display = 'none';
+                    if (section && section.style.display !== 'none') section.style.display = 'none';
                 }
             }
         }
@@ -145,7 +153,7 @@
             for (const heading of home.querySelectorAll('.sectionTitle, h2, h3')) {
                 if ((heading.textContent || '').toLowerCase().includes('other videos')) {
                     const section = heading.closest('.verticalSection') || heading.parentElement?.parentElement;
-                    if (section) section.style.display = 'none';
+                    if (section && section.style.display !== 'none') section.style.display = 'none';
                 }
             }
         }
@@ -172,7 +180,9 @@
                         element.dataset.cinematicNavHidden = '1';
                         element.dataset.cinematicPreviousDisplay = element.style.display || '';
                     }
-                    element.style.setProperty('display', 'none', 'important');
+                    if (element.style.display !== 'none' || element.style.getPropertyPriority('display') !== 'important') {
+                        element.style.setProperty('display', 'none', 'important');
+                    }
                 } else if (element.dataset.cinematicNavHidden) {
                     const previous = element.dataset.cinematicPreviousDisplay || '';
                     element.style.removeProperty('display');
@@ -665,20 +675,41 @@
         return null;
     }
 
-    async function objectUrl(path, credentials, cacheMode) {
+    async function artworkBlob(path, context, signal) {
+        const cached = context.artworkCache.get(path);
+        if (cached) {
+            context.artworkCache.delete(path);
+            context.artworkCache.set(path, cached);
+            return cached;
+        }
         const response = await fetch(path, {
             credentials: 'same-origin',
-            cache: cacheMode || 'force-cache',
-            headers: authHeaders(credentials),
-            signal: credentials.signal
+            cache: 'force-cache',
+            headers: authHeaders(context.credentials),
+            signal
         });
         if (!response.ok) throw new Error(`${path} -> HTTP ${response.status}`);
-        const url = URL.createObjectURL(await response.blob());
+        const blob = await response.blob();
+        if (signal.aborted || heroContext !== context) throw new DOMException('Artwork superseded', 'AbortError');
+        if (blob.size <= artworkCacheBytes) {
+            while (context.artworkCache.size >= artworkCacheLimit || context.artworkBytes + blob.size > artworkCacheBytes) {
+                const oldest = context.artworkCache.keys().next().value;
+                context.artworkBytes -= context.artworkCache.get(oldest).size;
+                context.artworkCache.delete(oldest);
+            }
+            context.artworkCache.set(path, blob);
+            context.artworkBytes += blob.size;
+        }
+        return blob;
+    }
+
+    function createHeroUrl(blob) {
+        const url = URL.createObjectURL(blob);
         heroObjectUrls.add(url);
         return url;
     }
 
-    function releaseHeroUrl(url) { URL.revokeObjectURL(url); heroObjectUrls.delete(url); }
+    function releaseHeroUrl(url) { if (heroObjectUrls.delete(url)) URL.revokeObjectURL(url); }
 
     function formatRuntime(ticks) {
         if (!ticks) return '';
@@ -834,14 +865,32 @@
         const renderToken = ++heroRenderToken;
         const hero = document.querySelector('#cinematicHero');
         if (!hero || !ownsHero(credentials, hero)) return;
+        const context = heroContext;
+        context.renderController?.abort();
+        const controller = new AbortController();
+        context.renderController = controller;
 
         const backgroundRequest = heroImageRequest(item);
         if (!backgroundRequest) throw new Error('No usable hero artwork');
-        const backgroundUrl = await objectUrl(backgroundRequest, credentials, 'force-cache');
-        if (renderToken !== heroRenderToken || !ownsHero(credentials, hero)) {
-            releaseHeroUrl(backgroundUrl);
-            return;
+        const logoRequest = cfg.heroUseLogos ? logoImageRequest(item) : null;
+        let backgroundBlob, logoBlob;
+        try {
+            [backgroundBlob, logoBlob] = await Promise.all([
+                artworkBlob(backgroundRequest, context, controller.signal),
+                logoRequest ? artworkBlob(logoRequest, context, controller.signal).catch(error => {
+                    if (error.name === 'AbortError') throw error;
+                    log('logo unavailable for hero item', item.Name, error);
+                    return null;
+                }) : null
+            ]);
+        } catch (error) {
+            const cancelled = controller.signal.aborted || error.name === 'AbortError';
+            controller.abort();
+            if (cancelled) return;
+            throw error;
         }
+        if (controller.signal.aborted || renderToken !== heroRenderToken || !ownsHero(credentials, hero)) return;
+        const backgroundUrl = createHeroUrl(backgroundBlob);
 
         const bgLayers = [hero.querySelector('.cinematicHeroBgA'), hero.querySelector('.cinematicHeroBgB')];
         const oldLayer = bgLayers[activeBgLayer];
@@ -850,6 +899,10 @@
         const blur = hero.querySelector('.cinematicHeroBlur');
         const previousBgUrl = currentBgObjectUrl;
 
+        // A rapid selection can reuse a fading layer before its timer finishes.
+        // Its previous image is no longer referenced, so release it immediately.
+        releaseHeroUrl(heroLayerUrls.get(nextLayer));
+        heroLayerUrls.set(nextLayer, backgroundUrl);
         nextLayer.style.backgroundImage = `url("${backgroundUrl}")`;
         blur.style.backgroundImage = `url("${backgroundUrl}")`;
 
@@ -868,25 +921,12 @@
             currentLogoObjectUrl = null;
         }
 
-        if (cfg.heroUseLogos) {
-            const logoRequest = logoImageRequest(item);
-            if (logoRequest) {
-                try {
-                    const logoUrl = await objectUrl(logoRequest, credentials, 'force-cache');
-                    if (renderToken !== heroRenderToken || !ownsHero(credentials, hero)) {
-                        releaseHeroUrl(logoUrl);
-                        releaseHeroUrl(backgroundUrl);
-                        return;
-                    }
-                    currentLogoObjectUrl = logoUrl;
-                    logo.src = logoUrl;
-                    logo.alt = item.Name || '';
-                    logoWrap.hidden = false;
-                    hero.classList.add('has-logo');
-                } catch (error) {
-                    log('logo unavailable for hero item', item.Name, error);
-                }
-            }
+        if (logoBlob) {
+            currentLogoObjectUrl = createHeroUrl(logoBlob);
+            logo.src = currentLogoObjectUrl;
+            logo.alt = item.Name || '';
+            logoWrap.hidden = false;
+            hero.classList.add('has-logo');
         }
 
         if (!ownsHero(credentials, hero)) { releaseHeroUrl(backgroundUrl); return; }
@@ -901,7 +941,14 @@
         updateDots(hero, credentials);
         rememberHeroId(item.Id, credentials);
 
-        requestAnimationFrame(() => {
+        if (heroPaintFrame !== null) {
+            cancelAnimationFrame(heroPaintFrame);
+            releaseHeroUrl(heroPaintUrl);
+        }
+        heroPaintUrl = backgroundUrl;
+        heroPaintFrame = requestAnimationFrame(() => {
+            heroPaintFrame = null;
+            heroPaintUrl = null;
             if (renderToken !== heroRenderToken || !ownsHero(credentials, hero)) {
                 releaseHeroUrl(backgroundUrl);
                 return;
@@ -913,13 +960,16 @@
             currentBgObjectUrl = backgroundUrl;
 
             const inactiveBackground = oldLayer.style.backgroundImage;
-            setTimeout(() => {
+            const fadeTimer = setTimeout(() => {
+                heroFadeTimers.delete(fadeTimer);
                 // Rapid navigation can reuse this layer before its earlier fade finishes.
                 if (!oldLayer.classList.contains('active') && oldLayer.style.backgroundImage === inactiveBackground) {
                     oldLayer.style.backgroundImage = 'none';
+                    heroLayerUrls.delete(oldLayer);
                 }
                 if (previousBgUrl && previousBgUrl !== currentBgObjectUrl) releaseHeroUrl(previousBgUrl);
             }, 950);
+            heroFadeTimers.add(fadeTimer);
         });
     }
 
@@ -955,8 +1005,15 @@
 
     function clearHero() {
         heroContext?.controller.abort();
+        heroContext?.renderController?.abort();
+        heroContext?.artworkCache.clear();
         heroContext = null;
         ++heroRenderToken;
+        if (heroPaintFrame !== null) cancelAnimationFrame(heroPaintFrame);
+        heroPaintFrame = null;
+        heroPaintUrl = null;
+        for (const timer of heroFadeTimers) clearTimeout(timer);
+        heroFadeTimers.clear();
         if (heroTimer) clearInterval(heroTimer);
         heroTimer = null;
         heroItems = [];
@@ -975,7 +1032,10 @@
         if (!heroContext || heroContext.home !== home || !sameCredentials(current, heroContext.credentials)) {
             clearHero();
             const controller = new AbortController();
-            heroContext = { home, controller, credentials: { ...current, signal: controller.signal }, attempted: false };
+            heroContext = {
+                home, controller, credentials: { ...current, signal: controller.signal }, attempted: false,
+                renderController: null, artworkCache: new Map(), artworkBytes: 0
+            };
         }
         const context = heroContext;
         const credentials = context.credentials;
@@ -994,6 +1054,7 @@
             heroIndex = 0;
             createHero(home);
             await renderHero(heroItems[0], credentials);
+            if (heroContext !== context || !ownsHero(credentials, document.querySelector('#cinematicHero'))) return;
             restartHeroTimer(credentials);
             log(`hero ready with ${heroItems.length} items`);
         } catch (error) {
@@ -1046,14 +1107,26 @@
         try { maybeAutoplayDetails(); } catch (error) { warn('autoplay failed', error); }
     }
 
-    let queued = false;
+    let queuedFrame = null;
+    let watchdogTimer = null;
+    let pageSuspended = false;
     function schedule() {
-        if (queued) return;
-        queued = true;
-        requestAnimationFrame(() => {
-            queued = false;
+        if (document.hidden || pageSuspended || queuedFrame !== null) return;
+        queuedFrame = requestAnimationFrame(() => {
+            queuedFrame = null;
             applyAll();
         });
+    }
+
+    function stopWatchdog() {
+        if (watchdogTimer !== null) clearInterval(watchdogTimer);
+        watchdogTimer = null;
+        if (queuedFrame !== null) cancelAnimationFrame(queuedFrame);
+        queuedFrame = null;
+    }
+
+    function startWatchdog() {
+        if (!document.hidden && !pageSuspended && watchdogTimer === null) watchdogTimer = setInterval(schedule, 2500);
     }
 
     window.addEventListener('hashchange', schedule);
@@ -1067,9 +1140,11 @@
     document.addEventListener('viewshow', schedule, true);
     document.addEventListener('visibilitychange', () => {
         if (document.hidden) {
+            stopWatchdog();
             if (heroTimer) { clearInterval(heroTimer); heroTimer = null; }
             return;
         }
+        startWatchdog();
         const credentials = getCredentials();
         if (credentials) restartHeroTimer(credentials);
         schedule();
@@ -1080,6 +1155,8 @@
         attributes: true,
         attributeFilter: ['class', 'style']
     });
-    setInterval(schedule, 2500);
+    window.addEventListener('pagehide', () => { pageSuspended = true; stopWatchdog(); clearHero(); });
+    window.addEventListener('pageshow', () => { pageSuspended = false; startWatchdog(); schedule(); });
+    startWatchdog();
     schedule();
 })();

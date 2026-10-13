@@ -57,6 +57,12 @@ The owner's Android screenshot exposed indicator/action overlap and a horizontal
 
 Published October 3, 2026. All 100 browser checks, 24 tooling tests, zero-warning build/contracts, and real Jellyfin checks passed. Clean public catalog installation and the actual published v0.1.11-to-v0.1.12 Update Plugins path preserved settings/XML and one active identity. All eight public packages and unchanged older catalog entries verified independently. See [VALIDATION.md](VALIDATION.md).
 
-## 8. Performance and further visual refinement — afterward
+## 8. Homepage performance and resource cleanup — v0.1.13 candidate
 
-Measure observer activity, request volume, object-URL lifetime, and route cleanup. Use those findings to prioritize focused refinements to login and hero layouts. Preserve the working catalog update path and settings compatibility for every release.
+Measured idle reconciliation, recent-title image requests, object-URL lifetime, and route/page cleanup using real plugin assets with synthetic media. Idle Home already settled normally. Recently viewed images were fetched again on every revisit; rapid selections retained obsolete image URLs until fade timers finished, and the periodic reconciliation interval continued while hidden.
+
+The candidate adds a current-account/Home artwork cache bounded to six blobs and 12 MiB, parallel background/logo loading, cancellation of superseded artwork requests, immediate release when reusing a fading layer, and tracked paint/fade cleanup. Hidden pages stop the watchdog; pagehide suspends reconciliation and clears the hero, and pageshow restores one fresh context. No UI feature, settings schema, identity, ABI, or authentication changes are included. Browser regression cases exercise cache hits and eviction, account isolation, failed images, late bodies, hidden-page scheduling, and lifecycle cleanup. CI and public catalog install/update acceptance are required before publication.
+
+## 9. Further visual refinement — after measured reliability work
+
+Use reported issues and measured behavior to prioritize focused login and hero refinements. Preserve the catalog update path and settings compatibility for every release. Authentication stays in the separate LoginAccess project.

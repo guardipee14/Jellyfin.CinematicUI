@@ -1,5 +1,11 @@
 # Codex Handoff — Jellyfin.CinematicUI
 
+## v0.1.13 performance candidate — October 13, 2026
+
+The owner asked to continue with the next version after confirming Homarr SSO works. The next Cinematic UI roadmap milestone is homepage performance/resource cleanup. The candidate keeps current visuals/settings/identity/ABI, reuses recent image blobs in a six-entry/12 MiB per-context cache, loads backdrop/logo together, aborts obsolete selection requests, releases replaced fading-layer URLs promptly, and tracks paint/fade cleanup. Hidden pages stop polling; pagehide clears artwork and suspends reconciliation, and pageshow restores one hero. Authentication remains separate.
+
+All 100 existing browser checks plus 18 new performance checks passed locally (the final two were run separately after addition), as did the zero-warning build, compiled contracts, package checks, and 24 tooling tests. CI/public clean installation and the actual published v0.1.12 update must pass before claiming release completion. See ROADMAP.md and VALIDATION.md. Production has not been modified. The owner reported the v0.1.12 Android homepage fix worked. Current Homarr SSO is complete and owner-confirmed; the older HTTPS/dashboard pending-work descriptions below are historical.
+
 ## Repository-management milestone
 
 Completed October 2, 2026. The interrupted source transfer is repaired, v0.1.5 builds cleanly in CI, and both v0.1.5 and the maintenance v0.1.6 release are published. Clean installation from the public GitHub catalog and the actual published v0.1.5-to-v0.1.6 upgrade through Jellyfin's normal Update Plugins task both passed. [VALIDATION.md](VALIDATION.md) records the evidence and production scope.

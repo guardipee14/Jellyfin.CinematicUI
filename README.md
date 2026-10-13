@@ -46,6 +46,8 @@ Hero library names are explicit: partial matches use only matching available lib
 
 v0.1.12 fixes the mobile homepage hero, including the Jellyfin Android app's WebView. Indicators wrap below Play and More Info instead of covering them or showing a horizontal scrollbar. Rotation and arrow controls occupy their own row. Long titles and larger text can expand the hero; narrow action buttons wrap. These changes apply at widths up to 1000px and retain the existing carousel settings and handlers. After updating and restarting Jellyfin, fully close and reopen the Android app to reload the embedded Web assets.
 
+v0.1.13 improves homepage artwork loading and cleanup. A temporary cache reuses up to six recent image blobs, limited to 12 MiB and discarded when leaving Home or changing accounts, tokens, or servers. Background and logo requests run together, and selecting another title cancels obsolete requests. Unused fading images are revoked promptly. Hidden pages stop layout polling; page exit releases artwork and hero timers, and page restoration builds one fresh hero. The mobile layout, native controls, and existing settings are retained. These limits describe the plugin's blob cache, not total browser memory.
+
 ## Manual TrueNAS fallback and rollback
 
 The normal catalog install requires no shell work. If needed, build from a complete source checkout using:
