@@ -1,10 +1,12 @@
 # Codex Handoff — Jellyfin.CinematicUI
 
-## v0.1.13 performance candidate — October 13, 2026
+## Published v0.1.13 performance release — October 13, 2026
 
-The owner asked to continue with the next version after confirming Homarr SSO works. The next Cinematic UI roadmap milestone is homepage performance/resource cleanup. The candidate keeps current visuals/settings/identity/ABI, reuses recent image blobs in a six-entry/12 MiB per-context cache, loads backdrop/logo together, aborts obsolete selection requests, releases replaced fading-layer URLs promptly, and tracks paint/fade cleanup. Hidden pages stop polling; pagehide clears artwork and suspends reconciliation, and pageshow restores one hero. Authentication remains separate.
+The owner asked to continue with the next version after confirming Homarr SSO works. The homepage performance/resource cleanup milestone is complete in v0.1.13. It keeps current visuals/settings/identity/ABI, reuses recent image blobs in a six-entry/12 MiB per-context cache, loads backdrop/logo together, aborts obsolete selection requests, releases replaced fading-layer URLs promptly, and tracks paint/fade cleanup. Hidden pages stop polling; pagehide clears artwork and suspends reconciliation, and pageshow restores one hero. Authentication remains separate.
 
-All 100 existing browser checks plus 18 new performance checks passed locally (the final two were run separately after addition), as did the zero-warning build, compiled contracts, package checks, and 24 tooling tests. CI/public clean installation and the actual published v0.1.12 update must pass before claiming release completion. See ROADMAP.md and VALIDATION.md. Production has not been modified. The owner reported the v0.1.12 Android homepage fix worked. Current Homarr SSO is complete and owner-confirmed; the older HTTPS/dashboard pending-work descriptions below are historical.
+All 118 desktop/phone browser checks, 24 tooling tests, zero-warning build/contracts, and real Jellyfin checks passed candidate, main, and release CI. The public release workflow passed clean catalog installation and the actual published v0.1.12-to-v0.1.13 scheduled update with settings/XML preserved and one active identity. Independent unauthenticated verification checked all nine public ZIPs and unchanged prior entries. Immutable source tag: `a2a58df057d37e747d2ecac50fb626e6c9d9d27a`. Catalog commit: `6646a07ab12e7d3299e292e37711f3a72845564c`. ZIP MD5: `0d543c08c354c674c86a2d41847fd054`. See ROADMAP.md and VALIDATION.md for scope and run links.
+
+The owner reported the v0.1.12 Android homepage fix worked. v0.1.13 has not been installed or production-restarted by the agent; owner device acceptance follows Update Plugins, TrueNAS Apps restart, and closing/reopening the Android app. Current Homarr SSO is complete and owner-confirmed; the older HTTPS/dashboard pending-work descriptions below are historical. Further visual refinements follow reported issues; do not mix LoginAccess authentication into this plugin.
 
 ## Repository-management milestone
 
@@ -41,7 +43,7 @@ Hard-refresh Jellyfin Web after activation. On TrueNAS, use **Apps → Jellyfin 
 
 ## Release procedure and recovery
 
-Follow [PUBLISH-GITHUB.md](PUBLISH-GITHUB.md). For the next release, update the project/metadata versions to a new four-part value such as `0.1.13.0`, update the changelog, timestamp, and displayed settings version, land the source on main, wait for CI, then push the matching `v0.1.13` tag.
+Follow [PUBLISH-GITHUB.md](PUBLISH-GITHUB.md). For the next release, update the project/metadata versions to a new four-part value such as `0.1.14.0`, update the changelog, timestamp, and displayed settings version, land the source on main, wait for CI, then push the matching `v0.1.14` tag.
 
 The release workflow restores/builds with warnings treated as errors, checks compiled assembly identity and exact embedded resources, validates metadata/tag/checksums, and runs tooling and real Jellyfin integration tests. After verification, it uses the built-in `GITHUB_TOKEN` with `contents: write` to stage and verify a draft release, publish its assets, check unauthenticated downloads, and advance the stable manifest. A final test installs from the public GitHub URL and upgrades an actual prior published ZIP when one exists.
 

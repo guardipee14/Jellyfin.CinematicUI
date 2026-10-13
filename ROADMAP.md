@@ -57,11 +57,13 @@ The owner's Android screenshot exposed indicator/action overlap and a horizontal
 
 Published October 3, 2026. All 100 browser checks, 24 tooling tests, zero-warning build/contracts, and real Jellyfin checks passed. Clean public catalog installation and the actual published v0.1.11-to-v0.1.12 Update Plugins path preserved settings/XML and one active identity. All eight public packages and unchanged older catalog entries verified independently. See [VALIDATION.md](VALIDATION.md).
 
-## 8. Homepage performance and resource cleanup — v0.1.13 candidate
+## 8. Homepage performance and resource cleanup — complete in v0.1.13
 
 Measured idle reconciliation, recent-title image requests, object-URL lifetime, and route/page cleanup using real plugin assets with synthetic media. Idle Home already settled normally. Recently viewed images were fetched again on every revisit; rapid selections retained obsolete image URLs until fade timers finished, and the periodic reconciliation interval continued while hidden.
 
-The candidate adds a current-account/Home artwork cache bounded to six blobs and 12 MiB, parallel background/logo loading, cancellation of superseded artwork requests, immediate release when reusing a fading layer, and tracked paint/fade cleanup. Hidden pages stop the watchdog; pagehide suspends reconciliation and clears the hero, and pageshow restores one fresh context. No UI feature, settings schema, identity, ABI, or authentication changes are included. Browser regression cases exercise cache hits and eviction, account isolation, failed images, late bodies, hidden-page scheduling, and lifecycle cleanup. CI and public catalog install/update acceptance are required before publication.
+The release adds a current-account/Home artwork cache bounded to six blobs and 12 MiB, parallel background/logo loading, cancellation of superseded artwork requests, immediate release when reusing a fading layer, and tracked paint/fade cleanup. Hidden pages stop the watchdog; pagehide suspends reconciliation and clears the hero, and pageshow restores one fresh context. No UI feature, settings schema, identity, ABI, or authentication changes are included. Browser regression cases exercise cache hits and eviction, account isolation, failed images, late bodies, hidden-page scheduling, and lifecycle cleanup.
+
+Published October 13, 2026. All 118 browser checks, 24 tooling tests, the zero-warning build/contracts, and real Jellyfin checks passed CI. Public clean installation and the actual published v0.1.12-to-v0.1.13 Update Plugins path preserved settings/XML and one active identity. All nine public packages and immutable earlier entries verified independently. Device acceptance follows the owner's catalog update; see VALIDATION.md.
 
 ## 9. Further visual refinement — after measured reliability work
 
