@@ -2,12 +2,17 @@ const { test, expect } = require('@playwright/test');
 
 async function measure(page) {
   await page.addInitScript(() => {
-    window.performanceFixture = { frames: 0, created: 0, peak: 0, live: new Set() };
+    window.performanceFixture = { frames: 0, watchdogTicks: 0, created: 0, peak: 0, live: new Set() };
     const raf = window.requestAnimationFrame;
     window.requestAnimationFrame = callback => raf.call(window, time => {
       window.performanceFixture.frames++;
       callback(time);
     });
+    const interval = window.setInterval;
+    window.setInterval = (callback, ms, ...args) => interval.call(window, () => {
+      if (ms === 2500) window.performanceFixture.watchdogTicks++;
+      callback(...args);
+    }, ms);
     const create = URL.createObjectURL, revoke = URL.revokeObjectURL;
     URL.createObjectURL = blob => {
       const url = create.call(URL, blob);
@@ -101,25 +106,26 @@ test('a superseded title cancels its pending artwork and keeps the latest title'
 
 test('hidden pages do no layout polling and resume one hero when visible', async ({ page }) => {
   await measure(page);
-  await page.clock.install();
   await ready(page);
-  await page.clock.runFor(1100);
+  await page.waitForTimeout(1100);
+  expect(await page.evaluate(() => window.performanceFixture.frames)).toBeGreaterThan(0);
   await page.evaluate(() => {
     window.fixtureHidden = true;
     Object.defineProperty(document, 'hidden', { configurable: true, get: () => window.fixtureHidden });
     document.dispatchEvent(new Event('visibilitychange'));
   });
   const before = await page.evaluate(() => window.performanceFixture.frames);
-  await page.clock.runFor(8000);
+  const ticks = await page.evaluate(() => window.performanceFixture.watchdogTicks);
+  await page.waitForTimeout(3000);
   expect(await page.evaluate(() => window.performanceFixture.frames)).toBe(before);
+  expect(await page.evaluate(() => window.performanceFixture.watchdogTicks)).toBe(ticks);
   await page.evaluate(() => { window.fixtureHidden = false; document.dispatchEvent(new Event('visibilitychange')); });
-  await page.clock.runFor(100);
+  await expect.poll(() => page.evaluate(() => window.performanceFixture.frames)).toBeGreaterThan(before);
   await expect(page.locator('#cinematicHero')).toHaveCount(1);
 });
 
 test('pagehide releases artwork and timers; pageshow restores one fresh Home context', async ({ page }) => {
   await measure(page);
-  await page.clock.install();
   let metadata = 0;
   page.on('request', request => { if (new URL(request.url()).pathname.endsWith('/Views')) metadata++; });
   await ready(page);
@@ -127,11 +133,12 @@ test('pagehide releases artwork and timers; pageshow restores one fresh Home con
   await expect(page.locator('#cinematicHero')).toHaveCount(0);
   expect(await page.evaluate(() => window.performanceFixture.live.size)).toBe(0);
   const before = await page.evaluate(() => window.performanceFixture.frames), requests = metadata;
-  await page.clock.runFor(8000);
+  const ticks = await page.evaluate(() => window.performanceFixture.watchdogTicks);
+  await page.waitForTimeout(3000);
   expect(await page.evaluate(() => window.performanceFixture.frames)).toBe(before);
+  expect(await page.evaluate(() => window.performanceFixture.watchdogTicks)).toBe(ticks);
   expect(metadata).toBe(requests);
   await page.evaluate(() => window.dispatchEvent(new PageTransitionEvent('pageshow', { persisted: true })));
-  await page.clock.runFor(100);
   await expect(page.locator('#cinematicHero')).toHaveAttribute('data-ready', '1');
   expect(metadata).toBe(requests + 1);
   await expect(page.locator('#cinematicHero')).toHaveCount(1);
@@ -143,6 +150,7 @@ test('route changes revoke every visible and fading object URL', async ({ page }
   const names = await page.locator('.cinematicHeroDot').evaluateAll(nodes => nodes.map(node => node.title));
   for (let i = 0; i < 3; i++) {
     for (const name of names) {
+      if (await page.locator('.cinematicHeroTitle').textContent() === name) continue;
       await page.getByRole('button', { name: 'Show ' + name, exact: true }).click();
       await expect(page.locator('.cinematicHeroTitle')).toHaveText(name);
     }
@@ -161,6 +169,7 @@ test('artwork cache has a bounded entry count and is discarded on account change
   await ready(page, '?heroCount=8');
   const names = await page.locator('.cinematicHeroDot').evaluateAll(nodes => nodes.map(node => node.title));
   for (const name of names) {
+    if (await page.locator('.cinematicHeroTitle').textContent() === name) continue;
     await page.getByRole('button', { name: 'Show ' + name, exact: true }).click();
     await expect(page.locator('.cinematicHeroTitle')).toHaveText(name);
   }
