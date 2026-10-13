@@ -1,4 +1,12 @@
-# Cinematic UI validation — October 3, 2026
+# Cinematic UI validation — October 13, 2026
+
+## v0.1.13 homepage performance candidate
+
+The candidate preserves the current appearance, settings, plugin GUID/assembly, Jellyfin 12.1 ABI, and normal catalog updater. A six-entry/12 MiB current-context blob cache eliminates repeated fetches for recent images, parallel artwork requests reduce sequential loading, and superseded selections cancel their image requests. Unused fading-layer URLs are revoked immediately, and paint/fade work is cancelled on context teardown. Visibility/page lifecycle events stop polling and restore one hero after return.
+
+Measured with synthetic media: v0.1.12 made four artwork requests to visit all three titles, then two more when returning to the initial title. The candidate returns to that title with no additional artwork or metadata requests. Idle Home already settled in the baseline; the candidate also performs zero reconciliation frames during the sampled idle second. Tests verify zero layout frames during eight simulated hidden seconds, complete URL revocation after route/page exit, bounded cache entries/bytes, account isolation, failed-image retries, cancellation, and no URL allocation from a late image body after teardown. These are browser-fixture observations, not total-memory, network-throughput, physical Android, or production playback benchmarks.
+
+All 100 existing browser checks and the first 16 performance checks passed locally; the final two late-body checks also passed. The zero-warning .NET build, compiled identity/resource/legacy-settings contracts, runtime ZIP validation, and 24 Python tooling tests passed. CI will rerun the complete 118-check browser suite and real disposable Jellyfin installation/update checks before publication. No production installation, configuration, or lifecycle was changed.
 
 ## v0.1.12 mobile homepage release
 
