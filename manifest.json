@@ -8,6 +8,14 @@
     "category": "General",
     "versions": [
       {
+        "version": "0.1.15.0",
+        "changelog": "Polishes login and profile selection. Long server/profile names wrap, keyboard-selected profiles have a clear accent outline, and manual sign-in stays usable on narrow or short screens with larger text. Reduced motion also disables profile movement and transitions. Native sign-in, Quick Connect, recovery, server selection, settings, identity and automatic updates remain intact. Release validation now exercises installation and updates on both Jellyfin 12.1 and 12.2 while keeping the minimum ABI at 12.1.",
+        "targetAbi": "12.1.0.0",
+        "timestamp": "2026-10-14T05:13:33Z",
+        "sourceUrl": "https://github.com/guardipee14/Jellyfin.CinematicUI/releases/download/v0.1.15/CinematicUI-v0.1.15-jf12.1.zip",
+        "checksum": "beadfd27433f50d42a520ab266417704"
+      },
+      {
         "version": "0.1.14.0",
         "changelog": "Polishes the homepage hero across screen sizes. Long titles and larger text can expand the desktop and tablet hero without clipping or covering controls; indicators wrap beneath the actions. Swipe left or right on the featured slide to browse titles and pause rotation until Resume is selected. Vertical scrolling, pinch zoom, native action taps, keyboard navigation, settings, identity, and normal plugin updates are retained.",
         "targetAbi": "12.1.0.0",
