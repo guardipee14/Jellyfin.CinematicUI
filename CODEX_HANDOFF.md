@@ -1,10 +1,12 @@
 # Codex Handoff — Jellyfin.CinematicUI
 
-## v0.1.14 homepage hero and mobile polish — candidate
+## Published v0.1.14 homepage hero and mobile polish — October 13, 2026
 
-The owner confirmed the updated v0.1.13 works and chose homepage hero/mobile polish for the next release. The candidate lets desktop/tablet hero content grow for long titles and larger text, wraps indicators beneath actions, and adds deliberate single-touch horizontal browsing. Swiping pauses rotation until Resume; vertical scrolling, pinch zoom, native control taps, and keyboard navigation remain available. Cancelled, multi-touch, short, diagonal, long-press, and control-started gestures are ignored. Gestures are checked against the current account/Home context. Settings, identity, ABI, and authentication are unchanged.
+The owner confirmed the updated v0.1.13 works and chose homepage hero/mobile polish for the next release. v0.1.14 lets desktop/tablet hero content grow for long titles and larger text, wraps indicators beneath actions, and adds deliberate single-touch horizontal browsing. Swiping pauses rotation until Resume; vertical scrolling, pinch zoom, native control taps, and keyboard navigation remain available. Cancelled, multi-touch, short, diagonal, long-press, and control-started gestures are ignored, including a second finger outside the hero. Gestures are checked against the current account/Home context; the document listener ends with that context. Settings, identity, ABI, and authentication are unchanged.
 
-All 144 desktop/phone browser checks and 24 tooling tests pass locally, along with the zero-warning build, compiled identity/resource/legacy-settings contracts, and runtime ZIP validation. This includes 26 new hero checks and native touch input/action activation. CI and public installation/update checks are required before publication. The agent has not installed or restarted production. Physical Android/WebView acceptance follows the owner's catalog update and app reload.
+The final [candidate CI](https://github.com/guardipee14/Jellyfin.CinematicUI/actions/runs/38511776767), [main CI](https://github.com/guardipee14/Jellyfin.CinematicUI/actions/runs/38512078555), and [release workflow](https://github.com/guardipee14/Jellyfin.CinematicUI/actions/runs/38512378779) passed all 144 desktop/phone browser checks, 24 tooling tests, zero-warning build, compiled identity/resource/legacy-settings contracts, runtime ZIP validation, and real Jellyfin installation/update checks. This includes 26 new hero cases and native touch input/action activation.
+
+Published October 14 UTC. The public workflow passed clean catalog installation and the actual published v0.1.13-to-v0.1.14 scheduled update with settings/XML preserved, one active identity, and intact Web injection. Independent unauthenticated checks verified all ten public packages and exact retention of earlier entries. Immutable source tag: `851769c9de1e71509fadb1e7d172dd04830842d8`. Catalog commit: `fe3ffb85c98ed873b4e00b334b0109a5b343bd84`. ZIP MD5: `31340cfff3ff12114219fd002200b08a`. See VALIDATION.md for scope. The agent has not installed or restarted production; physical Android/WebView acceptance follows the owner's catalog update and app reload.
 
 ## Published v0.1.13 performance release — October 13, 2026
 
@@ -49,7 +51,7 @@ Hard-refresh Jellyfin Web after activation. On TrueNAS, use **Apps → Jellyfin 
 
 ## Release procedure and recovery
 
-Follow [PUBLISH-GITHUB.md](PUBLISH-GITHUB.md). For the next release, update the project/metadata versions to a new four-part value such as `0.1.14.0`, update the changelog, timestamp, and displayed settings version, land the source on main, wait for CI, then push the matching `v0.1.14` tag.
+Follow [PUBLISH-GITHUB.md](PUBLISH-GITHUB.md). For the next release, update the project/metadata versions to a new four-part value such as `0.1.15.0`, update the changelog, timestamp, and displayed settings version, land the source on main, wait for CI, then push the matching `v0.1.15` tag.
 
 The release workflow restores/builds with warnings treated as errors, checks compiled assembly identity and exact embedded resources, validates metadata/tag/checksums, and runs tooling and real Jellyfin integration tests. After verification, it uses the built-in `GITHUB_TOKEN` with `contents: write` to stage and verify a draft release, publish its assets, check unauthenticated downloads, and advance the stable manifest. A final test installs from the public GitHub URL and upgrades an actual prior published ZIP when one exists.
 
