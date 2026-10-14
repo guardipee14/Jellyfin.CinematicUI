@@ -1,12 +1,12 @@
 {
   "category": "General",
-  "changelog": "Polishes the homepage hero across screen sizes. Long titles and larger text can expand the desktop and tablet hero without clipping or covering controls; indicators wrap beneath the actions. Swipe left or right on the featured slide to browse titles and pause rotation until Resume is selected. Vertical scrolling, pinch zoom, native action taps, keyboard navigation, settings, identity, and normal plugin updates are retained.",
+  "changelog": "Polishes login and profile selection. Long server/profile names wrap, keyboard-selected profiles have a clear accent outline, and manual sign-in stays usable on narrow or short screens with larger text. Reduced motion also disables profile movement and transitions. Native sign-in, Quick Connect, recovery, server selection, settings, identity and automatic updates remain intact. Release validation now exercises installation and updates on both Jellyfin 12.1 and 12.2 while keeping the minimum ABI at 12.1.",
   "description": "A unified cinematic Jellyfin Web customization with a profile-forward login screen, Plex-inspired theme, and rotating library-driven home hero.",
   "guid": "e4c17f1b-c451-4a31-b98c-5d0ef44f9a21",
   "name": "Cinematic UI",
   "overview": "Cinematic login and home experience for Jellyfin Web",
   "owner": "Donaven Guardipee",
   "targetAbi": "12.1.0.0",
-  "timestamp": "2026-10-14T04:25:54Z",
-  "version": "0.1.14.0"
+  "timestamp": "2026-10-14T05:13:33Z",
+  "version": "0.1.15.0"
 }

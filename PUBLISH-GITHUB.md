@@ -29,6 +29,8 @@ After every required check passes, the publishing job uses the built-in `GITHUB_
 7. Verify the public raw manifest.
 8. Repeat catalog installation from the public GitHub URL. When an earlier compatible release exists, seed its actual released ZIP as a manual installation and upgrade it through Jellyfin's scheduled task from the public repository.
 
+From v0.1.15 onward, candidate and public install/update checks run on both Jellyfin 12.1 and 12.2. The plugin still compiles against 12.1 and uses `targetAbi: 12.1.0.0`; the ZIP name denotes that minimum baseline. The integration runner validates the selected server's exact ABI and chooses a prior published package compatible with that server. Retrying older immutable tags preserves their original test scope when their runner does not advertise `--server-version`.
+
 Public catalog URL:
 
 `https://raw.githubusercontent.com/guardipee14/Jellyfin.CinematicUI/repository/manifest.json`

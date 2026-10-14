@@ -50,6 +50,8 @@ v0.1.13 improves homepage artwork loading and cleanup. A temporary cache reuses 
 
 v0.1.14 extends the growing hero layout to desktop and tablet widths. Long titles and larger text stay inside the hero, and indicators wrap beneath Play and More Info. On touchscreens, swipe left or right on the slide to browse featured titles. Swiping pauses rotation until you select Resume; vertical scrolling and pinch zoom remain available. Gestures starting on buttons, short or diagonal movements, long presses, cancelled gestures, and multi-touch do not browse titles. Existing arrows, indicators, keyboard controls, and native actions remain available. After the server update/restart, close and reopen the Android app to reload its Web assets.
 
+v0.1.15 polishes login and profile selection. Long server/profile names wrap, focused profiles have an accent outline, and manual sign-in fits narrow/short viewports with larger text. Reduced motion disables profile transforms and transitions as well as the animated background. Public-profile selection, manual sign-in, Remember me, Cancel, Quick Connect, password recovery and server selection remain native Jellyfin controls. The existing login appearance option still restores the native screen when disabled. The build and minimum ABI remain at 12.1; integration coverage now exercises both Jellyfin 12.1 and 12.2.
+
 ## Manual TrueNAS fallback and rollback
 
 The normal catalog install requires no shell work. If needed, build from a complete source checkout using:
@@ -78,4 +80,4 @@ On Windows: `./build.ps1 -Python python`.
 
 Update the version/changelog, push the code, and push a matching new tag such as `v0.1.15`. The workflow validates the candidate, publishes an immutable GitHub release ZIP and manifest snapshot, then updates the cumulative `repository` branch only after checking public downloads. See [PUBLISH-GITHUB.md](PUBLISH-GITHUB.md) for release and retry details, and [VALIDATION.md](VALIDATION.md) for the completed milestone's evidence.
 
-Compatibility: Jellyfin Server 12.1, target ABI `12.1.0.0`, .NET 10. Developer: Donaven Guardipee ([guardipee14](https://github.com/guardipee14)).
+Compatibility baseline: Jellyfin Server 12.1, target ABI `12.1.0.0`, .NET 10. CI exercises Jellyfin 12.1 and 12.2. Developer: Donaven Guardipee ([guardipee14](https://github.com/guardipee14)).

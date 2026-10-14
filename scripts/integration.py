@@ -1,4 +1,4 @@
-"""Test catalog installs and scheduled updates using disposable Jellyfin 12.1 containers.
+"""Test catalog installs and scheduled updates using disposable Jellyfin containers.
 
 Only containers created by this script are restarted or removed. No production paths are used.
 """
@@ -21,7 +21,7 @@ import zipfile
 from pathlib import Path
 from release import GUID, package, read_json, require, source_metadata, validate_manifest, version_tuple, verify_zip, write_json
 
-IMAGE = "ghcr.io/jellyfin/jellyfin:12.1"
+SERVER_ABIS = {"12.1": (12, 1, 0, 0), "12.2": (12, 2, 0, 0)}
 TEST_PASSWORD = "Cinematic release test 123!"
 
 
@@ -52,7 +52,10 @@ class QuietHandler(http.server.SimpleHTTPRequestHandler):
 
 
 class Jellyfin:
-    def __init__(self, workspace, label):
+    def __init__(self, workspace, label, server_version="12.1"):
+        require(server_version in SERVER_ABIS, f"Unsupported test server: {server_version}")
+        self.image = f"ghcr.io/jellyfin/jellyfin:{server_version}"
+        self.abi = SERVER_ABIS[server_version]
         self.name = f"cinematic-qa-{label}-{uuid.uuid4().hex[:8]}"
         self.config = workspace / label / "config"
         self.cache = workspace / label / "cache"
@@ -64,7 +67,7 @@ class Jellyfin:
     def start(self):
         run("docker", "run", "--detach", "--name", self.name,
             "--user", f"{os.getuid()}:{os.getgid()}", "--add-host", "host.docker.internal:host-gateway",
-            "--publish", "127.0.0.1::8096", "--volume", f"{self.config}:/config", "--volume", f"{self.cache}:/cache", IMAGE)
+            "--publish", "127.0.0.1::8096", "--volume", f"{self.config}:/config", "--volume", f"{self.cache}:/cache", self.image)
         port = run("docker", "port", self.name, "8096/tcp").split(":")[-1]
         self.base = f"http://127.0.0.1:{port}"
         self.ready()
@@ -77,7 +80,7 @@ class Jellyfin:
         info = wait_for(started, "Jellyfin did not finish startup")
         abi = tuple(map(int, info["Version"].split(".")))
         abi += (0,) * (4 - len(abi))
-        require(abi == (12, 1, 0, 0), f"Wrong test ABI: {info['Version']}")
+        require(abi == self.abi, f"Wrong test ABI: {info['Version']}; expected {self.abi}")
 
     def request(self, path, method="GET", data=None, raw=False):
         headers = {"Content-Type": "application/json",
@@ -185,11 +188,11 @@ def previous_artifact(root, workspace, current):
     return artifact, read_json(out / "release-entry.json")
 
 
-def published_previous(url, workspace, current):
+def published_previous(url, workspace, current, server_abi=(12, 1, 0, 0)):
     with urllib.request.urlopen(url, timeout=60) as response:
         manifest = validate_manifest(json.load(response))
     candidates = [v for v in manifest[0]["versions"] if version_tuple(v["version"]) < version_tuple(current["version"])
-                  and version_tuple(v["targetAbi"]) <= (12, 1, 0, 0)]
+                  and version_tuple(v["targetAbi"]) <= server_abi]
     if not candidates:
         return None
     previous = max(candidates, key=lambda v: version_tuple(v["version"]))
@@ -208,18 +211,21 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--artifacts", default="artifacts")
     parser.add_argument("--root", default=".")
+    parser.add_argument("--server-version", choices=tuple(SERVER_ABIS), default="12.1", help="Jellyfin version to validate; the plugin's minimum ABI is unchanged")
     parser.add_argument("--public-manifest", help="Also install from this published HTTPS manifest in a fresh instance")
     args = parser.parse_args()
     root = Path(args.root).resolve()
     current = source_metadata(root)
     artifacts = Path(args.artifacts).resolve()
     entry = read_json(artifacts / "release-entry.json")
-    run("docker", "pull", IMAGE)
+    image = f"ghcr.io/jellyfin/jellyfin:{args.server_version}"
+    print(f"Testing Jellyfin {args.server_version} using {image}", flush=True)
+    run("docker", "pull", image)
     with tempfile.TemporaryDirectory(prefix="cinematic-qa-") as folder:
         workspace = Path(folder)
         served = workspace / "served"
         served.mkdir()
-        published = published_previous(args.public_manifest, workspace, current) if args.public_manifest else None
+        published = published_previous(args.public_manifest, workspace, current, SERVER_ABIS[args.server_version]) if args.public_manifest else None
         old_zip, old_entry = published or previous_artifact(root, workspace, current)
         shutil.copy2(artifacts / entry[0]["versions"][0]["sourceUrl"].rsplit("/", 1)[1], served / "current.zip")
         handler = functools.partial(QuietHandler, directory=str(served))
@@ -229,7 +235,7 @@ def main():
         local_entry, local_old = copy.deepcopy(entry), copy.deepcopy(old_entry)
         local_entry[0]["versions"][0]["sourceUrl"] = repo_url.replace("manifest.json", "current.zip")
         local_old[0]["versions"][0]["sourceUrl"] = repo_url.replace("manifest.json", f"previous/{old_zip.name}")
-        clean, manual = Jellyfin(workspace, "clean"), Jellyfin(workspace, "manual")
+        clean, manual = Jellyfin(workspace, "clean", args.server_version), Jellyfin(workspace, "manual", args.server_version)
         try:
             write_json(served / "manifest.json", local_entry)
             clean.start()

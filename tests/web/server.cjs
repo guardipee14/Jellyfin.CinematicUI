@@ -5,6 +5,7 @@ const path = require('node:path');
 const playerFixture = require('./player-fixture.cjs');
 const detailsFixture = require('./details-fixture.cjs');
 const profileFixture = require('./profile-fixture.cjs');
+const loginFixture = require('./login-fixture.cjs');
 
 const root = path.resolve(__dirname, '../..');
 const items = ['Harbor Lights', 'Alpine Journey', 'City of Clouds'].map((Name, index) => ({
@@ -22,7 +23,8 @@ function image(label, logo = false) {
 
 function html(params) {
   const config = {
-    serverTitle: 'CINEMATIC TEST SERVER', heroRotationSeconds: 5, heroAvoidRepeatCount: 0,
+    serverTitle: params.get('serverTitle') || 'CINEMATIC TEST SERVER', heroRotationSeconds: 5, heroAvoidRepeatCount: 0,
+    enableLoginExperience: params.get('loginExperience') !== 'off', loginBackgroundMotion: params.get('motion') !== 'off',
     heroMaxItems: Number(params.get('heroCount') || 12),
     heroShowDots: params.get('dots') !== 'off', heroShowNavigationArrows: params.get('arrows') !== 'off',
     heroPauseOnHover: params.get('hover') !== 'off', loginHideHeaderBranding: params.get('branding') !== 'show',
@@ -35,8 +37,6 @@ function html(params) {
     heroExcludePlayed: params.get('excludePlayed') === 'yes', heroExcludedTitleKeywords: params.get('excluded') || '',
     heroAvoidRepeatCount: Number(params.get('history') || 0)
   };
-  const profiles = Array.from({ length: params.get('profiles') === 'many' ? 12 : 2 }, (_, i) =>
-    `<button class="card" type="button"><div class="cardImageContainer"><div class="cardImage" aria-hidden="true">●</div></div><div class="cardFooter"><div class="cardText">Guest ${i + 1}</div></div></button>`).join('');
   return `<!doctype html><html class="${params.get('layout') === 'tv' ? 'layout-tv' : ''}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Cinematic UI browser fixture</title>
     <link rel="stylesheet" href="/Web/cinematic.css"><style>
       *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Arial,sans-serif;background:#0d0d0f;color:#fff}.hide{display:none!important}
@@ -47,9 +47,11 @@ function html(params) {
       @media(max-width:600px){.fixtureRange{display:none}header .fixtureControls{gap:1px}header .fixtureControls button{padding:4px}header .MuiToolbar-root{gap:4px}}
       ${playerFixture.style}
       ${detailsFixture.style}
+      ${loginFixture.style}
     </style></head><body><div id="fixtureVideoMount"></div><div class="backgroundContainer"></div><div id="reactRoot"><div id="fixtureApp"><header class="MuiAppBar-root"></header><div id="fixtureSpacer"></div><main id="fixturePage"></main></div></div>
     <script>
-      const loginMarkup = '<div id="loginPage"><div class="padded-left padded-right padded-bottom-page"><div class="visualLoginForm"><h1>Please sign in</h1><div id="divUsers">${profiles}</div></div><div class="readOnlyContent"><button class="btnManual"><span>Manual login</span></button><button>Use Quick Connect</button><button>Forgot Password</button></div></div></div>';
+      const loginMarkup = ${JSON.stringify(loginFixture.markup(params))};
+      const setupLogin = ${loginFixture.setup.toString()};
       const homeMarkup = '<div id="homeTab"><div class="homeSectionsContainer"><section class="verticalSection"><h2 class="sectionTitle">My Media</h2></section><section class="verticalSection"><h2 class="sectionTitle">Recently Added in Other Videos</h2></section><section class="verticalSection"><h2 class="sectionTitle">Recently Added in Movies</h2><p>Normal library content remains available.</p></section></div><button class="fixtureOutside">Outside hero</button></div>';
       const icon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18v14H3zM8 21h8v-2H8z"/></svg>';
       const links = '<a href="#/home">Jellyfin branding</a><a href="#/home?tab=1">' + icon + 'Favorites</a><a href="#/tv?topParentId=anime&collectionType=tvshows">' + icon + 'Anime</a><a href="#/movies?topParentId=movies&collectionType=movies">' + icon + 'Movies</a><a href="#/mixed?topParentId=other&collectionType=mixed">' + icon + 'Other Videos</a><a href="#/tv?topParentId=shows&collectionType=tvshows">' + icon + 'TV Shows</a>';
@@ -103,6 +105,7 @@ function html(params) {
         else if (location.hash.startsWith('#/details')) page.innerHTML = '<div id="itemDetailPage"><h1>Fixture details</h1><button class="btnPlay">Play</button><a href="#home">Back to Home</a></div>';
         else if (library) page.innerHTML = libraryMarkup;
         else page.innerHTML = location.hash === '#login' ? loginMarkup : homeMarkup;
+        if (location.hash === '#login') setupLogin(page);
         document.querySelector('header button[aria-label="User Menu"]')?.addEventListener('click',()=>{
           document.querySelector('.MuiMenu-paper')?.remove();
           const mount=document.createElement('div');mount.innerHTML=profileMenu;document.body.appendChild(mount.firstElementChild);

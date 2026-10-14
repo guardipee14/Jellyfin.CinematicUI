@@ -13,28 +13,37 @@
 
 /* LOGIN */
 body.cinematic-login.cinematic-login-hide-header .skinHeader,body.cinematic-login.cinematic-login-hide-header .headerTop,body.cinematic-login.cinematic-login-hide-header .headerTop-withSectionTabs,body.cinematic-login.cinematic-login-hide-header .pageTitleWithLogo,body.cinematic-login.cinematic-login-hide-header header.MuiAppBar-root{display:none!important}
-body.cinematic-login #loginPage{position:fixed!important;inset:0!important;width:100%!important;height:100%!important;margin:0!important;overflow-x:hidden!important;overflow-y:auto!important;background:#050505!important}
+body.cinematic-login #loginPage{position:fixed!important;inset:0!important;width:100%!important;height:100%!important;height:100dvh!important;margin:0!important;overflow-x:hidden!important;overflow-y:auto!important;background:#050505!important;overflow-wrap:anywhere}
 body.cinematic-login #loginPage::after{content:"";position:fixed;inset:-14%;z-index:0;pointer-events:none;background:url('/Branding/Splashscreen?format=jpg') center/cover no-repeat;transform:scale(1.24) translate3d(-3%,-2%,0);will-change:transform,filter;filter:saturate(.96) brightness(.92)}
 body.cinematic-login.cinematic-login-motion #loginPage::after{animation:cinematicLoginScroll var(--cinematic-login-motion,65s) ease-in-out infinite alternate}
 body.cinematic-login #loginPage::before{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;backdrop-filter:blur(var(--cinematic-login-blur,3px));-webkit-backdrop-filter:blur(var(--cinematic-login-blur,3px));background:linear-gradient(180deg,rgba(0,0,0,.16),rgba(0,0,0,var(--cinematic-login-darkness,.48)) 48%,rgba(0,0,0,.84)),radial-gradient(circle at center,transparent 8%,rgba(0,0,0,.22) 60%,rgba(0,0,0,.72))}
-body.cinematic-login #loginPage>.padded-left.padded-right.padded-bottom-page{position:relative;z-index:2;min-height:100vh;box-sizing:border-box;padding:7vh 5vw 5vh!important;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0!important}
-body.cinematic-login #loginPage .visualLoginForm{width:min(100%,1100px);overflow:visible!important}
+body.cinematic-login #loginPage>.padded-left.padded-right.padded-bottom-page{position:relative;z-index:2;min-height:100%;box-sizing:border-box;padding:7vh 5vw 5vh!important;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0!important}
+body.cinematic-login:not(.cinematic-login-hide-header) #loginPage>.padded-left.padded-right.padded-bottom-page{padding-top:calc(4rem + 5vh)!important}
+body.cinematic-login #loginPage .visualLoginForm{width:min(100%,1100px);min-width:0;overflow:visible!important}
 body.cinematic-login #loginPage .visualLoginForm::before{content:attr(data-cinematic-title);display:block;margin-bottom:1.45rem;color:#fff;font-size:clamp(1.8rem,3vw,3rem);font-weight:700;letter-spacing:.08em;text-align:center;text-shadow:0 4px 20px rgba(0,0,0,.75)}
 body.cinematic-login #loginPage .visualLoginForm>h1{font-size:0!important;margin:0 0 2.15rem!important}
 body.cinematic-login #loginPage .visualLoginForm>h1::after{content:"Who's watching?";font-size:clamp(1.7rem,2.6vw,2.55rem);font-weight:400;color:#fff}
 body.cinematic-login #loginPage #divUsers{display:flex!important;flex-wrap:wrap!important;justify-content:center!important;gap:1.6rem 2.4rem;overflow:visible!important}
 body.cinematic-login #loginPage #divUsers .card{width:clamp(130px,13vw,180px)!important;background:transparent!important;transition:transform .18s ease!important;overflow:visible!important}
-body.cinematic-login #loginPage #divUsers .card:hover{transform:translateY(-6px) scale(1.055)!important}
+@media(hover:hover){body.cinematic-login #loginPage #divUsers .card:hover{transform:translateY(-6px) scale(1.055)!important}}
+body.cinematic-login #loginPage #divUsers .cardBox{background:transparent!important}
+body.cinematic-login #loginPage #divUsers .card:focus-visible{outline:2px solid var(--cinematic-accent)!important;outline-offset:5px;border-radius:12px}
 body.cinematic-login #loginPage #divUsers .cardImageContainer,body.cinematic-login #loginPage #divUsers .cardImage{border-radius:50%!important;overflow:hidden!important;border:3px solid rgba(255,255,255,.28);box-shadow:0 10px 30px rgba(0,0,0,.58);transition:border-color .18s ease,box-shadow .18s ease}
-body.cinematic-login #loginPage #divUsers .card:hover .cardImageContainer,body.cinematic-login #loginPage #divUsers .card:hover .cardImage{border-color:var(--cinematic-accent)!important;box-shadow:0 0 0 4px color-mix(in srgb,var(--cinematic-accent) 18%,transparent),0 14px 38px rgba(0,0,0,.72)}
+body.cinematic-login #loginPage #divUsers .card:hover .cardImageContainer,body.cinematic-login #loginPage #divUsers .card:hover .cardImage,body.cinematic-login #loginPage #divUsers .card:focus-visible .cardImageContainer,body.cinematic-login #loginPage #divUsers .card:focus-visible .cardImage{border-color:var(--cinematic-accent)!important;box-shadow:0 0 0 4px color-mix(in srgb,var(--cinematic-accent) 18%,transparent),0 14px 38px rgba(0,0,0,.72)}
 body.cinematic-login #loginPage #divUsers .cardFooter{padding-top:.85rem!important;background:transparent!important}
-body.cinematic-login #loginPage #divUsers .cardText{color:rgba(255,255,255,.88)!important;font-size:1rem;text-align:center}
+body.cinematic-login #loginPage #divUsers .cardText{color:rgba(255,255,255,.88)!important;font-size:1rem;line-height:1.35;text-align:center;white-space:normal!important;overflow-wrap:anywhere;overflow:visible!important}
 body.cinematic-login #loginPage .readOnlyContent{width:min(100%,390px)!important;margin:1.5rem auto 0!important;text-align:center}
-body.cinematic-login #loginPage .manualLoginForm{width:min(calc(100vw - 2rem),430px)!important;padding:2.2rem!important;border:1px solid rgba(255,255,255,.10);border-radius:14px;background:rgba(15,15,18,.78);box-shadow:0 22px 70px rgba(0,0,0,.58);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+body.cinematic-login #loginPage .manualLoginForm{width:min(100%,430px)!important;min-width:0;box-sizing:border-box;padding:clamp(1rem,4vw,2.2rem)!important;border:1px solid rgba(255,255,255,.10);border-radius:14px;background:rgba(15,15,18,.78);box-shadow:0 22px 70px rgba(0,0,0,.58);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+body.cinematic-login #loginPage .manualLoginForm h1{font-size:clamp(1.5rem,3vw,2rem);line-height:1.2}
+body.cinematic-login #loginPage .manualLoginForm .emby-input{min-width:0;max-width:100%;box-sizing:border-box}
+body.cinematic-login #loginPage .manualLoginForm .checkboxContainer{white-space:normal}
+body.cinematic-login #loginPage .manualLoginForm button,body.cinematic-login #loginPage .readOnlyContent button{min-height:44px;max-width:100%;white-space:normal;overflow-wrap:anywhere;box-sizing:border-box}
+body.cinematic-login #loginPage button:focus-visible,body.cinematic-login #loginPage .emby-input:focus-visible{outline:2px solid var(--cinematic-accent);outline-offset:3px}
 body.cinematic-login #loginPage .btnManual{max-width:340px;margin-left:auto!important;margin-right:auto!important;border:1px solid rgba(255,255,255,.30)!important;border-radius:7px!important;background:rgba(18,18,20,.62)!important;color:#fff!important}
 body.cinematic-login #loginPage .btnManual:hover{border-color:rgba(255,255,255,.65)!important;background:rgba(255,255,255,.12)!important}
 body.cinematic-login #loginPage .btnQuick,body.cinematic-login #loginPage .btnForgotPassword,body.cinematic-login #loginPage .btnSelectServer{background:transparent!important;color:rgba(255,255,255,.62)!important;box-shadow:none!important}
 @keyframes cinematicLoginScroll{0%{transform:scale(1.25) translate3d(-5%,-3%,0)}25%{transform:scale(1.27) translate3d(-1%,-5%,0)}50%{transform:scale(1.26) translate3d(4%,-2%,0)}75%{transform:scale(1.28) translate3d(3%,4%,0)}100%{transform:scale(1.25) translate3d(-4%,3%,0)}}
+@media(prefers-reduced-motion:reduce){body.cinematic-login #loginPage #divUsers .card,body.cinematic-login #loginPage #divUsers .card:hover,body.cinematic-login #loginPage #divUsers .card:focus-visible{transition:none!important;transform:none!important}body.cinematic-login #loginPage #divUsers .cardImage,body.cinematic-login #loginPage #divUsers .cardImageContainer{transition:none!important}}
 
 /* GLOBAL PLEX-LIKE THEME */
 body.cinematic-global{--jf-palette-primary-main:var(--cinematic-accent);--jf-palette-primary-light:color-mix(in srgb,var(--cinematic-accent) 80%,white);--jf-palette-primary-dark:color-mix(in srgb,var(--cinematic-accent) 80%,black);--jf-palette-primary-mainChannel:var(--cinematic-accent-channels,229 160 13);--jf-palette-primary-lightChannel:var(--cinematic-accent-channels,229 160 13);--jf-palette-primary-darkChannel:var(--cinematic-accent-channels,229 160 13);--jf-palette-secondary-main:var(--cinematic-accent);--jf-palette-secondary-mainChannel:var(--cinematic-accent-channels,229 160 13)}
