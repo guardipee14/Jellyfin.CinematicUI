@@ -65,9 +65,11 @@ The release adds a current-account/Home artwork cache bounded to six blobs and 1
 
 Published October 13, 2026. All 118 browser checks, 24 tooling tests, the zero-warning build/contracts, and real Jellyfin checks passed CI. Public clean installation and the actual published v0.1.12-to-v0.1.13 Update Plugins path preserved settings/XML and one active identity. All nine public packages and immutable earlier entries verified independently. Device acceptance follows the owner's catalog update; see VALIDATION.md.
 
-## 9. Homepage hero and mobile polish — v0.1.14 candidate
+## 9. Homepage hero and mobile polish — complete in v0.1.14
 
-After confirming v0.1.13 works, the owner selected homepage hero/mobile polish. The candidate extends the content-driven hero layout to desktop/tablet widths, wraps indicators beneath actions, and supports deliberate single-touch horizontal browsing with an explicit rotation pause. Long titles and 200% text must stay inside the hero. Native vertical scrolling, pinch zoom, control taps, keyboard navigation, configured hidden controls, and account/context cleanup must remain intact. Desktop/phone browser checks, build/contracts, and the public catalog installation/update path are required before release.
+After confirming v0.1.13 works, the owner selected homepage hero/mobile polish. The release extends the content-driven hero layout to desktop/tablet widths, wraps indicators beneath actions, and supports deliberate single-touch horizontal browsing with an explicit rotation pause. Long titles and 200% text stay inside the hero. Vertical scrolling, pinch zoom, native control taps, keyboard navigation, configured hidden controls, and account/context cleanup are retained. Cancelled, multi-touch (including outside the hero), short, diagonal, control-started and long-press gestures do not browse titles.
+
+Published October 13, 2026 in Denver (October 14 UTC). All 144 desktop/phone browser checks, 24 tooling tests, zero-warning build/contracts, package checks and real Jellyfin checks passed CI. Public clean installation and the actual published v0.1.13-to-v0.1.14 scheduled update preserved settings/XML and one active identity. All ten public packages and unchanged older entries verified independently; see VALIDATION.md. Physical Android/WebView acceptance follows the owner's update and app reload.
 
 ## 10. Further visual refinement
 
