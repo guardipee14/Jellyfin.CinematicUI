@@ -48,6 +48,8 @@ v0.1.12 fixes the mobile homepage hero, including the Jellyfin Android app's Web
 
 v0.1.13 improves homepage artwork loading and cleanup. A temporary cache reuses up to six recent image blobs, limited to 12 MiB and discarded when leaving Home or changing accounts, tokens, or servers. Background and logo requests run together, and selecting another title cancels obsolete requests. Unused fading images are revoked promptly. Hidden pages stop layout polling; page exit releases artwork and hero timers, and page restoration builds one fresh hero. The mobile layout, native controls, and existing settings are retained. These limits describe the plugin's blob cache, not total browser memory.
 
+v0.1.14 extends the growing hero layout to desktop and tablet widths. Long titles and larger text stay inside the hero, and indicators wrap beneath Play and More Info. On touchscreens, swipe left or right on the slide to browse featured titles. Swiping pauses rotation until you select Resume; vertical scrolling and pinch zoom remain available. Gestures starting on buttons, short or diagonal movements, long presses, cancelled gestures, and multi-touch do not browse titles. Existing arrows, indicators, keyboard controls, and native actions remain available. After the server update/restart, close and reopen the Android app to reload its Web assets.
+
 ## Manual TrueNAS fallback and rollback
 
 The normal catalog install requires no shell work. If needed, build from a complete source checkout using:
@@ -74,6 +76,6 @@ python3 scripts/integration.py
 
 On Windows: `./build.ps1 -Python python`.
 
-Update the version/changelog, push the code, and push a matching new tag such as `v0.1.13`. The workflow validates the candidate, publishes an immutable GitHub release ZIP and manifest snapshot, then updates the cumulative `repository` branch only after checking public downloads. See [PUBLISH-GITHUB.md](PUBLISH-GITHUB.md) for release and retry details, and [VALIDATION.md](VALIDATION.md) for the completed milestone's evidence.
+Update the version/changelog, push the code, and push a matching new tag such as `v0.1.14`. The workflow validates the candidate, publishes an immutable GitHub release ZIP and manifest snapshot, then updates the cumulative `repository` branch only after checking public downloads. See [PUBLISH-GITHUB.md](PUBLISH-GITHUB.md) for release and retry details, and [VALIDATION.md](VALIDATION.md) for the completed milestone's evidence.
 
 Compatibility: Jellyfin Server 12.1, target ABI `12.1.0.0`, .NET 10. Developer: Donaven Guardipee ([guardipee14](https://github.com/guardipee14)).
