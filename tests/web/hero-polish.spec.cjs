@@ -118,6 +118,10 @@ test('short, diagonal, cancelled, multi-touch and control gestures do not browse
     for (const [type, event] of gesture) await hero.dispatchEvent(type, event);
     await expect(page.locator('.cinematicHeroTitle')).toHaveText(original);
   }
+  await hero.dispatchEvent('pointerdown', start);
+  await page.getByRole('button', { name: 'Outside hero', exact: true }).dispatchEvent('pointerdown', { ...start, pointerId: 2, isPrimary: false });
+  await hero.dispatchEvent('pointerup', end);
+  await expect(page.locator('.cinematicHeroTitle')).toHaveText(original);
   await page.clock.install();
   await hero.dispatchEvent('pointerdown', start);
   await page.clock.runFor(1100);

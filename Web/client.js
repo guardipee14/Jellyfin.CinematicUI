@@ -813,6 +813,10 @@
         // Let the browser scroll vertically and pinch to zoom. Only deliberate, single-touch
         // horizontal gestures on the slide itself browse titles; controls keep their native taps.
         let swipeStart = null;
+        // A second finger can land outside the hero. End this listener with its Home context.
+        document.addEventListener('pointerdown', event => {
+            if (swipeStart && event.pointerType === 'touch' && event.pointerId !== swipeStart.id) swipeStart = null;
+        }, { capture: true, signal: heroContext.controller.signal });
         hero.addEventListener('pointerdown', event => {
             if (event.pointerType !== 'touch') return;
             swipeStart = null;
