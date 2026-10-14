@@ -1,10 +1,12 @@
 # Codex Handoff — Jellyfin.CinematicUI
 
-## v0.1.15 login/profile-selection polish — candidate
+## Published v0.1.15 login/profile-selection polish — October 13, 2026
 
-The owner confirmed v0.1.14 works, including the mobile app, then selected login/profile-selection polish. New fixture checks reproduced long-name overflow, weak keyboard focus and enlarged-text manual-form overflow. The candidate wraps server/profile names, adds accent focus on native profile buttons, sizes forms within their parent, accommodates short dynamic viewports, and removes profile motion/transitions under reduced motion. Native authentication and controls are retained. No settings schema, minimum ABI, identity or authentication change is included.
+The owner confirmed v0.1.14 works, including the mobile app, then selected login/profile-selection polish. New fixture checks reproduced long-name overflow, weak keyboard focus and enlarged-text manual-form overflow. v0.1.15 wraps server/profile names, adds accent focus on native profile buttons, sizes forms within their parent, accommodates short dynamic viewports, and removes profile motion/transitions under reduced motion. Native authentication and controls are retained. No settings schema, minimum ABI, identity or authentication change is included.
 
-The official Jellyfin Web v12.1/v12.2 login HTML matches. Synthetic native-shaped fixture handlers cover profile/password focus, manual submission, Remember me, Cancel, Quick Connect, recovery and server selection. All 164 browser checks, 29 tooling tests, zero-warning build, compiled contracts and package checks pass locally. Real-server CI is pending. The integration runner now accepts an explicit supported server version and checks the selected image/ABI; candidate and public workflows exercise 12.1 and 12.2, preserving original coverage for immutable tags whose runner lacks that option. Publish only after both versions pass.
+The official Jellyfin Web v12.1/v12.2 login HTML matches. Synthetic native-shaped fixture handlers cover profile/password focus, manual submission, Remember me, Cancel, Quick Connect, recovery and server selection. All 164 browser checks, 29 tooling tests, zero-warning build, compiled contracts and package checks passed locally and in [candidate CI](https://github.com/guardipee14/Jellyfin.CinematicUI/actions/runs/38515867723), [main CI](https://github.com/guardipee14/Jellyfin.CinematicUI/actions/runs/38516257787) and the [release workflow](https://github.com/guardipee14/Jellyfin.CinematicUI/actions/runs/38516707264). Each CI run passed real Jellyfin installation/update exercises on 12.1 and 12.2. The integration runner checks the selected image/ABI and chooses a compatible prior package; immutable tags whose runner lacks the new option retain their original coverage.
+
+Published October 14 UTC. Public clean installation and the actual published v0.1.14-to-v0.1.15 scheduled update passed on both 12.1 and 12.2 with unchanged XML/settings, one active identity and intact injection. All eleven public ZIPs and unchanged earlier catalog entries verified independently without authentication. Immutable tag: `0ffbb28a3d58c47ea0a36c9b15ffdacc64d23a60`. Catalog commit: `3aab2c9606b0500193c80da67cb91433641292af`. ZIP MD5: `beadfd27433f50d42a520ab266417704`. Production installation/configuration/lifecycle were not changed by the agent. Physical v0.1.15 Android/WebView acceptance follows the owner's Update Plugins, TrueNAS Apps restart and app reload. v0.1.14 already has owner-reported desktop/mobile acceptance.
 
 ## Published v0.1.14 homepage hero and mobile polish — October 13, 2026
 
@@ -57,7 +59,7 @@ Hard-refresh Jellyfin Web after activation. On TrueNAS, use **Apps → Jellyfin 
 
 ## Release procedure and recovery
 
-Follow [PUBLISH-GITHUB.md](PUBLISH-GITHUB.md). For the next release, update the project/metadata versions to a new four-part value such as `0.1.15.0`, update the changelog, timestamp, and displayed settings version, land the source on main, wait for CI, then push the matching `v0.1.15` tag.
+Follow [PUBLISH-GITHUB.md](PUBLISH-GITHUB.md). For the next release, update the project/metadata versions to a new four-part value such as `0.1.16.0`, update the changelog, timestamp, and displayed settings version, land the source on main, wait for CI, then push the matching `v0.1.16` tag.
 
 The release workflow restores/builds with warnings treated as errors, checks compiled assembly identity and exact embedded resources, validates metadata/tag/checksums, and runs tooling and real Jellyfin integration tests. After verification, it uses the built-in `GITHUB_TOKEN` with `contents: write` to stage and verify a draft release, publish its assets, check unauthenticated downloads, and advance the stable manifest. A final test installs from the public GitHub URL and upgrades an actual prior published ZIP when one exists.
 

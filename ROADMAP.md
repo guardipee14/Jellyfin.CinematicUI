@@ -71,9 +71,11 @@ After confirming v0.1.13 works, the owner selected homepage hero/mobile polish. 
 
 Published October 13, 2026 in Denver (October 14 UTC). All 144 desktop/phone browser checks, 24 tooling tests, zero-warning build/contracts, package checks and real Jellyfin checks passed CI. Public clean installation and the actual published v0.1.13-to-v0.1.14 scheduled update preserved settings/XML and one active identity. All ten public packages and unchanged older entries verified independently; see VALIDATION.md. Physical Android/WebView acceptance follows the owner's update and app reload.
 
-## 10. Login/profile-selection polish and Jellyfin 12.2 coverage — v0.1.15 candidate
+## 10. Login/profile-selection polish and Jellyfin 12.2 coverage — complete in v0.1.15
 
-The owner confirmed v0.1.14 works on desktop and mobile, then selected login/profile selection. Fix long server/profile names, keyboard focus, manual-form overflow with larger text, short viewports, and reduced motion while preserving native authentication, recovery and server-selection controls. The minimum ABI stays at 12.1; exercise candidate and public install/update checks on 12.1 and 12.2. Physical device acceptance follows publication.
+The owner confirmed v0.1.14 works on desktop and mobile, then selected login/profile selection. The release fixes long server/profile names, keyboard focus, manual-form overflow with larger text, short viewports and reduced motion while preserving native authentication, recovery and server-selection controls. The minimum ABI stays at 12.1; candidate and public install/update checks exercise both 12.1 and 12.2.
+
+Published October 13, 2026 in Denver (October 14 UTC). All 164 browser checks, 29 tooling tests, zero-warning build/contracts and package checks passed. Public clean installation and the actual published v0.1.14-to-v0.1.15 scheduled update passed on both Jellyfin versions with settings/XML preserved and one active identity. All eleven public ZIPs and immutable earlier entries verified independently; see VALIDATION.md. Physical v0.1.15 Android/WebView acceptance follows the owner's catalog update and app reload.
 
 ## 11. Further visual refinement
 
