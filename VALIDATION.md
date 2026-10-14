@@ -1,5 +1,11 @@
 # Cinematic UI validation — October 13, 2026
 
+## v0.1.14 homepage hero and mobile polish — candidate
+
+New fixture checks reproduced desktop/tablet title clipping and control overlap with long titles and 200% text before the layout change. The candidate uses normal grid flow to reserve space for top controls, content/actions, and wrapping indicators. Thirteen additional cases per desktop/phone project cover five width/text combinations, real horizontal touch browsing in both directions, native vertical touch scrolling, ignored/cancelled/multi-touch/control gestures, rotation pause/resume, hidden navigation with native Play, changed credentials, a single title, and ordinary artwork/Home rows. Synthetic media and credentials remain confined to the fixture.
+
+All 144 browser checks and 24 tooling tests pass locally. The zero-warning .NET build, compiled identity/resource/legacy-settings contracts, and runtime ZIP validation pass. The horizontal input helper completes a browser touch gesture with fling disabled so a pending synthetic fling does not consume the next tap. Edge cases use synthetic pointer events; native Play and More Info taps are exercised through Chromium. Desktop/phone screenshots were inspected from the local test artifacts. CI and public install/update evidence will be recorded after they finish. The owner confirmed the prior updated Cinematic UI works; v0.1.14 physical Android/WebView and production playback are not independently verified.
+
 ## v0.1.13 homepage performance release
 
 The release preserves the current appearance, settings, plugin GUID/assembly, Jellyfin 12.1 ABI, and normal catalog updater. A six-entry/12 MiB current-context blob cache eliminates repeated fetches for recent images, parallel artwork requests reduce sequential loading, and superseded selections cancel their image requests. Unused fading-layer URLs are revoked immediately, and paint/fade work is cancelled on context teardown. Visibility/page lifecycle events stop polling and restore one hero after return.

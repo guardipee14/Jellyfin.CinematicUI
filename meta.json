@@ -1,12 +1,12 @@
 {
   "category": "General",
-  "changelog": "Improves homepage artwork performance and cleanup. Recently viewed artwork is reused from a small account-scoped cache, superseded image requests are cancelled, and unused fading images are released promptly. Background and logo requests run together. Hidden pages stop layout polling; leaving the page clears artwork and timers, and returning restores one hero. Preserves the mobile homepage layout, native controls, settings, identity, and normal plugin updates.",
+  "changelog": "Polishes the homepage hero across screen sizes. Long titles and larger text can expand the desktop and tablet hero without clipping or covering controls; indicators wrap beneath the actions. Swipe left or right on the featured slide to browse titles and pause rotation until Resume is selected. Vertical scrolling, pinch zoom, native action taps, keyboard navigation, settings, identity, and normal plugin updates are retained.",
   "description": "A unified cinematic Jellyfin Web customization with a profile-forward login screen, Plex-inspired theme, and rotating library-driven home hero.",
   "guid": "e4c17f1b-c451-4a31-b98c-5d0ef44f9a21",
   "name": "Cinematic UI",
   "overview": "Cinematic login and home experience for Jellyfin Web",
   "owner": "Donaven Guardipee",
   "targetAbi": "12.1.0.0",
-  "timestamp": "2026-10-13T19:07:58Z",
-  "version": "0.1.13.0"
+  "timestamp": "2026-10-14T04:25:54Z",
+  "version": "0.1.14.0"
 }

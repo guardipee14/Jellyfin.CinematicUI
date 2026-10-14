@@ -1,5 +1,11 @@
 # Codex Handoff — Jellyfin.CinematicUI
 
+## v0.1.14 homepage hero and mobile polish — candidate
+
+The owner confirmed the updated v0.1.13 works and chose homepage hero/mobile polish for the next release. The candidate lets desktop/tablet hero content grow for long titles and larger text, wraps indicators beneath actions, and adds deliberate single-touch horizontal browsing. Swiping pauses rotation until Resume; vertical scrolling, pinch zoom, native control taps, and keyboard navigation remain available. Cancelled, multi-touch, short, diagonal, long-press, and control-started gestures are ignored. Gestures are checked against the current account/Home context. Settings, identity, ABI, and authentication are unchanged.
+
+All 144 desktop/phone browser checks and 24 tooling tests pass locally, along with the zero-warning build, compiled identity/resource/legacy-settings contracts, and runtime ZIP validation. This includes 26 new hero checks and native touch input/action activation. CI and public installation/update checks are required before publication. The agent has not installed or restarted production. Physical Android/WebView acceptance follows the owner's catalog update and app reload.
+
 ## Published v0.1.13 performance release — October 13, 2026
 
 The owner asked to continue with the next version after confirming Homarr SSO works. The homepage performance/resource cleanup milestone is complete in v0.1.13. It keeps current visuals/settings/identity/ABI, reuses recent image blobs in a six-entry/12 MiB per-context cache, loads backdrop/logo together, aborts obsolete selection requests, releases replaced fading-layer URLs promptly, and tracks paint/fade cleanup. Hidden pages stop polling; pagehide clears artwork and suspends reconciliation, and pageshow restores one hero. Authentication remains separate.

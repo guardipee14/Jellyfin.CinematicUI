@@ -273,15 +273,15 @@ body.cinematic-player .videoOsdBottom-maincontrols{padding-top:32px!important;pa
 }
 
 /* HOME HERO */
-#cinematicHero{position:relative;min-height:0;margin:0;overflow:hidden;border-radius:0 0 16px 16px;background:#0a0a0b;isolation:isolate;opacity:0;visibility:hidden;max-height:0;transition:opacity .4s ease}
-#cinematicHero[data-ready="1"]{opacity:1;visibility:visible;max-height:none;min-height:clamp(420px,48vw,650px);margin-bottom:2rem}
+#cinematicHero{position:relative;min-height:0;margin:0;overflow:hidden;border-radius:0 0 16px 16px;background:#0a0a0b;isolation:isolate;opacity:0;visibility:hidden;max-height:0;transition:opacity .4s ease;touch-action:pan-y pinch-zoom}
+#cinematicHero[data-ready="1"]{opacity:1;visibility:visible;max-height:none;min-height:clamp(420px,48vw,650px);margin-bottom:2rem;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:1fr auto;row-gap:1rem;padding:4.4rem 1.7rem 1.45rem clamp(1.5rem,4.7vw,5rem);box-sizing:border-box}
 #cinematicHero .cinematicHeroVisual{position:absolute;inset:0;z-index:-4;overflow:hidden;background:#0a0a0b}
 #cinematicHero .cinematicHeroBlur{position:absolute;inset:-6%;background:center/cover no-repeat;filter:blur(28px) saturate(1.08) brightness(.68);transform:scale(1.16);opacity:.72;transition:background-image .6s ease}
 #cinematicHero .cinematicHeroBg{position:absolute;inset:-1%;background:center 34%/cover no-repeat;transform:scale(var(--cinematic-hero-zoom,1.08));opacity:0;filter:saturate(1.03) contrast(1.025);transition:opacity .82s ease,transform 8s ease;will-change:opacity,transform}
 #cinematicHero .cinematicHeroBg.active{opacity:1;transform:scale(calc(var(--cinematic-hero-zoom,1.08) + .015))}
 #cinematicHero::before{content:"";position:absolute;inset:0;z-index:-2;background:linear-gradient(90deg,rgba(6,6,8,.98) 0%,rgba(6,6,8,.86) 28%,rgba(6,6,8,.48) 50%,rgba(6,6,8,.22) 72%,rgba(6,6,8,.34) 100%),radial-gradient(circle at 76% 42%,transparent 0%,rgba(5,5,7,.10) 52%,rgba(5,5,7,.42) 100%)}
 #cinematicHero::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(0deg,var(--cinematic-bg) 0%,rgba(13,13,15,.74) 8%,transparent 36%,rgba(0,0,0,.08) 100%)}
-#cinematicHero .cinematicHeroContent{position:absolute;left:clamp(1.5rem,4.7vw,5rem);bottom:clamp(2rem,5.4vw,4.6rem);width:min(640px,48vw);color:#fff;z-index:2}
+#cinematicHero .cinematicHeroContent{position:relative;grid-area:1 / 1;align-self:end;min-width:0;width:min(640px,48vw);color:#fff;z-index:2;overflow-wrap:anywhere}
 #cinematicHero .cinematicHeroLogoWrap{display:flex;align-items:flex-end;min-height:0;margin:0 0 .9rem}
 #cinematicHero .cinematicHeroLogoWrap[hidden]{display:none!important}
 #cinematicHero .cinematicHeroLogo{display:block;max-width:min(520px,42vw);max-height:165px;object-fit:contain;object-position:left bottom;filter:drop-shadow(0 4px 12px rgba(0,0,0,.65))}
@@ -289,7 +289,7 @@ body.cinematic-player .videoOsdBottom-maincontrols{padding-top:32px!important;pa
 #cinematicHero.has-logo .cinematicHeroTitle{font-size:1.15rem;line-height:1.2;margin:.1rem 0 .7rem;color:rgba(255,255,255,.78);font-weight:600;letter-spacing:0}
 #cinematicHero .cinematicHeroMeta{color:rgba(255,255,255,.78);margin-bottom:.82rem;font-size:.98rem;font-weight:500;text-shadow:0 2px 8px rgba(0,0,0,.7)}
 #cinematicHero .cinematicHeroOverview{max-width:610px;color:rgba(255,255,255,.87);line-height:1.48;display:-webkit-box;-webkit-line-clamp:var(--cinematic-hero-overview-lines,3);-webkit-box-orient:vertical;overflow:hidden;text-shadow:0 2px 8px rgba(0,0,0,.82)}
-#cinematicHero .cinematicHeroActions{display:flex;gap:.75rem;margin-top:1.2rem}
+#cinematicHero .cinematicHeroActions{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1.2rem}
 #cinematicHero button{min-height:2.9rem;padding:0 1.25rem;border:0;border-radius:6px;font-weight:700;cursor:pointer;transition:transform .16s ease,filter .16s ease,background .16s ease}
 #cinematicHero button:hover{transform:translateY(-1px)}
 #cinematicHero button:focus-visible{outline:2px solid var(--cinematic-accent);outline-offset:3px}
@@ -303,7 +303,7 @@ body.cinematic-player .videoOsdBottom-maincontrols{padding-top:32px!important;pa
 #cinematicHero .cinematicHeroNav[hidden],#cinematicHero .cinematicHeroDots[hidden]{display:none!important}
 #cinematicHero .cinematicHeroNav button{width:46px;height:46px;min-height:46px;padding:0;border-radius:50%;background:rgba(10,10,12,.48);color:#fff;border:1px solid rgba(255,255,255,.16);font-size:2rem;line-height:1;display:grid;place-items:center;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 6px 18px rgba(0,0,0,.28)}
 #cinematicHero .cinematicHeroNav button:hover,#cinematicHero .cinematicHeroNav button:focus-visible{background:var(--cinematic-accent);color:#111;border-color:transparent;outline:none}
-#cinematicHero .cinematicHeroDots{position:absolute;right:1.7rem;bottom:1.45rem;display:flex;gap:.15rem;z-index:3;padding:.25rem .4rem;border-radius:999px;background:rgba(0,0,0,.18);backdrop-filter:blur(6px);max-width:calc(100% - 2rem);overflow-x:auto;scrollbar-width:thin}
+#cinematicHero .cinematicHeroDots{grid-area:2 / 1;justify-self:end;display:flex;flex-wrap:wrap;justify-content:flex-end;gap:.15rem;z-index:3;padding:.25rem .4rem;border-radius:999px;background:rgba(0,0,0,.18);backdrop-filter:blur(6px);max-width:100%;box-sizing:border-box}
 #cinematicHero .cinematicHeroDot{flex:0 0 24px;width:24px;height:24px;min-height:24px;padding:0;border-radius:50%;display:grid;place-items:center;background:transparent;box-shadow:none}
 #cinematicHero .cinematicHeroDot::before{content:"";width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.38)}
 #cinematicHero .cinematicHeroDot.active::before{background:var(--cinematic-accent);transform:scale(1.25)}
@@ -318,9 +318,9 @@ body.cinematic-home #homeTab .cardFooter{padding-top:.55rem!important}
 body.cinematic-home #homeTab .cardText{font-size:.94rem!important;font-weight:500!important;color:rgba(255,255,255,.92)!important}
 body.cinematic-home #homeTab .cardText-secondary{font-size:.82rem!important;color:rgba(255,255,255,.52)!important}
 
-/* Let the mobile hero grow with text and keep navigation outside the action row. */
+/* Let the hero grow with text and keep navigation outside the action row. */
 @media(max-width:1000px){
-  #cinematicHero[data-ready="1"]{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto 1fr auto;column-gap:.75rem;min-height:500px;padding:1rem;box-sizing:border-box}
+  #cinematicHero[data-ready="1"]{grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto 1fr auto;column-gap:.75rem;row-gap:0;min-height:500px;padding:1rem}
   #cinematicHero .cinematicHeroRotation{position:static;grid-area:1 / 1;justify-self:start;align-self:start;min-width:0;max-width:100%;min-height:44px;padding:.55rem .7rem;line-height:1.25;overflow-wrap:anywhere;box-sizing:border-box}
   #cinematicHero .cinematicHeroNav{position:static;grid-area:1 / 2;align-self:start;transform:none;flex-direction:row}
   #cinematicHero .cinematicHeroNav button{width:44px;height:44px;min-height:44px;font-size:1.65rem}

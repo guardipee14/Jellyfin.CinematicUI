@@ -65,6 +65,10 @@ The release adds a current-account/Home artwork cache bounded to six blobs and 1
 
 Published October 13, 2026. All 118 browser checks, 24 tooling tests, the zero-warning build/contracts, and real Jellyfin checks passed CI. Public clean installation and the actual published v0.1.12-to-v0.1.13 Update Plugins path preserved settings/XML and one active identity. All nine public packages and immutable earlier entries verified independently. Device acceptance follows the owner's catalog update; see VALIDATION.md.
 
-## 9. Further visual refinement — after measured reliability work
+## 9. Homepage hero and mobile polish — v0.1.14 candidate
+
+After confirming v0.1.13 works, the owner selected homepage hero/mobile polish. The candidate extends the content-driven hero layout to desktop/tablet widths, wraps indicators beneath actions, and supports deliberate single-touch horizontal browsing with an explicit rotation pause. Long titles and 200% text must stay inside the hero. Native vertical scrolling, pinch zoom, control taps, keyboard navigation, configured hidden controls, and account/context cleanup must remain intact. Desktop/phone browser checks, build/contracts, and the public catalog installation/update path are required before release.
+
+## 10. Further visual refinement
 
 Use reported issues and measured behavior to prioritize focused login and hero refinements. Preserve the catalog update path and settings compatibility for every release. Authentication stays in the separate LoginAccess project.
