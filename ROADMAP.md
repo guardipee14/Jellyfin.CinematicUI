@@ -71,6 +71,10 @@ After confirming v0.1.13 works, the owner selected homepage hero/mobile polish. 
 
 Published October 13, 2026 in Denver (October 14 UTC). All 144 desktop/phone browser checks, 24 tooling tests, zero-warning build/contracts, package checks and real Jellyfin checks passed CI. Public clean installation and the actual published v0.1.13-to-v0.1.14 scheduled update preserved settings/XML and one active identity. All ten public packages and unchanged older entries verified independently; see VALIDATION.md. Physical Android/WebView acceptance follows the owner's update and app reload.
 
-## 10. Further visual refinement
+## 10. Login/profile-selection polish and Jellyfin 12.2 coverage — v0.1.15 candidate
+
+The owner confirmed v0.1.14 works on desktop and mobile, then selected login/profile selection. Fix long server/profile names, keyboard focus, manual-form overflow with larger text, short viewports, and reduced motion while preserving native authentication, recovery and server-selection controls. The minimum ABI stays at 12.1; exercise candidate and public install/update checks on 12.1 and 12.2. Physical device acceptance follows publication.
+
+## 11. Further visual refinement
 
 Use reported issues and measured behavior to prioritize focused login and hero refinements. Preserve the catalog update path and settings compatibility for every release. Authentication stays in the separate LoginAccess project.
